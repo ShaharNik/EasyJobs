@@ -26,7 +26,7 @@
         android:layout_width="254dp"
         android:layout_height="137dp"
         android:text="Jobs List"
-        android:textSize="40dp"
+        android:textSize="40sp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

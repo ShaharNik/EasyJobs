@@ -19,14 +19,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022"
         app:srcCompat="@drawable/back_button"
-        android:contentDescription="back button" />
+        android:contentDescription="@string/back_button" />
 
     <TextView
         android:id="@+id/RegisterDummy"
         android:layout_width="254dp"
         android:layout_height="137dp"
         android:text="Register page"
-        android:textSize="40dp"
+        android:textSize="40sp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

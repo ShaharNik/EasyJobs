@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EasyJobs</string>
+    <string name="back_button">back_button</string>
 </resources>
