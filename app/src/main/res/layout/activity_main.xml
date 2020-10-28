@@ -38,6 +38,7 @@
         android:layout_width="135dp"
         android:layout_height="80dp"
         android:text="job list"
+        android:onClick="moveToJobList"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.187"
@@ -50,6 +51,7 @@
         android:layout_width="135dp"
         android:layout_height="80dp"
         android:text="prof list"
+        android:onClick="moveToProfList"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.411"
@@ -58,29 +60,21 @@
         app:layout_constraintVertical_bias="0.84" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/button_mainto_login"
         android:layout_width="183dp"
         android:layout_height="28dp"
         android:gravity="center"
         android:text="Login/Register"
         android:textColor="#E1131212"
         android:textSize="22dp"
+        android:clickable="true"
+        android:onClick="moveToLogin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.891" />
 
-    <Button
-        android:id="@+id/button_mainto_login"
-        android:layout_width="183dp"
-        android:layout_height="34dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
