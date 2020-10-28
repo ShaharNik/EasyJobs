@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public void moveToProfList(View v){
         Intent i = new Intent(MainActivity.this, profListActivity.class);
         startActivity(i);
+        // TEST TEST
     }
 
 }
