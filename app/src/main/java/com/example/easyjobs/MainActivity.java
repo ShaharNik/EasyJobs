@@ -22,12 +22,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void moveToJobList(View v){
-        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        Intent i = new Intent(MainActivity.this, JobsListActivity.class);
         startActivity(i);
     }
 
     public void moveToProfList(View v){
-        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        Intent i = new Intent(MainActivity.this, profListActivity.class);
         startActivity(i);
     }
 
