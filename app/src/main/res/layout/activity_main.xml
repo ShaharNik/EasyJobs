@@ -20,19 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
 
-    <ImageView
-        android:id="@+id/back_main"
-        android:layout_width="48dp"
-        android:layout_height="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.027"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022"
-        app:srcCompat="@drawable/back_button"
-        android:contentDescription="back button" />
-
     <Button
         android:id="@+id/button_mainto_joblist"
         android:layout_width="135dp"
@@ -75,6 +62,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.891" />
 
+    <ImageView
+        android:id="@+id/exit_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/exit_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.028"
+    />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
