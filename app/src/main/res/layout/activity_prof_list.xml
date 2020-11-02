@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    tools:context=".profListActivity">
+    tools:context=".ProfListActivity">
 
     <ImageView
         android:id="@+id/back_prof_list"
         android:layout_width="48dp"
         android:layout_height="35dp"
-        android:onClick="moveToMain"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.027"

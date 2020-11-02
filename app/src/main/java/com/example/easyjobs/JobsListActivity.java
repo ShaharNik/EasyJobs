@@ -6,16 +6,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class JobsListActivity extends AppCompatActivity {
 
     private Button jobProfile;
     private Button postJob;
+    private ImageView backBJL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
+
+        backBJL = findViewById(R.id.back_jobs_list);
+        backBJL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JobsListActivity.super.onBackPressed();
+            }
+        });
 
         jobProfile = findViewById(R.id.jobList_to_JobProfile);
         jobProfile.setOnClickListener(new View.OnClickListener() {
@@ -41,11 +51,6 @@ public class JobsListActivity extends AppCompatActivity {
 
     public void moveToPostJob(){
         Intent i = new Intent(JobsListActivity.this, PostJobActivity.class);
-        startActivity(i);
-    }
-
-    public void moveToMain(View v){
-        Intent i = new Intent(JobsListActivity.this, MainActivity.class);
         startActivity(i);
     }
 }
