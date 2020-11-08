@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Job {
     int job_ID;
-    int User_ID;
+    String User_ID;
     String desc;
     int price;
     String location;
@@ -12,7 +12,9 @@ public class Job {
     /// PICTURE
     int category_ID;
 
-    public Job(int job_ID, int user_ID, String desc, int price, String location, Date date, int category_ID) {
+    public Job(){}
+
+    public Job(int job_ID, String user_ID, String desc, int price, String location, Date date, int category_ID) {
         this.job_ID = job_ID;
         User_ID = user_ID;
         this.desc = desc;
@@ -22,7 +24,7 @@ public class Job {
         this.category_ID = category_ID;
     }
 
-    public Job(int user_ID, String desc, int price, String location, Date date, int category_ID) {
+    public Job(String user_ID, String desc, int price, String location, Date date, int category_ID) {
         User_ID = user_ID;
         this.desc = desc;
         this.price = price;
@@ -39,11 +41,11 @@ public class Job {
         this.job_ID = job_ID;
     }
 
-    public int getUser_ID() {
+    public String getUser_ID() {
         return User_ID;
     }
 
-    public void setUser_ID(int user_ID) {
+    public void setUser_ID(String user_ID) {
         User_ID = user_ID;
     }
 

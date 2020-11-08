@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.Date;
+
 public class PostJobActivity extends AppCompatActivity {
 
     private ImageView backBPJ;
@@ -22,5 +24,8 @@ public class PostJobActivity extends AppCompatActivity {
                 PostJobActivity.super.onBackPressed();
             }
         });
+
+        //FirebaseDBJobs db = new FirebaseDBJobs();
+        //db.addNewJob("gggggggggggggkfkgfkfgk", "Painting", 350, "Dar Sambrano's Cave", new Date(1888880000),3);
     }
 }

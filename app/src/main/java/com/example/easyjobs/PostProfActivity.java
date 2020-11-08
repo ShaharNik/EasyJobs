@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PostProfActivity extends AppCompatActivity {
 
     private ImageView backBPP;
@@ -22,5 +25,11 @@ public class PostProfActivity extends AppCompatActivity {
                 PostProfActivity.super.onBackPressed();
             }
         });
+
+        /*List<Integer> temp = new ArrayList<Integer>();
+        temp.add(5);
+        temp.add(3);
+        FirebaseDBProfs db = new FirebaseDBProfs();
+        db.addNewProf("Gggggfgf", "Fart tester", temp, "Shahar's Dungeon");*/
     }
 }

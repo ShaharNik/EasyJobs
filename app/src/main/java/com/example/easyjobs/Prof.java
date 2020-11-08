@@ -1,21 +1,25 @@
 package com.example.easyjobs;
 
+import java.util.List;
+
 public class Prof {
-    int job_ID;
-    int User_ID;
+    int prof_ID;
+    String User_ID;
     String desc;
-    int[] category;
+    List<Integer> category;
     String location;
 
-    public Prof(int job_ID, int user_ID, String desc, int[] category, String location) {
-        this.job_ID = job_ID;
+    public Prof(){}
+
+    public Prof(int prof_ID, String user_ID, String desc, List<Integer> category, String location) {
+        this.prof_ID = prof_ID;
         User_ID = user_ID;
         this.desc = desc;
         this.category = category;
         this.location = location;
     }
 
-    public Prof(int user_ID, String desc, int[] category, String location) {
+    public Prof(String user_ID, String desc, List<Integer> category, String location) {
         User_ID = user_ID;
         this.desc = desc;
         this.category = category;
@@ -23,18 +27,18 @@ public class Prof {
     }
 
     public int getJob_ID() {
-        return job_ID;
+        return prof_ID;
     }
 
-    public void setJob_ID(int job_ID) {
-        this.job_ID = job_ID;
+    public void setJob_ID(int prof_ID) {
+        this.prof_ID = prof_ID;
     }
 
-    public int getUser_ID() {
+    public String getUser_ID() {
         return User_ID;
     }
 
-    public void setUser_ID(int user_ID) {
+    public void setUser_ID(String user_ID) {
         User_ID = user_ID;
     }
 
@@ -46,11 +50,11 @@ public class Prof {
         this.desc = desc;
     }
 
-    public int[] getCategory() {
+    public List<Integer> getCategory() {
         return category;
     }
 
-    public void setCategory(int[] category) {
+    public void setCategory(List<Integer> category) {
         this.category = category;
     }
 

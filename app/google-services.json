@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "800442627903",
+    "firebase_url": "https://easyjobstest-85419.firebaseio.com",
+    "project_id": "easyjobstest-85419",
+    "storage_bucket": "easyjobstest-85419.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800442627903:android:78904cfd13c6ad52fa458a",
+        "android_client_info": {
+          "package_name": "com.example.easyjobs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800442627903-dvg3hgbfgu0q0glmait6lnkamft2sfm7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs0bd5Ll2ylCsnsIjrq_E2cDiUjRW7eEU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800442627903-dvg3hgbfgu0q0glmait6lnkamft2sfm7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
