@@ -1,7 +1,7 @@
 package com.example.easyjobs;
 
 public class User {
-    int User_ID;
+    //String User_ID;
     String firstName;
     String lastName;
     String phoneNumber;
@@ -10,6 +10,11 @@ public class User {
     String password; //Think if we need here?
     // PROF PIC // THINK HOW?
     float rating;
+
+    public User()
+    {
+
+    }
 
     public User(String firstName, String lastName, String phoneNumber, String email, boolean isPremium, String password, float rating) {
         this.firstName = firstName;
@@ -29,19 +34,20 @@ public class User {
         this.password = password;
     }
 
-    public User(int user_ID, String firstName, String lastName, String phoneNumber, String email, boolean isPremium, String password, float rating) {
-        User_ID = user_ID;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.isPremium = isPremium;
-        this.password = password;
-        this.rating = rating;
-    }
+//    public User(String firstName, String lastName, String phoneNumber, String email, boolean isPremium, String password, float rating) {
+//       // User_ID = user_ID;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.phoneNumber = phoneNumber;
+//        this.email = email;
+//        this.isPremium = isPremium;
+//        this.password = password;
+//        this.rating = rating;
+//    }
 
-    public User(int user_ID, String firstName, String lastName, String phoneNumber, String email, boolean isPremium, float rating) {
-        User_ID = user_ID;
+
+    public User(String firstName, String lastName, String phoneNumber, String email, boolean isPremium, float rating) {
+       // User_ID = user_ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -57,13 +63,13 @@ public class User {
         this.email = email;
     }
 
-    public void setUser_ID(int user_ID) {
-        User_ID = user_ID;
-    }
-
-    public int getUser_ID() {
-        return User_ID;
-    }
+//    public void setUser_ID(String user_ID) {
+//        User_ID = user_ID;
+//    }
+//
+//    public String getUser_ID() {
+//        return User_ID;
+//    }
 
     public String getFirstName() {
         return firstName;
@@ -113,5 +119,17 @@ public class User {
         this.rating = rating;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", isPremium=" + isPremium +
+                ", password='" + password + '\'' +
+                ", rating=" + rating +
+                '}';
+    }
 
 }
