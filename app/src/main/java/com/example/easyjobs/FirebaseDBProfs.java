@@ -8,16 +8,16 @@ import java.util.List;
 public class FirebaseDBProfs extends FirebaseBaseModel {
 
     public void addNewProf(String user_id, String desc, List<Integer> cats, String loc){
-        Prof p = new Prof(user_id, desc, cats, loc);
         String id = idGenerator.tokenGenerator();
+        Prof p = new Prof(id,user_id, desc, cats, loc);
         ref.child("Profs").child(id).setValue(p);
     }
 
-    public DatabaseReference getJobByID(String ProfID){
-        return ref.child("Prof").child(ProfID);
+    public DatabaseReference getProfByID(String ProfID){
+        return ref.child("Profs").child(ProfID);
     }
 
-    public DatabaseReference getAllJobs(){
-        return ref.child("Prof");
+    public DatabaseReference getAllProfs(){
+        return ref.child("Profs");
     }
 }

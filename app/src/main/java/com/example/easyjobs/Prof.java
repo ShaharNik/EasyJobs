@@ -3,7 +3,7 @@ package com.example.easyjobs;
 import java.util.List;
 
 public class Prof {
-    int prof_ID;
+    String prof_ID;
     String User_ID;
     String desc;
     List<Integer> category;
@@ -11,7 +11,7 @@ public class Prof {
 
     public Prof(){}
 
-    public Prof(int prof_ID, String user_ID, String desc, List<Integer> category, String location) {
+    public Prof(String prof_ID, String user_ID, String desc, List<Integer> category, String location) {
         this.prof_ID = prof_ID;
         User_ID = user_ID;
         this.desc = desc;
@@ -26,11 +26,11 @@ public class Prof {
         this.location = location;
     }
 
-    public int getJob_ID() {
+    public String getJob_ID() {
         return prof_ID;
     }
 
-    public void setJob_ID(int prof_ID) {
+    public void setJob_ID(String prof_ID) {
         this.prof_ID = prof_ID;
     }
 

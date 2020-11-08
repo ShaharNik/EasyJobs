@@ -58,5 +58,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.042" />
+    <ScrollView
+        android:id="@+id/ScrollViewPL"
+        android:layout_width="407dp"
+        android:layout_height="582dp"
+        tools:layout_editor_absoluteX="2dp"
+        tools:layout_editor_absoluteY="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/gradient_bg">
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/activity_recycler_view_prof_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.digitstory.testapplication.RecyclerViewActivity">
+            <androidx.recyclerview.widget.RecyclerView
+                android:background="@drawable/gradient_bg"
+                android:id="@+id/recyclerView_prof_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </RelativeLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

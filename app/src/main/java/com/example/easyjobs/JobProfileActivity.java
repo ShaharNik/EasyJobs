@@ -3,6 +3,7 @@ package com.example.easyjobs;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,7 +37,7 @@ public class JobProfileActivity extends AppCompatActivity {
         tw2 = findViewById(R.id.twb2);
 
         FirebaseDBJobs db = new FirebaseDBJobs();
-        DatabaseReference dr = db.getJobByID("4Jx9y45W05510p22EPOF15Wx1z3F4RZ2");
+        DatabaseReference dr = db.getJobByID(getIntent().getStringExtra("job_id"));
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -48,5 +49,7 @@ public class JobProfileActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
+
     }
 }

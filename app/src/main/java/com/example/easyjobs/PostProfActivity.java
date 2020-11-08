@@ -26,10 +26,12 @@ public class PostProfActivity extends AppCompatActivity {
             }
         });
 
-        /*List<Integer> temp = new ArrayList<Integer>();
-        temp.add(5);
-        temp.add(3);
-        FirebaseDBProfs db = new FirebaseDBProfs();
-        db.addNewProf("Gggggfgf", "Fart tester", temp, "Shahar's Dungeon");*/
+//       List<Integer> temp = new ArrayList<Integer>();
+//        temp.add(5);
+//        temp.add(6);
+//        temp.add(3);
+//        temp.add(3);
+//        FirebaseDBProfs db = new FirebaseDBProfs();
+//        db.addNewProf("123123as", "Fart weddasd1eqw1123", temp, "Shahar333333333333333's Dungeon 123123314");
     }
 }

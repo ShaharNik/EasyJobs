@@ -3,7 +3,7 @@ package com.example.easyjobs;
 import java.util.Date;
 
 public class Job {
-    int job_ID;
+    String job_ID;
     String User_ID;
     String desc;
     int price;
@@ -14,7 +14,7 @@ public class Job {
 
     public Job(){}
 
-    public Job(int job_ID, String user_ID, String desc, int price, String location, Date date, int category_ID) {
+    public Job(String job_ID, String user_ID, String desc, int price, String location, Date date, int category_ID) {
         this.job_ID = job_ID;
         User_ID = user_ID;
         this.desc = desc;
@@ -33,11 +33,11 @@ public class Job {
         this.category_ID = category_ID;
     }
 
-    public int getJob_ID() {
+    public String getJob_ID() {
         return job_ID;
     }
 
-    public void setJob_ID(int job_ID) {
+    public void setJob_ID(String job_ID) {
         this.job_ID = job_ID;
     }
 
