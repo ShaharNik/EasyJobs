@@ -1,19 +1,19 @@
 package com.example.easyjobs;
 
 public class Category {
-    int category_id;
+    String category_id;
     String cat_name;
 
-    public Category(int category_id, String cat_name) {
+    public Category(String category_id, String cat_name) {
         this.category_id = category_id;
         this.cat_name = cat_name;
     }
 
-    public int getCategory_id() {
+    public String getCategory_id() {
         return category_id;
     }
 
-    public void setCategory_id(int category_id) {
+    public void setCategory_id(String category_id) {
         this.category_id = category_id;
     }
 
