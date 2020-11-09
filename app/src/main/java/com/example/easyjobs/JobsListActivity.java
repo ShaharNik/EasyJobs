@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -12,8 +13,15 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +37,8 @@ public class JobsListActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private List<Job> JobList;
     private JobAdapter JobAdapter;
+
+    private FirebaseAuth fa;
 
     private Button postJob;
     private ImageView backBJL;
@@ -61,11 +71,55 @@ public class JobsListActivity extends AppCompatActivity {
             }
         });
 
+        fa = FirebaseAuth.getInstance();
+        FirebaseUser user = fa.getCurrentUser();
         postJob = findViewById(R.id.jobList_to_PostJob);
         postJob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToPostJob();
+                FirebaseUser user2 = fa.getCurrentUser();
+                if(user2!=null){
+                    moveToPostJob();
+                }
+                else{
+                        Dialog d= new Dialog(JobsListActivity.this);
+                        d.setContentView(R.layout.activity_login);
+                        d.setTitle("Login");
+                        d.setCancelable(true);
+
+                        ImageView iv = d.findViewById(R.id.back_login);
+                        iv.setEnabled(false);
+                        iv.setVisibility(View.GONE);
+
+                        EditText ed1 = d.findViewById(R.id.emailEditText);
+                        EditText ed2 = d.findViewById(R.id.editTextPassword);
+                        Button log = d.findViewById(R.id.LoginButton);
+                        log.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String ed1s = ed1.getText().toString();
+                                String ed2s = ed2.getText().toString();
+                                fa.signInWithEmailAndPassword(ed1s,ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            FirebaseUser user = fa.getCurrentUser();
+                                            Toast.makeText(JobsListActivity.this, "Hello Cruel World",
+                                                    Toast.LENGTH_SHORT).show();
+                                            d.dismiss();
+                                        }
+                                        else {
+                                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                            Toast.makeText(JobsListActivity.this, "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                        d.show();
+                }
             }
         });
     }

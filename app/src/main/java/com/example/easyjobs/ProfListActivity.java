@@ -5,14 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +35,9 @@ public class ProfListActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private List<Prof> ProfList;
     private profAdapter ProfAdapter;
-   // private Button profProfile;
+
+    private FirebaseAuth fa;
+
     private Button postProf;
     private ImageView backBLA;
 
@@ -41,14 +51,6 @@ public class ProfListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ProfListActivity.super.onBackPressed();
-            }
-        });
-
-        postProf = findViewById(R.id.profList_to_PostProf);
-        postProf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToPostProf();
             }
         });
 
@@ -68,12 +70,59 @@ public class ProfListActivity extends AppCompatActivity {
                 }));
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
         init();
+
+        fa = FirebaseAuth.getInstance();
+        FirebaseUser user = fa.getCurrentUser();
+        postProf = findViewById(R.id.profList_to_PostProf);
+        postProf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser user2 = fa.getCurrentUser();
+                if(user2!=null){
+                    moveToPostProf();
+                }
+                else{
+                    Dialog d= new Dialog(ProfListActivity.this);
+                    d.setContentView(R.layout.activity_login);
+                    d.setTitle("Login");
+                    d.setCancelable(true);
+
+                    ImageView iv = d.findViewById(R.id.back_login);
+                    iv.setEnabled(false);
+                    iv.setVisibility(View.GONE);
+
+                    EditText ed1 = d.findViewById(R.id.emailEditText);
+                    EditText ed2 = d.findViewById(R.id.editTextPassword);
+                    Button log = d.findViewById(R.id.LoginButton);
+                    log.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String ed1s = ed1.getText().toString();
+                            String ed2s = ed2.getText().toString();
+                            fa.signInWithEmailAndPassword(ed1s,ed2s).addOnCompleteListener(ProfListActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        FirebaseUser user = fa.getCurrentUser();
+                                        Toast.makeText(ProfListActivity.this, "Hello Cruel World", Toast.LENGTH_SHORT).show();
+                                        d.dismiss();
+                                    }
+                                    else {
+                                        Toast.makeText(ProfListActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    d.show();
+                }
+            }
+        });
     }
 
     private void init()
     {
         ProfList = new ArrayList<>();
-       // System.err.println("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
         ProfAdapter=new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
 
@@ -86,7 +135,6 @@ public class ProfListActivity extends AppCompatActivity {
                 for (DataSnapshot s :
                         snapshot.getChildren()) {
                     ProfList.add(s.getValue(Prof.class));
-                   // System.err.println("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
                 }
                 ProfAdapter.setProfsFeed(ProfList);
                 ProfAdapter.notifyDataSetChanged();
@@ -96,7 +144,6 @@ public class ProfListActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public void moveToProfProfile(int id){

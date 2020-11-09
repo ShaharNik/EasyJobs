@@ -21,21 +21,6 @@
         app:srcCompat="@drawable/back_button"
         android:contentDescription="@string/app_name"/>
 
-    <TextView
-        android:id="@+id/ProfListDummy"
-        android:layout_width="254dp"
-        android:layout_height="137dp"
-        android:gravity="center"
-        android:text="Profs List"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.156" />
-
-
     <Button
         android:id="@+id/profList_to_PostProf"
         android:layout_width="wrap_content"
@@ -50,15 +35,14 @@
 
     <ScrollView
         android:id="@+id/ScrollViewPL"
-        android:layout_width="413dp"
-        android:layout_height="547dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/gradient_bg"
+        app:layout_constraintVertical_bias="0.12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.985">
+        app:layout_constraintTop_toBottomOf="@id/profList_to_PostProf">
 
 
         <RelativeLayout
