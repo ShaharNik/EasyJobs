@@ -37,6 +37,14 @@ public class LoginActivity extends AppCompatActivity {
         pass = findViewById(R.id.editTextPassword);
         LoginB = findViewById(R.id.LoginButton);
         backBL = findViewById(R.id.back_login);
+        if (mAuth.getCurrentUser() != null) // logged in
+        {
+            registerB.setEnabled(false);
+            registerB.setVisibility(View.GONE);
+            emailED.setEnabled(false);
+            pass.setEnabled(false);
+            LoginB.setText("Logout");
+        }
         backBL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,52 +62,53 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailED.getText().toString();
                 String password = pass.getText().toString();
-      //---------------------------------------------------------------
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-//                                    Log.d(TAG, "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    updateUI(user);
-                                } else {
-                                    // If sign in fails, display a message to the user.
-//                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                    updateUI(null);
+                if (mAuth.getCurrentUser() == null)
+                {
+
+                    //---------------------------------------------------------------
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        updateUI(user);
+                                    } else {
+                                        //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                        Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                        updateUI(null);
+                                    }
+
+                                    // ...
                                 }
-
-                                // ...
-                            }
-                        });
-
-
-
-
-
-
-
-
-  //------------------------------------------------------------------
+                            });
+                }
+                else // User is Logged In
+                {
+                    FirebaseAuth.getInstance().signOut();
+                    registerB.setEnabled(true);
+                    registerB.setVisibility(View.VISIBLE);
+                    emailED.setEnabled(true);
+                    pass.setEnabled(true);
+                    LoginB.setText("Login");
+                }
             }
         });
-
     }
-
-
-
-
-
         public void moveToRegister(){
             Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(i);
         }
         public void updateUI(FirebaseUser user)
         {
-
+            registerB.setEnabled(false);
+            registerB.setVisibility(View.GONE);
+            emailED.setEnabled(false);
+            pass.setEnabled(false);
+            LoginB.setText("Logout");
+            LoginActivity.super.onBackPressed();
         }
 
 
