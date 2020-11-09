@@ -29,7 +29,7 @@ public class JobsListActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private List<Job> JobList;
     private JobAdapter JobAdapter;
-    private Button jobProfile;
+
     private Button postJob;
     private ImageView backBJL;
 
@@ -37,11 +37,11 @@ public class JobsListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
+
         recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
         linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        jobProfile = findViewById(R.id.jobList_to_JobProfile);
 
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
@@ -51,17 +51,15 @@ public class JobsListActivity extends AppCompatActivity {
                     }
                 }));
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
-        backBJL = findViewById(R.id.back_jobs_list);
         init();
+
+        backBJL = findViewById(R.id.back_jobs_list);
         backBJL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 JobsListActivity.super.onBackPressed();
             }
         });
-
-
-
 
         postJob = findViewById(R.id.jobList_to_PostJob);
         postJob.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +69,7 @@ public class JobsListActivity extends AppCompatActivity {
             }
         });
     }
+
     private void init()
     {
         JobList = new ArrayList<>();
@@ -102,13 +101,11 @@ public class JobsListActivity extends AppCompatActivity {
         i.putExtra("job_id",JobList.get(Position).job_ID);
         startActivity(i);
     }
+
     public void moveToPostJob(){
         Intent i = new Intent(JobsListActivity.this, PostJobActivity.class);
         startActivity(i);
     }
-
-
-
 
 
     public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration {
@@ -143,8 +140,4 @@ public class JobsListActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
 }

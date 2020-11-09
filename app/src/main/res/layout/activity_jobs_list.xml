@@ -36,39 +36,28 @@
         app:layout_constraintVertical_bias="0" />
 
     <Button
-        android:id="@+id/jobList_to_JobProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Job Profile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1" />
-
-    <Button
         android:id="@+id/jobList_to_PostJob"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Post Job"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042" />
+        app:layout_constraintVertical_bias="0.012" />
 
     <ScrollView
         android:id="@+id/ScrollViewJL"
         android:layout_width="407dp"
-        android:layout_height="582dp"
-        tools:layout_editor_absoluteX="2dp"
-        tools:layout_editor_absoluteY="90dp"
+        android:layout_height="632dp"
+        android:background="@drawable/gradient_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/gradient_bg">
+        app:layout_constraintVertical_bias="0.985">
 
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -77,12 +66,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context="com.digitstory.testapplication.RecyclerViewActivity">
+
             <androidx.recyclerview.widget.RecyclerView
-                android:background="@drawable/gradient_bg"
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                />
+                android:background="@drawable/gradient_bg" />
         </RelativeLayout>
     </ScrollView>
 

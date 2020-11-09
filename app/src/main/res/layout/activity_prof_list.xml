@@ -35,17 +35,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.156" />
 
-    <Button
-        android:id="@+id/profList_to_profProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Prof Profile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.407" />
 
     <Button
         android:id="@+id/profList_to_PostProf"
@@ -54,21 +43,22 @@
         android:text="Post Prof"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042" />
+        app:layout_constraintVertical_bias="0.012" />
+
     <ScrollView
         android:id="@+id/ScrollViewPL"
         android:layout_width="407dp"
-        android:layout_height="582dp"
-        tools:layout_editor_absoluteX="2dp"
-        tools:layout_editor_absoluteY="90dp"
+        android:layout_height="632dp"
+        android:background="@drawable/gradient_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/gradient_bg">
+        app:layout_constraintVertical_bias="0.985">
 
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
