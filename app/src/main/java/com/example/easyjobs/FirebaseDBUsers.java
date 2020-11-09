@@ -26,11 +26,11 @@ public class FirebaseDBUsers extends FirebaseBaseModel  {
     // PROF PIC // THINK HOW?
     float rating;
      */
-    public void addUserToDB(String firstName,String lastName,String phoneNumber,String email, boolean isPremium,String password)
+    public void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium)
     {
-        User user = new User(firstName,lastName,phoneNumber,email,isPremium,password,0);
-        String id = idGenerator.tokenGenerator();
-        ref.child("Users").child(id).setValue(user);
+        //String id = idGenerator.tokenGenerator();
+        User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0);
+        ref.child("Users").child(User_ID).setValue(user);
     }
     public DatabaseReference getAllusers()
     {
