@@ -5,26 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="EasyJobs\n     Logo"
-        android:textSize="40sp"
-        android:textColor="#E1131212"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+    tools:context=".Activities.MainActivity">
 
     <Button
         android:id="@+id/button_mainto_joblist"
         android:layout_width="135dp"
         android:layout_height="80dp"
         android:text="job list"
+        android:background="@drawable/gradient_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.187"
@@ -37,6 +25,7 @@
         android:layout_width="135dp"
         android:layout_height="80dp"
         android:text="prof list"
+        android:background="@drawable/button_pretty"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.411"
@@ -94,6 +83,18 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="410dp"
+        android:layout_height="308dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/WelcomeText"
+        app:layout_constraintVertical_bias="0.131"
+        app:srcCompat="@mipmap/easyjobiconbig_foreground" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

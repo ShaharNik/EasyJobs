@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    tools:context=".PostJobActivity">
+    tools:context=".Activities.PostJobActivity">
 
     <ImageView
         android:id="@+id/back_post_job"
