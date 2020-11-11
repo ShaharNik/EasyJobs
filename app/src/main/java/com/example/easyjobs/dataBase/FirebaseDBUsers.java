@@ -1,7 +1,16 @@
 package com.example.easyjobs.dataBase;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.example.easyjobs.Activities.LoginActivity;
+import com.example.easyjobs.Activities.PremiumPayment_activity;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.dataBase.FirebaseBaseModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 
 public class FirebaseDBUsers extends FirebaseBaseModel {
@@ -32,5 +41,15 @@ public class FirebaseDBUsers extends FirebaseBaseModel {
     public DatabaseReference getUserByID(String id)
     {
         return ref.child("Users").child(id);
+    }
+    public void setPremiumToAUser(String id, Context context)
+    {
+        ref.child("Users").child(id).child("premium").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(context, "payment successful",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

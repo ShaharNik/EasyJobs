@@ -97,30 +97,39 @@ public class JobsListActivity extends AppCompatActivity {
                         EditText ed1 = d.findViewById(R.id.emailEditText);
                         EditText ed2 = d.findViewById(R.id.editTextPassword);
                         Button log = d.findViewById(R.id.LoginButton);
+                     Button reg = d.findViewById(R.id.button_login_toregister);
                         log.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 String ed1s = ed1.getText().toString();
                                 String ed2s = ed2.getText().toString();
-                                fa.signInWithEmailAndPassword(ed1s,ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            FirebaseUser user = fa.getCurrentUser();
-                                            Toast.makeText(JobsListActivity.this, "Hello Cruel World",
-                                                    Toast.LENGTH_SHORT).show();
-                                            d.dismiss();
+                                if(!ed1s.isEmpty() && !ed2s.isEmpty()) {
+                                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if (task.isSuccessful()) {
+                                                FirebaseUser user = fa.getCurrentUser();
+                                                Toast.makeText(JobsListActivity.this, "Hello Cruel World",
+                                                        Toast.LENGTH_SHORT).show();
+                                                d.dismiss();
+                                            } else {
+                                                //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                                Toast.makeText(JobsListActivity.this, "Authentication failed.",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                        else {
-                                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                            Toast.makeText(JobsListActivity.this, "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                                    });
+                                }
                             }
                         });
-
+                    reg.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            d.dismiss();
+                            Intent i = new Intent(JobsListActivity.this, RegisterActivity.class);
+                            startActivity(i);
+                        }
+                    });
                         d.show();
                 }
             }

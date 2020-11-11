@@ -7,12 +7,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.easyjobs.R;
+import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 
@@ -20,25 +24,46 @@ import java.util.Calendar;
 public class PremiumPayment_activity extends AppCompatActivity {
 
 
-    EditText date;
-
-
+    EditText dateTextView;
+    EditText cardNumberTextView;
+    EditText cardNumberCVC;
+    Button acceptButton;
+    private ImageView backBLA;
+    private FirebaseAuth fa;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_premium_payment_activity);
 //        setNormalPicker();
-       showDatePickerDialog();
+        backBLA = findViewById(R.id.back_prof_list);
+        backBLA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PremiumPayment_activity.super.onBackPressed();
+            }
+        });
+        showDatePickerDialog();
+        cardNumberTextView = findViewById(R.id.avtivity_premium_payment_cardNumber_PlainText);
+        cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC);
+        acceptButton = findViewById(R.id.activity_premium_payment_acceptButton);
 
-
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fa = FirebaseAuth.getInstance();
+                FirebaseUser user = fa.getCurrentUser();
+                FirebaseDBUsers userDB = new FirebaseDBUsers();
+                userDB.setPremiumToAUser(user.getUid(),PremiumPayment_activity.this);
+            }
+        });
     }
 
 
     private void showDatePickerDialog()
     {
         // Get open DatePickerDialog button.
-        TextView datePickerDialogButton = findViewById(R.id.avtivity_premium_payment_cardExprire);
-        datePickerDialogButton.setOnClickListener(new View.OnClickListener() {
+        dateTextView = findViewById(R.id.avtivity_premium_payment_cardExprire);
+        dateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Create a new OnDateSetListener instance. This listener will be invoked when user click ok button in DatePickerDialog.
@@ -54,7 +79,7 @@ public class PremiumPayment_activity extends AppCompatActivity {
                         strBuf.append(dayOfMonth);
 
                         //TextView datePickerValueTextView = (TextView)findViewById(R.id.datePickerValue);
-                        datePickerDialogButton.setText(strBuf.toString());
+                        dateTextView.setText(strBuf.toString());
                     }
                 };
 

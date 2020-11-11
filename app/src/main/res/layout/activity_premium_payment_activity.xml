@@ -8,6 +8,20 @@
     tools:context=".Activities.PremiumPayment_activity">
 
 
+    <ImageView
+        android:id="@+id/back_premium_payment"
+        android:layout_width="48dp"
+        android:layout_height="35dp"
+        android:clickable="true"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.027"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.022"
+        app:srcCompat="@drawable/back_button" />
+
     <TextView
         android:id="@+id/avtivity_premium_payment_cardNumberTextView"
         android:layout_width="272dp"
@@ -64,7 +78,7 @@
         app:layout_constraintVertical_bias="0.071" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/activity_premium_payment_acceptButton"
         android:layout_width="326dp"
         android:layout_height="56dp"
         android:layout_marginTop="52dp"
