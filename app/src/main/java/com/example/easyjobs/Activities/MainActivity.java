@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        welcomeText = findViewById(R.id.WelcomeText);
+        findViews();
+
         // Open Camera
-        camOpener = findViewById(R.id.openCam);
         camOpener.setOnClickListener(new View.OnClickListener() { // Open Camera
             @Override
             public void onClick(View v) {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });// Open Camera
 
-        loginT = findViewById(R.id.button_mainto_login);
+
         loginT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        jobListB = findViewById(R.id.button_mainto_joblist);
+
         jobListB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        proListB = findViewById(R.id.button_mainto_proflist);
+
         proListB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,33 +100,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openCameraButton(){ // Open Camera
+    void openCameraButton(){ // Open Camera
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(i, 0);
     }
 
-    public void moveToLoginActivity(){
+    void moveToLoginActivity(){
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(i);
     }
 
-    public void moveToJobList(){
+    void moveToJobList(){
         Intent i = new Intent(MainActivity.this, JobsListActivity.class);
         startActivity(i);
     }
 
-    public void moveToProfList(){
+    void moveToProfList(){
         Intent i = new Intent(MainActivity.this, ProfListActivity.class);
         startActivity(i);
     }
-    public void moveToProfileActivity() // **To be continued** //
+    void moveToProfileActivity() // **To be continued** //
     {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        // BUG HERE
         Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
         i.putExtra("user_id",user.getUid());
         startActivity(i);
     }
+   void findViews()
+   {
+       welcomeText = findViewById(R.id.WelcomeText);
+       camOpener = findViewById(R.id.openCam);
+       jobListB = findViewById(R.id.button_mainto_joblist);
+       proListB = findViewById(R.id.button_mainto_proflist);
+       loginT = findViewById(R.id.button_mainto_login);
+
+   }
 
 }
