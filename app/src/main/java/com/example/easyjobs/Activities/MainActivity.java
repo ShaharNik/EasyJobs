@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         {
             String disp_name = user.getDisplayName();
             welcomeText.setText("Hello, " + disp_name + " :)");
-            loginT.setText("SignOut");
+            loginT.setText("Profile");
         }
         else
         {
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         {
             String disp_name = user.getDisplayName();
             welcomeText.setText("Hello, " + disp_name + " :)");
-            loginT.setText("SignOut");
+            loginT.setText("Profile");
         }
         else
         {

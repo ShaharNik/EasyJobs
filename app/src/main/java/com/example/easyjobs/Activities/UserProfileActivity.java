@@ -2,6 +2,7 @@ package com.example.easyjobs.Activities;
 
 import android.os.Bundle;
 import android.text.NoCopySpan;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -30,6 +31,10 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextView ratingAmount;
     private TextView isPremium;
 
+    private Button LogoutButt;
+    private Button UpgradeToPremium;
+    private Button EditProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +55,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 User u = snapshot.getValue(User.class);
                 // HERE Update user profile
                 rating.setText(rating.getText().toString() + " " + u.getRating());
-
+                ratingAmount.setText(" (" + u.getRatingsAmount() + ")");
+                isPremium.setText(isPremium.getText().toString() + " " + u.isPremium());
             }
 
             @Override
@@ -62,6 +68,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
     private void findViews()
     {
+        // Texts
         fname = findViewById(R.id.FNamePtextView);
         lname = findViewById(R.id.LNamePtextView);
         email = findViewById(R.id.emailPtextView);
@@ -69,6 +76,10 @@ public class UserProfileActivity extends AppCompatActivity {
         rating = findViewById(R.id.ratingPtextView);
         ratingAmount = findViewById(R.id.ratingPAmounttextView);
         isPremium = findViewById(R.id.isPremiumPtextView);
+        // Buttons
+        LogoutButt = findViewById(R.id.logoutButt);
+        UpgradeToPremium = findViewById(R.id.premiumButt);
+        EditProfile = findViewById(R.id.profileEditButt);
     }
 
 
