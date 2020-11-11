@@ -8,19 +8,21 @@ public class User {
     boolean isPremium;
     // PROF PIC // THINK HOW?
     float rating;
+    int ratingsAmount;
 
     public User()
     {
 
     }
 
-    public User(String User_ID, String firstName, String lastName, String phoneNumber, boolean isPremium, float rating) {
+    public User(String User_ID, String firstName, String lastName, String phoneNumber, boolean isPremium, float rating, int ratingsAmount) {
         this.User_ID = User_ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.isPremium = isPremium;
         this.rating = rating;
+        this.ratingsAmount = ratingsAmount;
     }
 
 
@@ -73,6 +75,14 @@ public class User {
         this.rating = rating;
     }
 
+    public int getRatingsAmount() {
+        return ratingsAmount;
+    }
+
+    public void setRatingsAmount(int ratingsAmount) {
+        this.ratingsAmount = ratingsAmount;
+    }
+
 
     @Override
     public String toString() {
@@ -83,6 +93,7 @@ public class User {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", isPremium=" + isPremium +
                 ", rating=" + rating +
+                ", ratingsAmount=" + ratingsAmount +
                 '}';
     }
 }

@@ -22,7 +22,7 @@ public class FirebaseDBUsers extends FirebaseBaseModel {
     public void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium)
     {
         //String id = idGenerator.tokenGenerator();
-        User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0);
+        User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0, 0);
         ref.child("Users").child(User_ID).setValue(user);
     }
     public DatabaseReference getAllusers()

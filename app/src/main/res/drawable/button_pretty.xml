@@ -18,12 +18,13 @@
         <shape android:shape="rectangle"  >
             <corners android:radius="3dip" />
             <gradient
-                android:type="radial"
+                android:type="linear"
                 android:centerX="50%"
-                android:centerY="50%"
-                android:startColor="#FFFFFFFF"
-                android:endColor="#FFDEF6FF"
-                android:gradientRadius="100"/>
+                android:startColor="#0E26A6"
+                android:centerColor="#004AA0"
+                android:endColor="#004AA0"
+                android:angle="45"/>
+
         </shape>
     </item>
 </selector>

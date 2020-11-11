@@ -20,26 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private Button proListB;
     private TextView loginT;
     private FirebaseAuth mAuth; // For User Email & Password authentication
-
     private Button camOpener; // Open Camera
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) // logged in
-        {
-            String disp_name = user.getDisplayName();
-            welcomeText.setText("Hello, " + disp_name + " :)");
-            loginT.setText("SignOut");
-        }
-        else
-        {
-            welcomeText.setText("Hello, Guest :)");
-            loginT.setText("Login/Register");
-        }
-    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +62,25 @@ public class MainActivity extends AppCompatActivity {
         });
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) // user is logged in
+        {
+            String disp_name = user.getDisplayName();
+            welcomeText.setText("Hello, " + disp_name + " :)");
+            loginT.setText("SignOut");
+        }
+        else
+        {
+            welcomeText.setText("Hello, Guest :)");
+            loginT.setText("Login/Register");
+        }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) // logged in
         {
             String disp_name = user.getDisplayName();
@@ -110,6 +111,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void moveToProfList(){
         Intent i = new Intent(MainActivity.this, ProfListActivity.class);
+        startActivity(i);
+    }
+    public void moveToProfile() // **To be continued** //
+    {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
+        i.putExtra("user_id",user.getUid());
         startActivity(i);
     }
 

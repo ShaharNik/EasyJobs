@@ -101,6 +101,10 @@ public class LoginActivity extends AppCompatActivity {
             Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(i);
         }
+    public void moveToProfile(){
+        Intent i = new Intent(LoginActivity.this, UserProfileActivity.class);
+        startActivity(i);
+    }
         public void updateUI(FirebaseUser user)
         {
             registerB.setEnabled(false);
@@ -108,7 +112,8 @@ public class LoginActivity extends AppCompatActivity {
             emailED.setEnabled(false);
             pass.setEnabled(false);
             LoginB.setText("Logout");
-            LoginActivity.super.onBackPressed();
+            LoginActivity.super.onBackPressed(); // get back
+            //moveToProfile(); // after user logged in, move him to profile
         }
 
 
