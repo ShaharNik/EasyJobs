@@ -23,6 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private ImageView backBR;
@@ -103,6 +106,43 @@ public class RegisterActivity extends AppCompatActivity {
     }
     boolean ValidateUserInformation(String email, String password, String phone, String fname, String lname)
     {
+        // if there is an empty field
+        if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || fname.isEmpty() || lname.isEmpty())
+            return false;
+
+        // email validation
+        String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()) {
+            user_emailEditText.setError("Email is invalid");
+            return false;
+        }
+        // check if password is at least 6
+        if (password.length() < 6) {
+            editTextPassword.setError("Password length must be at least 6");
+            return false;
+        }
+        // check if first name contains only letters
+        if (!fname.matches("[a-zA-Z]+"))
+        {
+            user_firstName.setError("First name is invaild, can't contain digits");
+            return false;
+        }
+        // check if last name contains only letters
+        if (!lname.matches("[a-zA-Z]+"))
+        {
+            user_lastName.setError("Last name is invaild, can't contain digits");
+            return false;
+        }
+        // check if phone number contains only numbers
+        if (!phone.matches("[0-9]+") || phone.length() != 10)
+        {
+            user_phoneNumber.setError("Phone must contain only digits, and 10 digits");
+            return false;
+        }
+
+
         return true;
     }
     void updateUI(FirebaseUser user, String phoneNumber, String fname, String lname) // we need update something from user information?
@@ -120,8 +160,8 @@ public class RegisterActivity extends AppCompatActivity {
         user.updateProfile(upcg); // WORKS!
         System.err.println(user.getDisplayName()); // don't display asynchronic maybe
 
-//        FirebaseDBUsers UsersDB = new FirebaseDBUsers();
-//        UsersDB.addUserToDB(User_ID,fname,lname,phoneNumber,false);
+        FirebaseDBUsers UsersDB = new FirebaseDBUsers();
+        UsersDB.addUserToDB(User_ID,fname,lname,phoneNumber,false);
 
     }
     private void premiumDialog(String fname,String lname)

@@ -40,8 +40,14 @@ public class MainActivity extends AppCompatActivity {
         loginT = findViewById(R.id.button_mainto_login);
         loginT.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                moveToLoginActivity();
+            public void onClick(View v)
+            {
+                mAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user == null) // logged in
+                    moveToLoginActivity();
+                else
+                    moveToProfileActivity();
             }
         });
 
@@ -113,11 +119,11 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, ProfListActivity.class);
         startActivity(i);
     }
-    public void moveToProfile() // **To be continued** //
+    public void moveToProfileActivity() // **To be continued** //
     {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-
+        // BUG HERE
         Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
         i.putExtra("user_id",user.getUid());
         startActivity(i);

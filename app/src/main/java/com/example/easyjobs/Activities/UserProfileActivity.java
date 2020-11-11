@@ -1,9 +1,12 @@
 package com.example.easyjobs.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.NoCopySpan;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 public class UserProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseDBUsers FDBU;
+
+    private ImageView backButt;
 
     private TextView fname;
     private TextView lname;
@@ -42,10 +47,12 @@ public class UserProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         String nickname = user.getDisplayName();
-        String email = user.getEmail();
-        String phoneNum = user.getPhoneNumber();
+        String user_email = user.getEmail();
+        //String phoneNum = user.getPhoneNumber();
+        //System.err.println(user.getDisplayName() + " " + user.getEmail());
 
         findViews(); // Find all TextViews By ID
+
 
         FDBU = new FirebaseDBUsers();
         DatabaseReference DR = FDBU.getUserByID(getIntent().getStringExtra("user_id"));
@@ -53,10 +60,18 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User u = snapshot.getValue(User.class);
+                fname.setText(fname.getText().toString() + " " + u.getFirstName());
+                lname.setText(lname.getText().toString() + " " + u.getLastName());
                 // HERE Update user profile
                 rating.setText(rating.getText().toString() + " " + u.getRating());
                 ratingAmount.setText(" (" + u.getRatingsAmount() + ")");
-                isPremium.setText(isPremium.getText().toString() + " " + u.isPremium());
+                if (u.isPremium() == false)
+                    isPremium.setText(isPremium.getText().toString() + " לא");
+                else
+                    isPremium.setText(isPremium.getText().toString() + " כן");
+                email.setText(email.getText().toString() + " " + user_email);
+                phone.setText(phone.getText().toString() + " " + u.getPhoneNumber());
+                System.err.println(user.getDisplayName() + " " + user.getEmail() + " " + user.getPhoneNumber());
             }
 
             @Override
@@ -64,10 +79,40 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
+        backButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserProfileActivity.super.onBackPressed();
+            }
+        });
+        LogoutButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*
+                registerB.setEnabled(true);
+                registerB.setVisibility(View.VISIBLE);
+                emailED.setEnabled(true);
+                pass.setEnabled(true);
+                LoginB.setText("Login");
+
+                 */
+                FirebaseAuth.getInstance().signOut();
+                UserProfileActivity.super.onBackPressed();
+            }
+        });
+        UpgradeToPremium.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        moveToPremiumPayment_activity();
+                    }
+                }
+        );
 
     }
     private void findViews()
     {
+        // Image Views
+        backButt = findViewById(R.id.back_from_user_profile);
         // Texts
         fname = findViewById(R.id.FNamePtextView);
         lname = findViewById(R.id.LNamePtextView);
@@ -80,6 +125,11 @@ public class UserProfileActivity extends AppCompatActivity {
         LogoutButt = findViewById(R.id.logoutButt);
         UpgradeToPremium = findViewById(R.id.premiumButt);
         EditProfile = findViewById(R.id.profileEditButt);
+    }
+    private void moveToPremiumPayment_activity()
+    {
+        Intent i = new Intent(UserProfileActivity.this, PremiumPayment_activity.class);
+        startActivity(i);
     }
 
 

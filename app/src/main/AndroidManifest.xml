@@ -59,6 +59,10 @@
             android:name=".Activities.PremiumPayment_activity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity
+            android:name=".Activities.UserProfileActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
     </application>
 
 </manifest>
