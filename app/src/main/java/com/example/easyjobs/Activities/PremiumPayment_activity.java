@@ -35,7 +35,7 @@ public class PremiumPayment_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_premium_payment_activity);
 //        setNormalPicker();
-        backBLA = findViewById(R.id.back_prof_list);
+        backBLA = findViewById(R.id.back_premium_payment);
         backBLA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
