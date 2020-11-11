@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">EasyJobs</string>
     <string name="back_button">back_button</string>
+    <string name="title_activity_premium_payment_activity">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

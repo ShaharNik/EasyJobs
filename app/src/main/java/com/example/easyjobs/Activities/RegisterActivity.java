@@ -3,6 +3,8 @@ package com.example.easyjobs.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -84,7 +86,8 @@ public class RegisterActivity extends AppCompatActivity {
                             updateUI(user, phoneNumber, fname, lname);
                             Toast.makeText(RegisterActivity.this, "You Signed!",
                                     Toast.LENGTH_SHORT).show();
-                            RegisterActivity.super.onBackPressed(); // Go previous page
+                            premiumDialog(fname,lname);
+                         //   RegisterActivity.super.onBackPressed(); // Go previous page
                         } else {
                             // If sign in fails, display a message to the user.
                             //Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -117,10 +120,44 @@ public class RegisterActivity extends AppCompatActivity {
         user.updateProfile(upcg); // WORKS!
         System.err.println(user.getDisplayName()); // don't display asynchronic maybe
 
-        FirebaseDBUsers UsersDB = new FirebaseDBUsers();
-        UsersDB.addUserToDB(User_ID,fname,lname,phoneNumber,false);
+//        FirebaseDBUsers UsersDB = new FirebaseDBUsers();
+//        UsersDB.addUserToDB(User_ID,fname,lname,phoneNumber,false);
 
     }
+    private void premiumDialog(String fname,String lname)
+    {
+        Dialog d= new Dialog(RegisterActivity.this);
+        d.setContentView(R.layout.activity_dialog_premium);
+        d.setTitle("premium");
+        //d.setCancelable(true);
+
+        Button yesButton = d.findViewById(R.id.activity_dialog_yesButton);
+        Button noButton = d.findViewById(R.id.activity_dialog_noButton);
+        TextView nameTextView = d.findViewById(R.id.activity_dialog_NameTextView);
+        nameTextView.setText(nameTextView.getText()+" "+ fname + " " + lname);
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                RegisterActivity.super.onBackPressed(); // Go previous page
+            }
+        });
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                moveToPremiumPayment();
+
+            }
+        });
+        d.show();
+    }
+    public void moveToPremiumPayment(){
+        Intent i = new Intent(RegisterActivity.this, PremiumPayment_activity.class);
+        startActivity(i);
+    }
+
 
 
 }
