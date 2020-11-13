@@ -13,6 +13,8 @@ import android.widget.Spinner;
 
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
     private EditText descED;
     private EditText locED;
     private EditText IdED;
+    private FirebaseAuth mAuth;
 
     private Button postProfB;
 
@@ -66,7 +69,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
         spinnerPP.setOnItemSelectedListener(this);
     }
 
-    public void postJobToDB(){//need to configure userID and Multiple Category !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void postJobToDB(){//need to configure Multiple Category !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         FirebaseDBProfs db = new FirebaseDBProfs();
         String desc = descED.getText().toString();
         String loc = locED.getText().toString();
@@ -83,7 +86,10 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
         List<Integer> temp = new ArrayList<Integer>();
         temp.add(5);
         temp.add(6);
-        db.addNewProf("123123as", desc, temp, loc);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        db.addNewProf(user.getUid(), desc, temp, loc);
         PostProfActivity.super.onBackPressed();
     }
 

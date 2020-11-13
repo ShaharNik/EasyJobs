@@ -13,6 +13,8 @@ import android.widget.Spinner;
 
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 
@@ -27,6 +29,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     private EditText priceED;
 
     private Button postJobB;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         spinnerPJ.setOnItemSelectedListener(this);
     }
 
-    public void postJobToDB(){//need to configure userID and Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void postJobToDB(){//need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         FirebaseDBJobs db = new FirebaseDBJobs();
         String desc = descED.getText().toString();
         String loc = locED.getText().toString();
@@ -71,7 +74,9 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         try { price = Integer.parseInt(priceED.getText().toString()); }
         catch(Exception e){ price = 0; } //Maybe pop-up window to tell user to insert int?????????????
 
-        db.addNewJob("oooooooooo", desc, price, loc, new Date(1888880000), catNum);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        db.addNewJob(user.getUid(), desc, price, loc, new Date(1888880000), catNum);
         PostJobActivity.super.onBackPressed();
     }
 
