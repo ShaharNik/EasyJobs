@@ -37,11 +37,21 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_prof);
 
+        findViews();
+        activateButtons();
+        setUpSpinner();
+    }
+
+    private void findViews(){
         descED = findViewById(R.id.editDescPP);
         locED = findViewById(R.id.editLocPP);
         IdED = findViewById(R.id.editIdPP);
-
         backBPP = findViewById(R.id.back_post_prof);
+        postProfB = findViewById(R.id.postProfBtn);
+        spinnerPP = findViewById(R.id.pickCategoryPostProf);
+    }
+
+    private void activateButtons(){
         backBPP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,15 +59,16 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        postProfB = findViewById(R.id.postProfBtn);
         postProfB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 postJobToDB();
             }
         });
+    }
 
-        spinnerPP = findViewById(R.id.pickCategoryPostProf);
+    //Gotta configure yet
+    private void setUpSpinner(){
         String[] items = new String[]{"1", "2", "three"};
         // need to set up categories on db and make the string connecting there.
         String[] items2 = new String[7];

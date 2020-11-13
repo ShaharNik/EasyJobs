@@ -44,73 +44,12 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String nickname = user.getDisplayName();
-        String user_email = user.getEmail();
-        //String phoneNum = user.getPhoneNumber();
-        //System.err.println(user.getDisplayName() + " " + user.getEmail());
 
         findViews(); // Find all TextViews By ID
-
-
-        FDBU = new FirebaseDBUsers();
-        DatabaseReference DR = FDBU.getUserByID(getIntent().getStringExtra("user_id"));
-        DR.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User u = snapshot.getValue(User.class);
-                fname.setText(fname.getText().toString() + " " + u.getFirstName());
-                lname.setText(lname.getText().toString() + " " + u.getLastName());
-                // HERE Update user profile
-                rating.setText(rating.getText().toString() + " " + u.getRating());
-                ratingAmount.setText(" (" + u.getRatingsAmount() + ")");
-                if (u.isPremium() == false)
-                    isPremium.setText(isPremium.getText().toString() + " לא");
-                else
-                    isPremium.setText(isPremium.getText().toString() + " כן");
-                email.setText(email.getText().toString() + " " + user_email);
-                phone.setText(phone.getText().toString() + " " + u.getPhoneNumber());
-                System.err.println(user.getDisplayName() + " " + user.getEmail() + " " + user.getPhoneNumber());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        backButt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserProfileActivity.super.onBackPressed();
-            }
-        });
-        LogoutButt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*
-                registerB.setEnabled(true);
-                registerB.setVisibility(View.VISIBLE);
-                emailED.setEnabled(true);
-                pass.setEnabled(true);
-                LoginB.setText("Login");
-
-                 */
-                FirebaseAuth.getInstance().signOut();
-                UserProfileActivity.super.onBackPressed();
-            }
-        });
-        UpgradeToPremium.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        moveToPremiumPayment_activity();
-                    }
-                }
-        );
-
+        activateButtonsAndViews();
     }
-    private void findViews()
-    {
+
+    private void findViews(){
         // Image Views
         backButt = findViewById(R.id.back_from_user_profile);
         // Texts
@@ -126,11 +65,75 @@ public class UserProfileActivity extends AppCompatActivity {
         UpgradeToPremium = findViewById(R.id.premiumButt);
         EditProfile = findViewById(R.id.profileEditButt);
     }
-    private void moveToPremiumPayment_activity()
-    {
+
+    private void activateButtonsAndViews(){
+        backButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserProfileActivity.super.onBackPressed();
+            }
+        });
+
+        LogoutButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*
+                registerB.setEnabled(true);
+                registerB.setVisibility(View.VISIBLE);
+                emailED.setEnabled(true);
+                pass.setEnabled(true);
+                LoginB.setText("Login");
+
+                 */
+                FirebaseAuth.getInstance().signOut();
+                UserProfileActivity.super.onBackPressed();
+            }
+        });
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String nickname = user.getDisplayName();
+        String user_email = user.getEmail();
+
+        FDBU = new FirebaseDBUsers();
+        DatabaseReference DR = FDBU.getUserByID(getIntent().getStringExtra("user_id"));
+        DR.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User u = snapshot.getValue(User.class);
+                fname.setText(fname.getText().toString() + " " + u.getFirstName());
+                lname.setText(lname.getText().toString() + " " + u.getLastName());
+                // HERE Update user profile
+                rating.setText(rating.getText().toString() + " " + u.getRating());
+                ratingAmount.setText(" (" + u.getRatingsAmount() + ")");
+
+                if (u.isPremium() == false){
+                    isPremium.setText(isPremium.getText().toString() + " לא");
+                }
+                else{
+                    isPremium.setText(isPremium.getText().toString() + " כן");
+                }
+
+                email.setText(email.getText().toString() + " " + user_email);
+                phone.setText(phone.getText().toString() + " " + u.getPhoneNumber());
+                System.err.println(user.getDisplayName() + " " + user.getEmail() + " " + user.getPhoneNumber());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        UpgradeToPremium.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToPremiumPayment_activity();
+            }
+        });
+    }
+
+    private void moveToPremiumPayment_activity(){
         Intent i = new Intent(UserProfileActivity.this, PremiumPayment_activity.class);
         startActivity(i);
     }
-
-
 }
+

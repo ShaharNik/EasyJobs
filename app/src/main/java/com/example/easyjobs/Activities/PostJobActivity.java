@@ -21,14 +21,14 @@ import java.util.Date;
 public class PostJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private ImageView backBPJ;
-
-    private Spinner spinnerPJ;
-    private int catNum = 0;
     private EditText descED;
     private EditText locED;
     private EditText priceED;
-
     private Button postJobB;
+
+    private Spinner spinnerPJ;
+    private int catNum = 0;
+
     private FirebaseAuth mAuth;
 
     @Override
@@ -36,25 +36,36 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_job);
 
+        findViews();
+        activateButtons();
+        setUpSpinner();
+    }
+
+    private void findViews(){
+        backBPJ = findViewById(R.id.back_post_job);
         descED = findViewById(R.id.editDescPJ);
         locED = findViewById(R.id.editLocPJ);
         priceED = findViewById(R.id.editPricePJ);
+        postJobB = findViewById(R.id.postJobBtn);
+        spinnerPJ = findViewById(R.id.pickCategoryPostJob);
+    }
 
-        backBPJ = findViewById(R.id.back_post_job);
+    private void activateButtons(){
         backBPJ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { PostJobActivity.super.onBackPressed(); }
         });
 
-        postJobB = findViewById(R.id.postJobBtn);
         postJobB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 postJobToDB();
             }
         });
+    }
 
-        spinnerPJ = findViewById(R.id.pickCategoryPostJob);
+    //Gotta configure yet
+    private void setUpSpinner(){
         String[] items = new String[]{"1", "2", "three"};
         // need to set up categories on db and make the string connecting there.
         String[] items2 = new String[7];
@@ -66,7 +77,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         spinnerPJ.setOnItemSelectedListener(this);
     }
 
-    public void postJobToDB(){//need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void postJobToDB(){//need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         FirebaseDBJobs db = new FirebaseDBJobs();
         String desc = descED.getText().toString();
         String loc = locED.getText().toString();

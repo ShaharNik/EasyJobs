@@ -51,22 +51,23 @@ public class JobsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
 
-        recyclerView=(RecyclerView)findViewById(R.id.recyclerView);
-        linearLayoutManager=new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
+        findViews();
+        activateButtonsAndViews();
+    }
 
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                      // System.err.println(position);
-                        moveToJobProfile(position);
-                    }
-                }));
-        recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
-        init();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activateButtonsAndViews();
+    }
 
+    private void findViews(){
         backBJL = findViewById(R.id.back_jobs_list);
+        postJob = findViewById(R.id.jobList_to_PostJob);
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+    }
+
+    private void activateButtonsAndViews(){
         backBJL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,54 +75,62 @@ public class JobsListActivity extends AppCompatActivity {
             }
         });
 
-        fa = FirebaseAuth.getInstance();
-        FirebaseUser user = fa.getCurrentUser();
-        postJob = findViewById(R.id.jobList_to_PostJob);
+        linearLayoutManager=new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override public void onItemClick(View view, int position) {
+                moveToJobProfile(position);
+            }
+        }));
+        recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
+        init();
+
         postJob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser user2 = fa.getCurrentUser();
-                if(user2!=null){
+                fa = FirebaseAuth.getInstance();
+                FirebaseUser user = fa.getCurrentUser();
+                if(user!=null){
                     moveToPostJob();
                 }
                 else{
-                        Dialog d= new Dialog(JobsListActivity.this);
-                        d.setContentView(R.layout.activity_login);
-                        d.setTitle("Login");
-                        d.setCancelable(true);
+                    Dialog d= new Dialog(JobsListActivity.this);
+                    d.setContentView(R.layout.activity_login);
+                    d.setTitle("Login");
+                    d.setCancelable(true);
 
-                        ImageView iv = d.findViewById(R.id.back_login);
-                        iv.setEnabled(false);
-                        iv.setVisibility(View.GONE);
+                    ImageView iv = d.findViewById(R.id.back_login);
+                    iv.setEnabled(false);
+                    iv.setVisibility(View.GONE);
 
-                        EditText ed1 = d.findViewById(R.id.emailEditText);
-                        EditText ed2 = d.findViewById(R.id.editTextPassword);
-                        Button log = d.findViewById(R.id.LoginButton);
-                     Button reg = d.findViewById(R.id.button_login_toregister);
-                        log.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String ed1s = ed1.getText().toString();
-                                String ed2s = ed2.getText().toString();
-                                if(!ed1s.isEmpty() && !ed2s.isEmpty()) {
-                                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                FirebaseUser user = fa.getCurrentUser();
-                                                Toast.makeText(JobsListActivity.this, "Hello Cruel World",
-                                                        Toast.LENGTH_SHORT).show();
-                                                d.dismiss();
-                                            } else {
-                                                //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                                Toast.makeText(JobsListActivity.this, "Authentication failed.",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
+                    EditText ed1 = d.findViewById(R.id.emailEditText);
+                    EditText ed2 = d.findViewById(R.id.editTextPassword);
+                    Button log = d.findViewById(R.id.LoginButton);
+                    Button reg = d.findViewById(R.id.button_login_toregister);
+                    log.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String ed1s = ed1.getText().toString();
+                            String ed2s = ed2.getText().toString();
+                            if(!ed1s.isEmpty() && !ed2s.isEmpty()) {
+                                fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            FirebaseUser user = fa.getCurrentUser();
+                                            Toast.makeText(JobsListActivity.this, "Connected Successfully", Toast.LENGTH_SHORT).show();
+                                            d.dismiss();
                                         }
-                                    });
-                                }
+                                        else{
+                                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                            Toast.makeText(JobsListActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                             }
-                        });
+                        }
+                    });
                     reg.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -130,38 +139,33 @@ public class JobsListActivity extends AppCompatActivity {
                             startActivity(i);
                         }
                     });
-                        d.show();
+                    d.show();
                 }
             }
         });
     }
 
-    private void init()
-    {
+    private void init(){
         JobList = new ArrayList<>();
-        JobAdapter=new JobAdapter(JobsListActivity.this);
+        JobAdapter = new JobAdapter(JobsListActivity.this);
         recyclerView.setAdapter(JobAdapter);
 
         FirebaseDBJobs dbdbj = new FirebaseDBJobs();
         DatabaseReference dr = dbdbj.getAllJobs();
-
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot s :
-                        snapshot.getChildren()) {
+                for (DataSnapshot s : snapshot.getChildren()) {
                     JobList.add(s.getValue(Job.class));
                 }
                 JobAdapter.setJobsFeed(JobList);
                 JobAdapter.notifyDataSetChanged();
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
-
     }
+
     public void moveToJobProfile(int Position){
         Intent i = new Intent(JobsListActivity.this, JobProfileActivity.class);
         i.putExtra("job_id",JobList.get(Position).getJob_ID());
@@ -172,7 +176,6 @@ public class JobsListActivity extends AppCompatActivity {
         Intent i = new Intent(JobsListActivity.this, PostJobActivity.class);
         startActivity(i);
     }
-
 
     public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration {
 

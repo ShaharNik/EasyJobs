@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     private Button proListB;
     private TextView loginT;
     private FirebaseAuth mAuth; // For User Email & Password authentication
-    private Button camOpener; // Open Camera
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,57 +27,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         findViews();
-
-        // Open Camera
-        camOpener.setOnClickListener(new View.OnClickListener() { // Open Camera
-            @Override
-            public void onClick(View v) {
-                openCameraButton();
-            }
-        });// Open Camera
-
-
-        loginT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user == null) // logged in
-                    moveToLoginActivity();
-                else
-                    moveToProfileActivity();
-            }
-        });
-
-
-        jobListB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToJobList();
-            }
-        });
-
-
-        proListB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                moveToProfList();
-            }
-        });
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) // user is logged in
-        {
-            String disp_name = user.getDisplayName();
-            welcomeText.setText("Hello, " + disp_name + " :)");
-            loginT.setText("Profile");
-        }
-        else
-        {
-            welcomeText.setText("Hello, Guest :)");
-            loginT.setText("Login/Register");
-        }
+        activateButtonsAndViews();
+        logedInModifier();
     }
 
     @Override
@@ -100,26 +50,74 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void openCameraButton(){ // Open Camera
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(i, 0);
+    private void findViews(){
+        welcomeText = findViewById(R.id.WelcomeText);
+        jobListB = findViewById(R.id.button_mainto_joblist);
+        proListB = findViewById(R.id.button_mainto_proflist);
+        loginT = findViewById(R.id.button_mainto_login);
     }
 
-    void moveToLoginActivity(){
+    private void activateButtonsAndViews(){
+        loginT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                mAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user == null) // logged in
+                    moveToLoginActivity();
+                else
+                    moveToProfileActivity();
+            }
+        });
+
+        jobListB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToJobList();
+            }
+        });
+
+        proListB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToProfList();
+            }
+        });
+    }
+
+    private void logedInModifier(){
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) // user is logged in
+        {
+            String disp_name = user.getDisplayName();
+            welcomeText.setText("Hello, " + disp_name + " :)");
+            loginT.setText("Profile");
+        }
+        else
+        {
+            welcomeText.setText("Hello, Guest :)");
+            loginT.setText("Login/Register");
+        }
+    }
+
+    private void moveToLoginActivity(){
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(i);
     }
 
-    void moveToJobList(){
+    private void moveToJobList(){
         Intent i = new Intent(MainActivity.this, JobsListActivity.class);
         startActivity(i);
     }
 
-    void moveToProfList(){
+    private void moveToProfList(){
         Intent i = new Intent(MainActivity.this, ProfListActivity.class);
         startActivity(i);
     }
-    void moveToProfileActivity() // **To be continued** //
+
+    private void moveToProfileActivity() // **To be continued** //
     {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -127,14 +125,4 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra("user_id",user.getUid());
         startActivity(i);
     }
-   void findViews()
-   {
-       welcomeText = findViewById(R.id.WelcomeText);
-       camOpener = findViewById(R.id.openCam);
-       jobListB = findViewById(R.id.button_mainto_joblist);
-       proListB = findViewById(R.id.button_mainto_proflist);
-       loginT = findViewById(R.id.button_mainto_login);
-
-   }
-
 }
