@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
@@ -70,23 +71,24 @@ public class ProfProfileActivity extends AppCompatActivity {
                 descPPTV.setText("תיאור: " + profile.getDesc());
                 //Add categories
                 ArrayList<Integer> cats = (ArrayList<Integer>) profile.getCategory();
-//                FirebaseDBCategories catDb = new FirebaseDBCategories();
-//                DatabaseReference catDR = catDb.getAllCat();
-//                catDR.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                    }
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {}
-//                });
-                String categories = ("" + cats.get(0));
-                if(cats.size()>1) {
-                    for (int i = 1; i < cats.size(); i++) {
-                        categories = "" + categories + ", " + cats.get(i);
-                    }
+                FirebaseDBCategories catDb = new FirebaseDBCategories();
+                DatabaseReference catDR;
+                for (int i=0; i<cats.size(); i++){
+                    final int x = i;
+                    catDR = catDb.getCatByID("\"" + cats.get(i) + "\"");
+                    catDR.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Category c = snapshot.getValue(Category.class);
+                            catPPTV.setText(catPPTV.getText().toString() + c.getCat_name());
+                            if (x<cats.size() - 1){
+                                catPPTV.setText(catPPTV.getText().toString() + ", ");
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) { }
+                    });
                 }
-                catPPTV.setText("קטגוריות: " + categories);
                 //End adding
                 locationPPTV.setText("איזור עבודה: " + profile.getLocation());
 
