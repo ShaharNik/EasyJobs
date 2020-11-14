@@ -11,12 +11,15 @@ import android.widget.TextView;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
+import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class ProfProfileActivity extends AppCompatActivity {
 
@@ -57,7 +60,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void setDataFromDB(){
+    private void setDataFromDB(){// Gotta make the numbers of the categories to the name of them.
         FirebaseDBProfs dbProf = new FirebaseDBProfs();
         DatabaseReference drProf = dbProf.getProfByID(getIntent().getStringExtra("prof_id"));
         drProf.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -66,7 +69,24 @@ public class ProfProfileActivity extends AppCompatActivity {
                 Prof profile = snapshot.getValue(Prof.class);
                 descPPTV.setText("תיאור: " + profile.getDesc());
                 //Add categories
-                String categories;
+                ArrayList<Integer> cats = (ArrayList<Integer>) profile.getCategory();
+//                FirebaseDBCategories catDb = new FirebaseDBCategories();
+//                DatabaseReference catDR = catDb.getAllCat();
+//                catDR.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                    }
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {}
+//                });
+                String categories = ("" + cats.get(0));
+                if(cats.size()>1) {
+                    for (int i = 1; i < cats.size(); i++) {
+                        categories = "" + categories + ", " + cats.get(i);
+                    }
+                }
+                catPPTV.setText("קטגוריות: " + categories);
                 //End adding
                 locationPPTV.setText("איזור עבודה: " + profile.getLocation());
 

@@ -69,12 +69,9 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
 
     //Gotta configure yet
     private void setUpSpinner(){
-        String[] items = new String[]{"1", "2", "three"};
-        // need to set up categories on db and make the string connecting there.
-        String[] items2 = new String[7];
-
+        String [] items = {"כללי","שליחויות","נקיון","גינון","הוראה והדרכה","בישול","בעלי חיים","הנדימן"};
         //create an adapter to describe how the items are displayed.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
         //set the spinners adapter to the previously created one.
         spinnerPP.setAdapter(adapter);
         spinnerPP.setOnItemSelectedListener(this);
@@ -95,8 +92,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
             //Maybe pop-up window to tell user to insert 9-digits (include sifrat bikoret)????????????????????
         }
         List<Integer> temp = new ArrayList<Integer>();
-        temp.add(5);
-        temp.add(6);
+        temp.add(catNum);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();

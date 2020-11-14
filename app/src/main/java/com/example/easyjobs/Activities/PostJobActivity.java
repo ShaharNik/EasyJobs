@@ -1,5 +1,6 @@
 package com.example.easyjobs.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,10 +12,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.R;
+import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
@@ -64,14 +71,29 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         });
     }
 
-    //Gotta configure yet
+    //Gotta configure yet how to use db for adapter
     private void setUpSpinner(){
-        String[] items = new String[]{"1", "2", "three"};
-        // need to set up categories on db and make the string connecting there.
-        String[] items2 = new String[7];
 
+        /*FirebaseDBCategories fb = new FirebaseDBCategories();
+        DatabaseReference dr = fb.getAllCat();
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                String [] items = new String[((int)snapshot.getChildrenCount())];
+                for(DataSnapshot category : snapshot.getChildren()){
+                    Category c = category.getValue(Category.class);
+                    items[Integer.parseInt(c.getCategory_id())] = c.getCat_name();
+                }
+
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });*/
+        String [] items = {"כללי","שליחויות","נקיון","גינון","הוראה והדרכה","בישול","בעלי חיים","הנדימן"};
         //create an adapter to describe how the items are displayed.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
         //set the spinners adapter to the previously created one.
         spinnerPJ.setAdapter(adapter);
         spinnerPJ.setOnItemSelectedListener(this);
@@ -98,6 +120,6 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        catNum = 0;// Default Category??????????????????????????????????/
+        catNum = 0;
     }
 }
