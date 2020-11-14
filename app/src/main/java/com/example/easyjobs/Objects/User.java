@@ -1,6 +1,7 @@
 package com.example.easyjobs.Objects;
 
 public class User {
+
     String User_ID;
     String firstName;
     String lastName;
@@ -10,10 +11,7 @@ public class User {
     float rating;
     int ratingsAmount;
 
-    public User()
-    {
-
-    }
+    public User() {}
 
     public User(String User_ID, String firstName, String lastName, String phoneNumber, boolean isPremium, float rating, int ratingsAmount) {
         this.User_ID = User_ID;
@@ -24,8 +22,6 @@ public class User {
         this.rating = rating;
         this.ratingsAmount = ratingsAmount;
     }
-
-
 
     public void setUser_ID(String user_ID) {
         User_ID = user_ID;
@@ -82,7 +78,6 @@ public class User {
     public void setRatingsAmount(int ratingsAmount) {
         this.ratingsAmount = ratingsAmount;
     }
-
 
     @Override
     public String toString() {

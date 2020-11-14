@@ -1,8 +1,11 @@
 package com.example.easyjobs.Objects;
 
 public class Category {
+
     String category_id;
     String cat_name;
+
+    public Category(){}
 
     public Category(String category_id, String cat_name) {
         this.category_id = category_id;

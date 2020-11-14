@@ -20,49 +20,29 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 
-
 public class PremiumPayment_activity extends AppCompatActivity {
 
-
-    EditText dateTextView;
-    EditText cardNumberTextView;
-    EditText cardNumberCVC;
-    Button acceptButton;
+    private EditText dateTextView;
+    private EditText cardNumberTextView;
+    private EditText cardNumberCVC;
+    private Button acceptButton;
     private ImageView backBLA;
     private FirebaseAuth fa;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_premium_payment_activity);
-//        setNormalPicker();
-        backBLA = findViewById(R.id.back_prof_list);
-        backBLA.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PremiumPayment_activity.super.onBackPressed();
-            }
-        });
-        showDatePickerDialog();
-        cardNumberTextView = findViewById(R.id.avtivity_premium_payment_cardNumber_PlainText);
-        cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC);
-        acceptButton = findViewById(R.id.activity_premium_payment_acceptButton);
 
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fa = FirebaseAuth.getInstance();
-                FirebaseUser user = fa.getCurrentUser();
-                FirebaseDBUsers userDB = new FirebaseDBUsers();
-                userDB.setPremiumToAUser(user.getUid(),PremiumPayment_activity.this);
-            }
-        });
+        findViews();
+        acvtivateButtonsAndViews();
+
+        //setNormalPicker();
+
+        showDatePickerDialog();
     }
 
-
-    private void showDatePickerDialog()
-    {
-        // Get open DatePickerDialog button.
-        dateTextView = findViewById(R.id.avtivity_premium_payment_cardExprire);
+    private void showDatePickerDialog() {// Get open DatePickerDialog button.
         dateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,21 +69,45 @@ public class PremiumPayment_activity extends AppCompatActivity {
                 int month = now.get(java.util.Calendar.MONTH);
                 int day = now.get(java.util.Calendar.DAY_OF_MONTH);
 
-                // Create the new DatePickerDialog instance.
+                //Create the new DatePickerDialog instance.
                 //DatePickerDialog datePickerDialog = new DatePickerDialog(DateTimePickerDialogActivity.this, onDateSetListener, year, month, day);
-//                DatePickerDialog datePickerDialog = new DatePickerDialog(PremiumPayment_activity.this, android.R.style.Theme_Holo_Dialog, onDateSetListener, year, month, day);
+                //DatePickerDialog datePickerDialog = new DatePickerDialog(PremiumPayment_activity.this, android.R.style.Theme_Holo_Dialog, onDateSetListener, year, month, day);
                 DatePickerDialog datePickerDialog = new DatePickerDialog(PremiumPayment_activity.this, android.R.style.Theme_Holo_Dialog, onDateSetListener, year, month, day);
 
-                // Set dialog icon and title.
+                //Set dialog icon and title.
                 //datePickerDialog.setIcon(R.drawable.if_snowman);
                 datePickerDialog.setTitle("Please select date.");
 
-                // Popup the dialog.
+                //Popup the dialog.
                 datePickerDialog.show();
             }
         });
     }
 
+    private void findViews(){
+        backBLA = findViewById(R.id.back_prof_list);
+        dateTextView = findViewById(R.id.avtivity_premium_payment_cardExprire);
+        cardNumberTextView = findViewById(R.id.avtivity_premium_payment_cardNumber_PlainText);
+        cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC);
+        acceptButton = findViewById(R.id.activity_premium_payment_acceptButton);
+    }
 
+    private void acvtivateButtonsAndViews(){
+        backBLA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PremiumPayment_activity.super.onBackPressed();
+            }
+        });
 
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fa = FirebaseAuth.getInstance();
+                FirebaseUser user = fa.getCurrentUser();
+                FirebaseDBUsers userDB = new FirebaseDBUsers();
+                userDB.setPremiumToAUser(user.getUid(),PremiumPayment_activity.this);
+            }
+        });
+    }
 }

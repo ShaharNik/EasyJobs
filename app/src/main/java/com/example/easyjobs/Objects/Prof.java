@@ -19,7 +19,7 @@ public class Prof {
         this.location = location;
     }
 
-    public Prof(String user_ID, String desc, List<Integer> category, String location) {
+    public Prof(String user_ID, String desc, List<Integer> category, String location) {// Don't know if required
         User_ID = user_ID;
         this.desc = desc;
         this.category = category;
