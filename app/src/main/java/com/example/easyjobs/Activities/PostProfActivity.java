@@ -13,6 +13,8 @@ import android.widget.Spinner;
 
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
     private EditText descED;
     private EditText locED;
     private EditText IdED;
+    private FirebaseAuth mAuth;
 
     private Button postProfB;
 
@@ -34,11 +37,21 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_prof);
 
+        findViews();
+        activateButtons();
+        setUpSpinner();
+    }
+
+    private void findViews(){
         descED = findViewById(R.id.editDescPP);
         locED = findViewById(R.id.editLocPP);
         IdED = findViewById(R.id.editIdPP);
-
         backBPP = findViewById(R.id.back_post_prof);
+        postProfB = findViewById(R.id.postProfBtn);
+        spinnerPP = findViewById(R.id.pickCategoryPostProf);
+    }
+
+    private void activateButtons(){
         backBPP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,27 +59,25 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        postProfB = findViewById(R.id.postProfBtn);
         postProfB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 postJobToDB();
             }
         });
+    }
 
-        spinnerPP = findViewById(R.id.pickCategoryPostProf);
-        String[] items = new String[]{"1", "2", "three"};
-        // need to set up categories on db and make the string connecting there.
-        String[] items2 = new String[7];
-
+    //Gotta configure yet
+    private void setUpSpinner(){
+        String [] items = {"כללי","שליחויות","נקיון","גינון","הוראה והדרכה","בישול","בעלי חיים","הנדימן"};
         //create an adapter to describe how the items are displayed.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
         //set the spinners adapter to the previously created one.
         spinnerPP.setAdapter(adapter);
         spinnerPP.setOnItemSelectedListener(this);
     }
 
-    public void postJobToDB(){//need to configure userID and Multiple Category !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void postJobToDB(){//need to configure Multiple Category !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         FirebaseDBProfs db = new FirebaseDBProfs();
         String desc = descED.getText().toString();
         String loc = locED.getText().toString();
@@ -81,9 +92,11 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
             //Maybe pop-up window to tell user to insert 9-digits (include sifrat bikoret)????????????????????
         }
         List<Integer> temp = new ArrayList<Integer>();
-        temp.add(5);
-        temp.add(6);
-        db.addNewProf("123123as", desc, temp, loc);
+        temp.add(catNum);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        db.addNewProf(user.getUid(), desc, temp, loc);
         PostProfActivity.super.onBackPressed();
     }
 

@@ -22,45 +22,81 @@
         android:contentDescription="back button" />
 
     <TextView
-        android:id="@+id/JobProfileDummy"
-        android:layout_width="254dp"
-        android:layout_height="137dp"
-        android:gravity="center"
-        android:text="Job Profile"
-        android:textSize="40sp"
+        android:id="@+id/namesJP"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="שם פרטי ושם משפחה: "
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.186" />
+        app:layout_constraintVertical_bias="0.070" />
 
     <TextView
-        android:id="@+id/twb1"
-        android:layout_width="254dp"
-        android:layout_height="137dp"
-        android:gravity="center"
-        android:text="Job desc"
-        android:textSize="40sp"
+        android:id="@+id/descriptionJP"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="תיאור: "
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.451" />
+        app:layout_constraintVertical_bias="0.170" />
 
     <TextView
-        android:id="@+id/twb2"
-        android:layout_width="254dp"
-        android:layout_height="137dp"
-        android:gravity="center"
-        android:text="Job loc"
-        android:textSize="40sp"
+        android:id="@+id/locationJP"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="מיקום: "
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.74" />
+        app:layout_constraintVertical_bias="0.270" />
+
+    <TextView
+        android:id="@+id/priceJP"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="מחיר: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.370" />
+
+    <TextView
+        android:id="@+id/dateJP"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="תאריך לביצוע: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.470" />
+
+    <TextView
+        android:id="@+id/phoneJP"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="טלפון: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.570" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

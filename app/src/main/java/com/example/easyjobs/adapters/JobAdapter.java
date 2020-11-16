@@ -20,20 +20,21 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
 
     private List<Job> JobsFeed=new ArrayList();
     private Context context;
-   public JobAdapter(Context context)
+
+    public JobAdapter(Context context)
    {
         this.context = context;
    }
+
     public void setJobsFeed(List<Job> jobsFeed){
         this.JobsFeed=jobsFeed;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int layout = R.layout.jobs_feed_layout;
-        View v = LayoutInflater
-                .from(parent.getContext())
-                .inflate(layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new ViewHolder(v);
     }
 
@@ -60,12 +61,11 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
             dateTextView=(TextView)itemView.findViewById(R.id.date);
         }
 
-
         public void showCallDetails(Job job){
-            // Attach values for each item
-            String desc   =job.getDesc();
-            String loc     =job.getLocation();
-            Date date     =job.getDate();
+            //Attach values for each item
+            String desc = job.getDesc();
+            String loc = job.getLocation();
+            Date date = job.getDate();
             descTextView.setText(desc);
             locTextView.setText(loc);
             dateTextView.setText(date.getTime()+"");

@@ -3,6 +3,7 @@ package com.example.easyjobs.Objects;
 import java.util.Date;
 
 public class Job {
+
     String job_ID;
     String User_ID;
     String desc;
@@ -24,7 +25,7 @@ public class Job {
         this.category_ID = category_ID;
     }
 
-    public Job(String user_ID, String desc, int price, String location, Date date, int category_ID) {
+    public Job(String user_ID, String desc, int price, String location, Date date, int category_ID) {// Don't know if required
         User_ID = user_ID;
         this.desc = desc;
         this.price = price;

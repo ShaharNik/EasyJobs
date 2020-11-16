@@ -30,34 +30,42 @@ public class RegisterActivity extends AppCompatActivity {
 
     private ImageView backBR;
     private Button RegBut;
-    EditText user_emailEditText;
-    EditText editTextPassword;
-    EditText user_phoneNumber;
-    EditText user_firstName;
-    EditText user_lastName;
+    private EditText user_emailEditText;
+    private EditText editTextPassword;
+    private EditText user_phoneNumber;
+    private EditText user_firstName;
+    private EditText user_lastName;
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_register);
-        // Get user registration email&password
+
+        findViews();
+        acvtivateButtonsAndViews();
+    }
+
+    private void findViews(){
         user_emailEditText = findViewById(R.id.user_email);
         editTextPassword = findViewById((R.id.editTextPassword));
         user_phoneNumber = findViewById(R.id.editTextPhone);
         user_firstName = findViewById(R.id.FirstNameEditText);
         user_lastName = findViewById(R.id.LastNameEditText);
-
-
         backBR = findViewById(R.id.back_register);
+        RegBut = findViewById(R.id.RegisterButton);
+    }
+
+    private void acvtivateButtonsAndViews(){
+        mAuth = FirebaseAuth.getInstance();
+
         backBR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RegisterActivity.super.onBackPressed();
             }
         });
-        RegBut = findViewById(R.id.RegisterButton);
+
         RegBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,46 +77,41 @@ public class RegisterActivity extends AppCompatActivity {
                 if (ValidateUserInformation(user_email,user_password, phoneNumber, fname, lname)) {
                     createAccount(user_email, user_password, phoneNumber, fname, lname);
                 }
-                else
-                    Toast.makeText(RegisterActivity.this, "Validation failed.",
-                            Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(RegisterActivity.this, "Validation failed.", Toast.LENGTH_SHORT).show();
+                }
             }
-
         });
     }
-    void createAccount(String email, String password, String phoneNumber, String fname, String lname)
-    {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user, phoneNumber, fname, lname);
-                            Toast.makeText(RegisterActivity.this, "You Signed!",
-                                    Toast.LENGTH_SHORT).show();
-                            premiumDialog(fname,lname);
-                         //   RegisterActivity.super.onBackPressed(); // Go previous page
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
 
-                        // ...
-                    }
-                });
-
+    void createAccount(String email, String password, String phoneNumber, String fname, String lname) {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    //Sign in success, update UI with the signed-in user's information
+                    //Log.d(TAG, "createUserWithEmail:success");
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    updateUI(user, phoneNumber, fname, lname);
+                    Toast.makeText(RegisterActivity.this, "You Signed!", Toast.LENGTH_SHORT).show();
+                    premiumDialog(fname,lname);
+                    //RegisterActivity.super.onBackPressed(); // Go previous page
+                }
+                else {
+                    //If sign in fails, display a message to the user.
+                    //Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                    Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    //updateUI(null);
+                }
+            }
+        });
     }
-    boolean ValidateUserInformation(String email, String password, String phone, String fname, String lname)
-    {
+
+    boolean ValidateUserInformation(String email, String password, String phone, String fname, String lname) {
         // if there is an empty field
-        if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || fname.isEmpty() || lname.isEmpty())
+        if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || fname.isEmpty() || lname.isEmpty()){
             return false;
+        }
 
         // email validation
         String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
@@ -118,41 +121,40 @@ public class RegisterActivity extends AppCompatActivity {
             user_emailEditText.setError("Email is invalid");
             return false;
         }
+
         // check if password is at least 6
         if (password.length() < 6) {
             editTextPassword.setError("Password length must be at least 6");
             return false;
         }
+
         // check if first name contains only letters
-        if (!fname.matches("[a-zA-Z]+"))
-        {
+        if (!fname.matches("[a-zA-Z]+")) {
             user_firstName.setError("First name is invaild, can't contain digits");
             return false;
         }
+
         // check if last name contains only letters
-        if (!lname.matches("[a-zA-Z]+"))
-        {
+        if (!lname.matches("[a-zA-Z]+")) {
             user_lastName.setError("Last name is invaild, can't contain digits");
             return false;
         }
+
         // check if phone number contains only numbers
-        if (!phone.matches("[0-9]+") || phone.length() != 10)
-        {
+        if (!phone.matches("[0-9]+") || phone.length() != 10) {
             user_phoneNumber.setError("Phone must contain only digits, and 10 digits");
             return false;
         }
 
-
         return true;
     }
-    void updateUI(FirebaseUser user, String phoneNumber, String fname, String lname) // we need update something from user information?
-    {
+
+    void updateUI(FirebaseUser user, String phoneNumber, String fname, String lname) {// we need update something from user information?
         TextView RegisterDummy = findViewById(R.id.RegisterDummy);
         RegisterDummy.setText(user.getUid());
         //user.sendEmailVerification(); // WORK!
         //System.err.println(user.updateProfile(new )
         //System.err.println(user.updatePassword());
-
 
         String User_ID = user.getUid(); // the unique userID Token (string)
         System.err.println(user.getEmail());
@@ -162,10 +164,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         FirebaseDBUsers UsersDB = new FirebaseDBUsers();
         UsersDB.addUserToDB(User_ID,fname,lname,phoneNumber,false);
-
     }
-    private void premiumDialog(String fname,String lname)
-    {
+
+    private void premiumDialog(String fname,String lname) {
         Dialog d= new Dialog(RegisterActivity.this);
         d.setContentView(R.layout.activity_dialog_premium);
         d.setTitle("premium");
@@ -183,21 +184,19 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterActivity.super.onBackPressed(); // Go previous page
             }
         });
+
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 d.dismiss();
                 moveToPremiumPayment();
-
             }
         });
         d.show();
     }
+
     public void moveToPremiumPayment(){
         Intent i = new Intent(RegisterActivity.this, PremiumPayment_activity.class);
         startActivity(i);
     }
-
-
-
 }

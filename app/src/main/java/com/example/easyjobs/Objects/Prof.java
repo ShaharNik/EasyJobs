@@ -1,6 +1,5 @@
 package com.example.easyjobs.Objects;
 
-
 import java.util.List;
 
 public class Prof {
@@ -9,14 +8,6 @@ public class Prof {
     String desc;
     List<Integer> category;
     String location;
-
-    public String getProf_ID() {
-        return prof_ID;
-    }
-
-    public void setProf_ID(String prof_ID) {
-        this.prof_ID = prof_ID;
-    }
 
     public Prof(){}
 
@@ -28,12 +19,16 @@ public class Prof {
         this.location = location;
     }
 
-    public Prof(String user_ID, String desc, List<Integer> category, String location) {
+    public Prof(String user_ID, String desc, List<Integer> category, String location) {// Don't know if required
         User_ID = user_ID;
         this.desc = desc;
         this.category = category;
         this.location = location;
     }
+
+    public String getProf_ID() { return prof_ID; }
+
+    public void setProf_ID(String prof_ID) { this.prof_ID = prof_ID; }
 
     public String getJob_ID() {
         return prof_ID;
@@ -51,9 +46,7 @@ public class Prof {
         User_ID = user_ID;
     }
 
-    public String getDesc() {
-        return desc;
-    }
+    public String getDesc() { return desc; }
 
     public void setDesc(String desc) {
         this.desc = desc;

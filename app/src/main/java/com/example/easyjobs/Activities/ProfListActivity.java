@@ -51,7 +51,23 @@ public class ProfListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prof_list);
 
+        findViews();
+        activateButtonsAndViews();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activateButtonsAndViews();
+    }
+
+    private void findViews(){
         backBLA = findViewById(R.id.back_prof_list);
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerView_prof_list);
+        postProf = findViewById(R.id.profList_to_PostProf);
+    }
+
+    private void activateButtonsAndViews(){
         backBLA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,31 +75,23 @@ public class ProfListActivity extends AppCompatActivity {
             }
         });
 
-
-        recyclerView=(RecyclerView)findViewById(R.id.recyclerView_prof_list);
         linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        //profProfile = findViewById(R.id.profList_to_profProfile);
-
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        // System.err.println(position);
-                        moveToProfProfile(position);
-                    }
-                }));
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override public void onItemClick(View view, int position) {
+                moveToProfProfile(position);
+            }
+        }));
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
         init();
 
-        fa = FirebaseAuth.getInstance();
-        FirebaseUser user = fa.getCurrentUser();
-        postProf = findViewById(R.id.profList_to_PostProf);
         postProf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser user2 = fa.getCurrentUser();
-                if(user2!=null){
+                fa = FirebaseAuth.getInstance();
+                FirebaseUser user = fa.getCurrentUser();
+                if(user!=null){
                     moveToPostProf();
                 }
                 else{
@@ -113,7 +121,8 @@ public class ProfListActivity extends AppCompatActivity {
                                             FirebaseUser user = fa.getCurrentUser();
                                             Toast.makeText(ProfListActivity.this, "Hello Cruel World", Toast.LENGTH_SHORT).show();
                                             d.dismiss();
-                                        } else {
+                                        }
+                                        else {
                                             Toast.makeText(ProfListActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -147,17 +156,14 @@ public class ProfListActivity extends AppCompatActivity {
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot s :
-                        snapshot.getChildren()) {
+                for (DataSnapshot s : snapshot.getChildren()) {
                     ProfList.add(s.getValue(Prof.class));
                 }
                 ProfAdapter.setProfsFeed(ProfList);
                 ProfAdapter.notifyDataSetChanged();
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
