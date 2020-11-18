@@ -2,10 +2,8 @@ package com.example.easyjobs.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.NoCopySpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +37,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button LogoutButt;
     private Button UpgradeToPremium;
     private Button EditProfile;
+    private Button profileEditButt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +63,7 @@ public class UserProfileActivity extends AppCompatActivity {
         LogoutButt = findViewById(R.id.logoutButt);
         UpgradeToPremium = findViewById(R.id.premiumButt);
         EditProfile = findViewById(R.id.profileEditButt);
+        profileEditButt = findViewById(R.id.profileEditButt);
     }
 
     private void activateButtonsAndViews(){
@@ -89,6 +89,13 @@ public class UserProfileActivity extends AppCompatActivity {
                 UserProfileActivity.super.onBackPressed();
             }
         });
+        profileEditButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToEditProfile_activity();
+            }
+        });
+
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -126,13 +133,30 @@ public class UserProfileActivity extends AppCompatActivity {
         UpgradeToPremium.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                moveToPremiumPayment_activity();
+                moveToPremiumPaymentActivity();
             }
         });
     }
 
-    private void moveToPremiumPayment_activity(){
-        Intent i = new Intent(UserProfileActivity.this, PremiumPayment_activity.class);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            super.onBackPressed();
+        }
+    }
+
+    private void moveToPremiumPaymentActivity(){
+        Intent i = new Intent(UserProfileActivity.this, PremiumPaymentActivity.class);
+        startActivity(i);
+    }
+    private void moveToEditProfile_activity(){
+        Intent i = new Intent(UserProfileActivity.this, EditProfileActivity.class);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        i.putExtra("user_id", user.getUid());
         startActivity(i);
     }
 }

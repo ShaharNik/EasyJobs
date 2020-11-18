@@ -196,7 +196,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void moveToPremiumPayment(){
-        Intent i = new Intent(RegisterActivity.this, PremiumPayment_activity.class);
+        Intent i = new Intent(RegisterActivity.this, PremiumPaymentActivity.class);
         startActivity(i);
     }
 }
