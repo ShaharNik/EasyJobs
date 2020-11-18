@@ -3,6 +3,8 @@ package com.example.easyjobs.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +25,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 
 public class PostJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -35,19 +40,17 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
     private Spinner spinnerPJ;
     private int catNum = 0;
-
+    private final boolean forWhile = false;
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_job);
-
         findViews();
         activateButtons();
         setUpSpinner();
     }
-
     private void findViews(){
         backBPJ = findViewById(R.id.back_post_job);
         descED = findViewById(R.id.editDescPJ);
@@ -70,33 +73,34 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
             }
         });
     }
-
-    //Gotta configure yet how to use db for adapter
     private void setUpSpinner(){
 
-        /*FirebaseDBCategories fb = new FirebaseDBCategories();
+        FirebaseDBCategories fb = new FirebaseDBCategories();
         DatabaseReference dr = fb.getAllCat();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                String [] items = new String[((int)snapshot.getChildrenCount())];
+                ArrayList<Category> items = new ArrayList<>();
                 for(DataSnapshot category : snapshot.getChildren()){
                     Category c = category.getValue(Category.class);
-                    items[Integer.parseInt(c.getCategory_id())] = c.getCat_name();
+                    items.add(c);
                 }
-
-
+               Category[] catArray = new Category[items.size()];
+                items.toArray(catArray);
+                Arrays.sort(catArray);
+                ArrayList<String> str = new ArrayList<>();
+                for(int i=0;i<catArray.length;i++)
+                {
+                    str.add(catArray[i].getCat_name());
+                }
+                  ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostJobActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
+                    spinnerPJ.setAdapter(adapter);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
-        });*/
-        String [] items = {"כללי","שליחויות","נקיון","גינון","הוראה והדרכה","בישול","בעלי חיים","הנדימן"};
-        //create an adapter to describe how the items are displayed.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        //set the spinners adapter to the previously created one.
-        spinnerPJ.setAdapter(adapter);
+        });
         spinnerPJ.setOnItemSelectedListener(this);
+
     }
 
     private void postJobToDB(){//need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

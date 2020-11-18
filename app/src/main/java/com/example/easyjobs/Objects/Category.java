@@ -1,6 +1,6 @@
 package com.example.easyjobs.Objects;
 
-public class Category {
+public class Category implements Comparable {
 
     String category_id;
     String cat_name;
@@ -26,5 +26,12 @@ public class Category {
 
     public void setCat_name(String cat_name) {
         this.cat_name = cat_name;
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        return  Integer.parseInt(this.getCategory_id()) - Integer.parseInt(((Category)o).getCategory_id());
+//        return  Integer.parseInt(((Category)o).getCategory_id()) -Integer.parseInt(this.getCategory_id()) ;
     }
 }

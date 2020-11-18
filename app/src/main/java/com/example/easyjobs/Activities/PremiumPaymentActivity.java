@@ -82,7 +82,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
     }
 
     private void findViews(){
-        backBLA = findViewById(R.id.back_prof_list);
+        backBLA = findViewById(R.id.back_premium_payment);
         dateTextView = findViewById(R.id.avtivity_premium_payment_cardExprire);
         cardNumberTextView = findViewById(R.id.avtivity_premium_payment_cardNumber_PlainText);
         cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC);
