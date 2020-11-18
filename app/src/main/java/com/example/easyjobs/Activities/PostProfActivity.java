@@ -149,7 +149,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
                     str.add(catArray[i].getCat_name());
                 }
                 md = new MaterialDialog.Builder(PostProfActivity.this)
-                        .title("בחר קטרוגיות")
+                        .title("בחר קטגוריות")
                         .items(str)
                         .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                             @Override
