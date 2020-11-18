@@ -5,10 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.easyjobs.Activities.LoginActivity;
-import com.example.easyjobs.Activities.PremiumPayment_activity;
 import com.example.easyjobs.Objects.User;
-import com.example.easyjobs.dataBase.FirebaseBaseModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +16,9 @@ public class FirebaseDBUsers extends FirebaseBaseModel {
         //String id = idGenerator.tokenGenerator();
         User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0, 0);
         ref.child("Users").child(User_ID).setValue(user);
+    }
+    public void changeUserByID(User user) {
+        ref.child("Users").child(user.getUser_ID()).setValue(user);
     }
 
     public DatabaseReference getAllusers()
