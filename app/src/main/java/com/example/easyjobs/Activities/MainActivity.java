@@ -41,12 +41,12 @@ public class MainActivity extends AppCompatActivity {
         {
             String disp_name = user.getDisplayName();
             welcomeText.setText("Hello, " + disp_name + " :)");
-            loginT.setText("Profile");
+            loginT.setText("פרופיל");
         }
         else
         {
             welcomeText.setText("Hello, Guest :)");
-            loginT.setText("Login/Register");
+            loginT.setText("התחבר/הירשם");
         }
     }
 
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         {
             String disp_name = user.getDisplayName();
             welcomeText.setText("Hello, " + disp_name + " :)");
-            loginT.setText("Profile");
+            loginT.setText("פרופיל");
         }
         else
         {

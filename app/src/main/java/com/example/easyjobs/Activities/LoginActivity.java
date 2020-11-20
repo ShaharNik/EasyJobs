@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         registerB.setVisibility(View.GONE);
         emailED.setEnabled(false);
         pass.setEnabled(false);
-        LoginB.setText("Logout");
+        LoginB.setText("התנתק");
         LoginActivity.super.onBackPressed(); // get back
         //moveToProfile(); // after user logged in, move him to profile
     }
@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
             registerB.setVisibility(View.GONE);
             emailED.setEnabled(false);
             pass.setEnabled(false);
-            LoginB.setText("Logout");
+            LoginB.setText("התנתק");
         }
 
         LoginB.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             else {
                                 //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "האימות נכשל.", Toast.LENGTH_SHORT).show();
                                 updateUI(null);
                             }
                         }
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                     registerB.setVisibility(View.VISIBLE);
                     emailED.setEnabled(true);
                     pass.setEnabled(true);
-                    LoginB.setText("Login");
+                    LoginB.setText("התחבר");
                 }
             }
         });

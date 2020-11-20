@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.example.easyjobs.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.utilities.Validation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,7 +61,8 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
+        //validator = new Validator();
+        //validator.
         findViews();
 
         mAuth = FirebaseAuth.getInstance();
@@ -93,6 +96,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 // 1) check user current password is correct.
                 // 2) check validation of changed fields.
                 // 3) update fire-base with the new inputs.
+                // 4) logout user and send him to main activity
                 FirebaseUser user = mAuth.getCurrentUser();
                 FirebaseDBUsers UsersDB = new FirebaseDBUsers();
 
@@ -100,7 +104,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 // password validation
                 if (!editTextOldPassword.getText().toString().isEmpty()) // Required field
                 {
-                    if (ValidateUserPassword(editTextOldPassword.getText().toString(), editTextOldPassword)) {
+                    if (Validator.ValidateUserPassword(editTextOldPassword.getText().toString())) {
                         // CHECK PASSWORD IS RIGHT
 
                         // Get auth credentials from the user for re-authentication. The example below shows
@@ -112,17 +116,20 @@ public class EditProfileActivity extends AppCompatActivity {
                         user.reauthenticate(credential)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        userOldPassIsRight = true; // OLD Password is OK
+                                    public void onComplete(@NonNull Task<Void> task)
+                                    {
+                                        // --==OLD Password is OK ==--
+
                                         // NEW PASSWORD
                                         String newPassword = editTextNewPassword.getText().toString();
                                         String new_passAuth = editTextCheckNewPassword.getText().toString();
                                         if (!newPassword.isEmpty() && !new_passAuth.isEmpty())
                                         {
-                                            if (ValidateUserPassword(newPassword, editTextNewPassword) && ValidateUserPassword(new_passAuth, editTextCheckNewPassword))
+                                            if (Validator.ValidateUserPassword(newPassword) && Validator.ValidateUserPassword(new_passAuth))
                                             {
                                                 if (newPassword.equals(new_passAuth))
                                                 {
+                                                    someFieldChanged = true;
                                                     // Update user password
                                                     user.updatePassword(newPassword)
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -140,24 +147,58 @@ public class EditProfileActivity extends AppCompatActivity {
                                                                 }
                                                             });
                                                 }
+                                                else
+                                                {
+                                                    editTextNewPassword.setError("הסיסמאות אינן תואמות");
+                                                    editTextCheckNewPassword.setError("הסיסמאות אינן תואמות");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                editTextNewPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
+                                                editTextCheckNewPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                                             }
                                         }
+                                        else // new pass or new passAuth is empty
+                                        {
+                                            if (!newPassword.isEmpty() || !new_passAuth.isEmpty()) // If one of them is not empty
+                                            {
+                                                if (newPassword.isEmpty())
+                                                    editTextNewPassword.setError("חייב להקליד סיסמא חדשה פעמיים");
+                                                else
+                                                    editTextCheckNewPassword.setError("חייב להקליד סיסמא חדשה פעמיים");
+                                            }
+
+                                        }
                                         //----------------------------------------------------------
+                                        // If field has changed , validate update cueUser and set the bool variable to true.
                                         firstNameUpdate();
                                         lastNameUpdate();
                                         phoneUpdate();
-                                        if (someFieldChanged && userOldPassIsRight) {
+
+                                        if (someFieldChanged) {
+                                            // Update User in DB
                                             UsersDB.changeUserByID(curUser);
+                                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                    .setDisplayName(curUser.getFirstName() + " " + curUser.getLastName())
+                                                    .build();
+                                            user.updateProfile(profileUpdates);
+                                            Toast.makeText(EditProfileActivity.this, "העדכון בוצע בהצלחה, התחבר מחדש", Toast.LENGTH_LONG).show();
+                                            // Sign user out and move to main
+                                            signOutAndMoveToMainActivity();
                                         }
-                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                                .setDisplayName(curUser.getFirstName() + " " + curUser.getLastName())
-                                                .build();
-                                        user.updateProfile(profileUpdates);
-                                        mAuth.signOut();
-                                        EditProfileActivity.super.onBackPressed();
+                                        else
+                                        {
+                                            Toast.makeText(EditProfileActivity.this, "לא ביצעת שינוי", Toast.LENGTH_SHORT).show();
+                                        }
+
                                         //Log.d(TAG, "User re-authenticated.");
                                     }
                                 });
+                    }
+                    else
+                    {
+                        editTextOldPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                     }
 
                 }
@@ -169,6 +210,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
     }
+
     private void findViews()
     {
         email = findViewById(R.id.user_email);
@@ -184,10 +226,12 @@ public class EditProfileActivity extends AppCompatActivity {
     private void firstNameUpdate()
     {
         if (!fname.getText().toString().isEmpty()) {
-            if (ValidateUserFName(fname.getText().toString())) {
+            if (Validator.ValidateUserFName(fname.getText().toString())) {
                 curUser.setFirstName(fname.getText().toString());
                 someFieldChanged = true;
             }
+            else
+                fname.setError("שם פרטי לא אמור להכיל מספרים");
 
         }
 
@@ -195,56 +239,31 @@ public class EditProfileActivity extends AppCompatActivity {
     private void lastNameUpdate()
     {
         if (!lname.getText().toString().isEmpty()) {
-            if (ValidateUserLName(lname.getText().toString())) {
+            if (Validator.ValidateUserLName(lname.getText().toString())) {
                 curUser.setLastName(lname.getText().toString());
                 someFieldChanged = true;
+            }
+            else
+            {
+                fname.setError("שם משפחה לא אמור להכיל מספרים");
             }
         }
     }
     private void phoneUpdate() {
         if (!phone.getText().toString().isEmpty()) {
-            if (ValidateUserPhone(phone.getText().toString())) {
+            if (Validator.ValidateUserPhone(phone.getText().toString())) {
                 curUser.setPhoneNumber(phone.getText().toString());
                 someFieldChanged = true;
             }
+            else
+                phone.setError("מספר פלאפון תקין מכיל מספרים בלבד ובאורך 10");
         }
     }
 
-    boolean ValidateUserPassword(String user_pass, TextView passwordEditText)
+    private void signOutAndMoveToMainActivity()
     {
+        mAuth.signOut();
+        EditProfileActivity.super.onBackPressed();
+    }
 
-        // check if password is at least 6
-        if (user_pass.length() < 6) {
-            passwordEditText.setError("אורך הסיסמא צריך להיות לפחות 6");
-            return false;
-        }
-        return true;
-    }
-    boolean ValidateUserFName(String first_name)
-    {
-        // check if first name contains only letters
-        if (!first_name.matches("[a-zA-Z]+")) {
-            fname.setError("First name is invaild, can't contain digits");
-            return false;
-        }
-        return true;
-    }
-    boolean ValidateUserLName(String last_name)
-    {
-        // check if last name contains only letters
-        if (!last_name.matches("[a-zA-Z]+")) {
-            lname.setError("Last name is invaild, can't contain digits");
-            return false;
-        }
-        return true;
-    }
-    boolean ValidateUserPhone(String phonenum)
-    {
-        // check if phone number contains only numbers
-        if (!phonenum.matches("[0-9]+") || phone.length() != 10) {
-            phone.setError("Phone must contain only digits, and 10 digits");
-            return false;
-        }
-        return true;
-    }
 }

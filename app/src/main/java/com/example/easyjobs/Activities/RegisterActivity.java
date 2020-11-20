@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.example.easyjobs.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -77,9 +78,6 @@ public class RegisterActivity extends AppCompatActivity {
                 if (ValidateUserInformation(user_email,user_password, phoneNumber, fname, lname)) {
                     createAccount(user_email, user_password, phoneNumber, fname, lname);
                 }
-                else {
-                    Toast.makeText(RegisterActivity.this, "Validation failed.", Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }
@@ -93,14 +91,14 @@ public class RegisterActivity extends AppCompatActivity {
                     //Log.d(TAG, "createUserWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
                     updateUI(user, phoneNumber, fname, lname);
-                    Toast.makeText(RegisterActivity.this, "You Signed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "התחברת!", Toast.LENGTH_SHORT).show();
                     premiumDialog(fname,lname);
                     //RegisterActivity.super.onBackPressed(); // Go previous page
                 }
                 else {
                     //If sign in fails, display a message to the user.
                     //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                    Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "האימות נכשל.", Toast.LENGTH_SHORT).show();
                     //updateUI(null);
                 }
             }
@@ -110,39 +108,37 @@ public class RegisterActivity extends AppCompatActivity {
     boolean ValidateUserInformation(String email, String password, String phone, String fname, String lname) {
         // if there is an empty field
         if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || fname.isEmpty() || lname.isEmpty()){
+            Toast.makeText(RegisterActivity.this, "מלא את כל השדות בבקשה", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // email validation
-        String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(email);
-        if (!matcher.matches()) {
-            user_emailEditText.setError("Email is invalid");
+        if (!Validator.ValidateUserEmail(email)) {
+            user_emailEditText.setError("אימייל אינו חוקי");
             return false;
         }
 
         // check if password is at least 6
-        if (password.length() < 6) {
-            editTextPassword.setError("Password length must be at least 6");
+        if (!Validator.ValidateUserPassword(password)) {
+            editTextPassword.setError("סיסמא אינה חוקית, צריכה להיות באורך 6 לפחות");
             return false;
         }
 
         // check if first name contains only letters
-        if (!fname.matches("[a-zA-Z]+")) {
-            user_firstName.setError("First name is invaild, can't contain digits");
+        if (!Validator.ValidateUserFName(fname)) {
+            user_firstName.setError("שם פרטי אינו חוקי, צריך להכיל אותיות בלבד");
             return false;
         }
 
         // check if last name contains only letters
-        if (!lname.matches("[a-zA-Z]+")) {
-            user_lastName.setError("Last name is invaild, can't contain digits");
+        if (!Validator.ValidateUserLName(lname)) {
+            user_lastName.setError("שם משפחה אינו חוקי, צריך להכיל אותיות בלבד");
             return false;
         }
 
         // check if phone number contains only numbers
-        if (!phone.matches("[0-9]+") || phone.length() != 10) {
-            user_phoneNumber.setError("Phone must contain only digits, and 10 digits");
+        if (!Validator.ValidateUserPhone(phone)) {
+            user_phoneNumber.setError("מספר פלאפון תקין מכיל מספרים בלבד ובאורך 10");
             return false;
         }
 
