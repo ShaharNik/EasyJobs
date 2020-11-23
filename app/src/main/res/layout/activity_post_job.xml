@@ -7,6 +7,7 @@
     android:background="@drawable/gradient_bg"
     tools:context=".Activities.PostJobActivity">
 
+
     <ImageView
         android:id="@+id/back_post_job"
         android:layout_width="48dp"
@@ -15,13 +16,11 @@
         android:contentDescription="back button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.421"
+        app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.162"
+        app:layout_constraintVertical_bias="0.022"
         app:srcCompat="@drawable/back_button" />
-
-
 
     <TextView
         android:id="@+id/PostJobDummy"
