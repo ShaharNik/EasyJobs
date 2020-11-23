@@ -121,7 +121,7 @@
         app:layout_constraintVertical_bias="0.755" />
 
     <ImageView
-        android:id="@+id/back_registerEP"
+        android:id="@+id/back_edit_profile"
         android:layout_width="48dp"
         android:layout_height="35dp"
         android:clickable="true"
