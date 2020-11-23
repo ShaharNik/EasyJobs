@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.easyjobs.Objects.Category;
@@ -15,6 +16,7 @@ import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +33,8 @@ public class ProfProfileActivity extends AppCompatActivity {
     private TextView catPPTV;
     private TextView locationPPTV;
     private TextView phonePPTV;
+    private RatingBar ratingBar;
+    private String ProfProfile_UserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         findViews();
         activateBackButton();
         setDataFromDB();
+        setRatingBarListener();
     }
 
     private void findViews(){
@@ -50,6 +55,23 @@ public class ProfProfileActivity extends AppCompatActivity {
         catPPTV = findViewById(R.id.catPP);
         locationPPTV = findViewById(R.id.locationPP);
         phonePPTV = findViewById(R.id.phonePP);
+        ratingBar = findViewById(R.id.ratingBarProfProfile);
+    }
+    private void setRatingBarListener()
+    {
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if(ProfProfile_UserID!=null) {
+                    FirebaseDBUsers db = new FirebaseDBUsers();
+                  if(FirebaseAuth.getInstance().getCurrentUser() != null)
+                    {
+                        db.setRating(FirebaseAuth.getInstance().getCurrentUser().getUid(),ProfProfile_UserID,rating,ProfProfileActivity.this,ratingBar);
+                        ratingBar.setEnabled(false);
+                    }
+                }
+            }
+        });
     }
 
     private void activateBackButton(){
@@ -94,12 +116,13 @@ public class ProfProfileActivity extends AppCompatActivity {
 
                 FirebaseDBUsers dbUser = new FirebaseDBUsers();
                 DatabaseReference drUser = dbUser.getUserByID(profile.getUser_ID());
-                drUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                drUser.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user = snapshot.getValue(User.class);
+                        ProfProfile_UserID = user.getUser_ID();
                         namesPPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
-                        ratingPPTV.setText("דירוג: " + user.getRating()+ " כוכבים");
+                        ratingPPTV.setText("דירוג: " + user.getRating()+ " ("+ user.getRatingsAmount()+")");
                         phonePPTV.setText("טלפון: " + user.getPhoneNumber());
                     }
 
