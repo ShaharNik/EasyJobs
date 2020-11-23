@@ -108,22 +108,22 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User u = snapshot.getValue(User.class);
-                fname.setText(fname.getText().toString() + " " + u.getFirstName());
-                lname.setText(lname.getText().toString() + " " + u.getLastName());
+                fname.setText("שם פרטי: " + u.getFirstName());
+                lname.setText("שם משפחה: " + u.getLastName());
                 // HERE Update user profile
-                rating.setText(rating.getText().toString() + " " + u.getRating());
+                rating.setText( "דירוג: "+ u.getRating());
                 ratingAmount.setText(" (" + u.getRatingsAmount() + ")");
 
                 if (u.isPremium() == false){
-                    isPremium.setText(isPremium.getText().toString() + " לא");
+                    isPremium.setText("משתמש פרימיום: לא");
                 }
                 else{
-                    isPremium.setText(isPremium.getText().toString() + " כן");
+                    isPremium.setText("משתמש פרימיום: כן");
                 }
 
-                email.setText(email.getText().toString() + " " + user_email);
-                phone.setText(phone.getText().toString() + " " + u.getPhoneNumber());
-                System.err.println(user.getDisplayName() + " " + user.getEmail() + " " + user.getPhoneNumber());
+                email.setText("אימייל: " + user_email);
+                phone.setText("מספר טלפון: " + u.getPhoneNumber());
+                //System.err.println(user.getDisplayName() + " " + user.getEmail() + " " + user.getPhoneNumber());
             }
 
             @Override
@@ -146,6 +146,7 @@ public class UserProfileActivity extends AppCompatActivity {
         if (user == null) {
             super.onBackPressed();
         }
+        activateButtonsAndViews();
     }
 
     private void moveToPremiumPaymentActivity(){

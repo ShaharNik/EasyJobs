@@ -85,7 +85,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
         backBLA = findViewById(R.id.back_premium_payment);
         dateTextView = findViewById(R.id.avtivity_premium_payment_cardExprire);
         cardNumberTextView = findViewById(R.id.avtivity_premium_payment_cardNumber_PlainText);
-        cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC);
+        cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC); // TODO
         acceptButton = findViewById(R.id.activity_premium_payment_acceptButton);
     }
 
@@ -104,6 +104,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
                 FirebaseUser user = fa.getCurrentUser();
                 FirebaseDBUsers userDB = new FirebaseDBUsers();
                 userDB.setPremiumToAUser(user.getUid(), PremiumPaymentActivity.this);
+                PremiumPaymentActivity.super.onBackPressed(); // move him back
             }
         });
     }

@@ -173,7 +173,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
 
     public void postJobToDB(){//need to configure Multiple Category !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         FirebaseDBProfs db = new FirebaseDBProfs();
-        String desc = descED.getText().toString();
+        String desc = descED.getText().toString(); // TODO Length should be at least 3 characters
         String loc = locED.getText().toString();
         String id = IdED.getText().toString();
         if (id.length() == 9){
