@@ -20,5 +20,7 @@ public class FirebaseDBProfs extends FirebaseBaseModel {
 
     public DatabaseReference getAllProfs(){
         return ref.child("Profs");
+
     }
+
 }
