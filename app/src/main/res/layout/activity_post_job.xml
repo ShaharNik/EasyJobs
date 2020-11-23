@@ -8,6 +8,8 @@
     tools:context=".Activities.PostJobActivity">
 
 
+
+
     <ImageView
         android:id="@+id/back_post_job"
         android:layout_width="48dp"
@@ -156,6 +158,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.851" />
+
+    <EditText
+        android:id="@+id/dateEditTextPostJob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/chooseDate_postJobButton"
+        app:layout_constraintHorizontal_bias="0.129"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editLocPJ"
+        app:layout_constraintVertical_bias="0.079" />
+
+    <Button
+        android:id="@+id/chooseDate_postJobButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="בחר תאריך"
+        app:layout_constraintBottom_toTopOf="@+id/pricePJ"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.894"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/datePJ" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class JobProfileActivity extends AppCompatActivity {
 
     private ImageView backBJP;
@@ -48,6 +51,8 @@ public class JobProfileActivity extends AppCompatActivity {
                 descJPTV.setText("תיאור: " + job.getDesc());
                 locationJPTV.setText("מיקום עבודה: " + job.getLocation());
                 priceJPTV.setText("מחיר: " + job.getPrice() + " שח");
+                DateFormat df = new SimpleDateFormat("dd/MM/yy");
+                datesJPTV.setText("תאריך: "+ df.format(job.getStartDate())+" - " + df.format(job.getEndDate()));
                 //Add date
                 String jobDate;
                 //End adding

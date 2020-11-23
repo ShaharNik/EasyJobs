@@ -2,7 +2,9 @@ package com.example.easyjobs.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -18,6 +21,12 @@ import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.CompositeDateValidator;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,8 +34,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -37,8 +51,11 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     private EditText locED;
     private EditText priceED;
     private Button postJobB;
-
+    private Button chooseDate_postJobButton;
+    private EditText dateEditTextPostJob;
     private Spinner spinnerPJ;
+    private Date startD;
+    private Date endD;
     private int catNum = 0;
 
     private FirebaseAuth mAuth;
@@ -59,6 +76,8 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         priceED = findViewById(R.id.editPricePJ);
         postJobB = findViewById(R.id.postJobBtn);
         spinnerPJ = findViewById(R.id.pickCategoryPostJob);
+        chooseDate_postJobButton =  findViewById(R.id.chooseDate_postJobButton);
+        dateEditTextPostJob = findViewById(R.id.dateEditTextPostJob);
     }
 
     private void activateButtons(){
@@ -71,6 +90,48 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View view) {
                 postJobToDB();
+            }
+        });
+
+        chooseDate_postJobButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickDate();
+            }
+        });
+    }
+
+    private void pickDate()
+    {
+        MaterialDatePicker.Builder<Pair<Long, Long>> builderRange = MaterialDatePicker.Builder.dateRangePicker();
+        CalendarConstraints.Builder constraintsBuilderRange = new CalendarConstraints.Builder();
+        Date min = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(min);
+        c.add(Calendar.MONTH, 3);
+        Date currentDatePlusOne = c.getTime();
+        CalendarConstraints.DateValidator dateValidatorMin = DateValidatorPointForward.from(min.getTime());
+        CalendarConstraints.DateValidator dateValidatorMax = DateValidatorPointBackward.before(currentDatePlusOne.getTime());
+
+        ArrayList<CalendarConstraints.DateValidator> listValidators =
+                new ArrayList<CalendarConstraints.DateValidator>();
+        listValidators.add(dateValidatorMin);
+        listValidators.add(dateValidatorMax);
+        CalendarConstraints.DateValidator validators = CompositeDateValidator.allOf(listValidators);
+        constraintsBuilderRange.setValidator(validators);
+
+        builderRange.setCalendarConstraints(constraintsBuilderRange.build());
+        MaterialDatePicker<Pair<Long, Long>> pickerRange = builderRange.build();
+        pickerRange.show(getSupportFragmentManager(), pickerRange.toString());
+        pickerRange.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
+            @Override
+            public void onPositiveButtonClick(Pair<Long, Long> selection) {
+                Pair<Long,Long> s = pickerRange.getSelection();
+                startD = new Date(s.first);
+                endD = new Date(s.second);
+                DateFormat df = new SimpleDateFormat("dd/MM/yy");
+                dateEditTextPostJob.setText(df.format(startD)+" - "+ df.format(endD));
             }
         });
     }
@@ -112,7 +173,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        db.addNewJob(user.getUid(), desc, price, loc, new Date(1888880000), catNum);
+        db.addNewJob(user.getUid(), desc, price, loc,startD,endD, catNum);
         PostJobActivity.super.onBackPressed();
     }
 

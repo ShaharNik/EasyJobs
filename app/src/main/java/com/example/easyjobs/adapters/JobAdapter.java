@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.easyjobs.Objects.Job;
 import com.example.easyjobs.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,10 +68,12 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
             //Attach values for each item
             String desc = job.getDesc();
             String loc = job.getLocation();
-            Date date = job.getDate();
+            Date startDate = job.getStartDate();
+            Date endDate = job.getEndDate();
             descTextView.setText(desc);
             locTextView.setText(loc);
-            dateTextView.setText(date.getTime()+"");
+            DateFormat df = new SimpleDateFormat("dd/MM/yy");
+            dateTextView.setText(df.format(startDate.getTime())+" - " + df.format(endDate.getTime()));
         }
     }
 }

@@ -8,9 +8,9 @@ import java.util.Date;
 
 public class FirebaseDBJobs extends FirebaseBaseModel {
 
-    public void addNewJob(String user_id, String desc, int price, String loc, Date date, int CatID){
+    public void addNewJob(String user_id, String desc, int price, String loc, Date startDate,Date endDate, int CatID){
         String id = idGenerator.tokenGenerator();
-        Job j = new Job(id, user_id, desc, price, loc, date, CatID);
+        Job j = new Job(id, user_id, desc, price, loc, startDate,endDate, CatID);
         ref.child("Jobs").child(id).setValue(j);
     }
 

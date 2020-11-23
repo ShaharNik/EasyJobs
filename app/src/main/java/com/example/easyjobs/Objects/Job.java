@@ -9,19 +9,24 @@ public class Job {
     String desc;
     int price;
     String location;
-    Date date;
+    Date startDate;
+    Date endDate;
+
+
+
     /// PICTURE
     int category_ID;
 
     public Job(){}
 
-    public Job(String job_ID, String user_ID, String desc, int price, String location, Date date, int category_ID) {
+    public Job(String job_ID, String user_ID, String desc, int price, String location, Date startDate,Date endDate, int category_ID) {
         this.job_ID = job_ID;
         User_ID = user_ID;
         this.desc = desc;
         this.price = price;
         this.location = location;
-        this.date = date;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.category_ID = category_ID;
     }
 
@@ -30,7 +35,7 @@ public class Job {
         this.desc = desc;
         this.price = price;
         this.location = location;
-        this.date = date;
+        this.startDate = date;
         this.category_ID = category_ID;
     }
 
@@ -74,14 +79,6 @@ public class Job {
         this.location = location;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public int getCategory_ID() {
         return category_ID;
     }
@@ -89,4 +86,21 @@ public class Job {
     public void setCategory_ID(int category_ID) {
         this.category_ID = category_ID;
     }
-}
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    }
