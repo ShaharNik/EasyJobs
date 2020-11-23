@@ -40,7 +40,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
     private Spinner spinnerPJ;
     private int catNum = 0;
-    private final boolean forWhile = false;
+
     private FirebaseAuth mAuth;
 
     @Override
@@ -51,6 +51,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         activateButtons();
         setUpSpinner();
     }
+
     private void findViews(){
         backBPJ = findViewById(R.id.back_post_job);
         descED = findViewById(R.id.editDescPJ);
@@ -73,8 +74,8 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
             }
         });
     }
-    private void setUpSpinner(){
 
+    private void setUpSpinner(){
         FirebaseDBCategories fb = new FirebaseDBCategories();
         DatabaseReference dr = fb.getAllCat();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -85,22 +86,20 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
                     Category c = category.getValue(Category.class);
                     items.add(c);
                 }
-               Category[] catArray = new Category[items.size()];
+                Category[] catArray = new Category[items.size()];
                 items.toArray(catArray);
                 Arrays.sort(catArray);
                 ArrayList<String> str = new ArrayList<>();
-                for(int i=0;i<catArray.length;i++)
-                {
+                for(int i=0;i<catArray.length;i++) {
                     str.add(catArray[i].getCat_name());
                 }
-                  ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostJobActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
-                    spinnerPJ.setAdapter(adapter);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostJobActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
+                spinnerPJ.setAdapter(adapter);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
         spinnerPJ.setOnItemSelectedListener(this);
-
     }
 
     private void postJobToDB(){//need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

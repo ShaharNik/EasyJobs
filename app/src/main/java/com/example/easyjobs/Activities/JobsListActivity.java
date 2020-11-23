@@ -10,14 +10,20 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Job;
+import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.JobAdapter;
+import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.utils.RecyclerItemClickListener;
 import com.example.easyjobs.utils.SizeUtils;
@@ -29,12 +35,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class JobsListActivity extends AppCompatActivity {
+public class JobsListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -45,6 +53,8 @@ public class JobsListActivity extends AppCompatActivity {
 
     private Button postJob;
     private ImageView backBJL;
+
+    private Spinner spinnerJL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +75,7 @@ public class JobsListActivity extends AppCompatActivity {
         backBJL = findViewById(R.id.back_jobs_list);
         postJob = findViewById(R.id.jobList_to_PostJob);
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        spinnerJL = findViewById(R.id.pickCategoryJobList);
     }
 
     private void activateButtonsAndViews(){
@@ -84,7 +95,9 @@ public class JobsListActivity extends AppCompatActivity {
             }
         }));
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
-        init();
+        initAll();
+
+        setUpSpinner();
 
         postJob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +158,46 @@ public class JobsListActivity extends AppCompatActivity {
         });
     }
 
-    private void init(){
+    private void setUpSpinner(){
+        FirebaseDBCategories fb = new FirebaseDBCategories();
+        DatabaseReference dr = fb.getAllCat();
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Category> items = new ArrayList<>();
+                for(DataSnapshot category : snapshot.getChildren()){
+                    Category c = category.getValue(Category.class);
+                    items.add(c);
+                }
+                Category[] catArray = new Category[items.size()];
+                items.toArray(catArray);
+                Arrays.sort(catArray);
+                ArrayList<String> str = new ArrayList<>();
+                for(int i=0;i<catArray.length;i++) {
+                    str.add(catArray[i].getCat_name());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(JobsListActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
+                spinnerJL.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        spinnerJL.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (i == 0){
+            initAll();
+        }
+        else{
+            initByCat(i);
+        }
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {}
+
+    private void initAll(){
         JobList = new ArrayList<>();
         JobAdapter = new JobAdapter(JobsListActivity.this);
         recyclerView.setAdapter(JobAdapter);
@@ -157,6 +209,31 @@ public class JobsListActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot s : snapshot.getChildren()) {
                     JobList.add(s.getValue(Job.class));
+                }
+                JobAdapter.setJobsFeed(JobList);
+                JobAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void initByCat(int chosenCategory){
+        JobList = new ArrayList<>();
+        JobAdapter = new JobAdapter(JobsListActivity.this);
+        recyclerView.setAdapter(JobAdapter);
+
+        FirebaseDBJobs dbdbj = new FirebaseDBJobs();
+        DatabaseReference dr = dbdbj.getAllJobs();
+
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    s.child("category_ID").getValue();
+                    if((long)s.child("category_ID").getValue() == chosenCategory){
+                        JobList.add(s.getValue(Job.class));
+                    }
                 }
                 JobAdapter.setJobsFeed(JobList);
                 JobAdapter.notifyDataSetChanged();

@@ -10,14 +10,19 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.profAdapter;
+import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.utils.RecyclerItemClickListener;
 import com.example.easyjobs.utils.SizeUtils;
@@ -29,12 +34,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ProfListActivity extends AppCompatActivity {
+public class ProfListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -45,6 +54,8 @@ public class ProfListActivity extends AppCompatActivity {
 
     private Button postProf;
     private ImageView backBLA;
+
+    private Spinner spinnerPL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +76,7 @@ public class ProfListActivity extends AppCompatActivity {
         backBLA = findViewById(R.id.back_prof_list);
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView_prof_list);
         postProf = findViewById(R.id.profList_to_PostProf);
+        spinnerPL = findViewById(R.id.pickCategoryProfList);
     }
 
     private void activateButtonsAndViews(){
@@ -84,7 +96,9 @@ public class ProfListActivity extends AppCompatActivity {
             }
         }));
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
-        init();
+        initAll();
+
+        setUpSpinner();
 
         postProf.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,8 +158,46 @@ public class ProfListActivity extends AppCompatActivity {
         });
     }
 
-    private void init()
-    {
+    private void setUpSpinner(){
+        FirebaseDBCategories fb = new FirebaseDBCategories();
+        DatabaseReference dr = fb.getAllCat();
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Category> items = new ArrayList<>();
+                for(DataSnapshot category : snapshot.getChildren()){
+                    Category c = category.getValue(Category.class);
+                    items.add(c);
+                }
+                Category[] catArray = new Category[items.size()];
+                items.toArray(catArray);
+                Arrays.sort(catArray);
+                ArrayList<String> str = new ArrayList<>();
+                for(int i=0;i<catArray.length;i++) {
+                    str.add(catArray[i].getCat_name());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ProfListActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
+                spinnerPL.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+        spinnerPL.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (i == 0){
+            initAll();
+        }
+        else{
+            initByCat(i);
+        }
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {}
+
+    private void initAll() {
         ProfList = new ArrayList<>();
         ProfAdapter=new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
@@ -158,6 +210,36 @@ public class ProfListActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot s : snapshot.getChildren()) {
                     ProfList.add(s.getValue(Prof.class));
+                }
+                ProfAdapter.setProfsFeed(ProfList);
+                ProfAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void initByCat(int chosenCategory){
+        ProfList = new ArrayList<>();
+        ProfAdapter=new profAdapter(ProfListActivity.this);
+        recyclerView.setAdapter(ProfAdapter);
+
+        FirebaseDBProfs dbdbj = new FirebaseDBProfs();
+        DatabaseReference dr = dbdbj.getAllProfs();
+
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    DataSnapshot categories = s.child("category");
+
+                    // Passing all the Categories as an ArrayList
+                    GenericTypeIndicator<ArrayList<Integer>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Integer>>() {};
+                    ArrayList<Integer> categoriesList = categories.getValue(genericTypeIndicator );
+
+                    if(categoriesList.contains(chosenCategory)){
+                        ProfList.add(s.getValue(Prof.class));
+                    }
                 }
                 ProfAdapter.setProfsFeed(ProfList);
                 ProfAdapter.notifyDataSetChanged();
