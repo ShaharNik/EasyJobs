@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView welcomeText;
     private Button jobListB;
     private Button proListB;
-    private TextView loginT;
+    private Button loginT;
     private FirebaseAuth mAuth; // For User Email & Password authentication
 
     private ImageView logo;
@@ -45,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null){ // logged in
             String disp_name = user.getDisplayName();
-            welcomeText.setText("Hello, " + disp_name + " :)");
+            welcomeText.setText("שלום, " + disp_name + " :)");
             loginT.setText("פרופיל");
         }
         else{
-            welcomeText.setText("Hello, Guest :)");
+            welcomeText.setText("שלום, אורח :)");
             loginT.setText("התחבר/הירשם");
         }
     }
@@ -111,12 +111,12 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null){ // user is logged in
             String disp_name = user.getDisplayName();
-            welcomeText.setText("Hello, " + disp_name + " :)");
+            welcomeText.setText("שלום, " + disp_name + " :)");
             loginT.setText("פרופיל");
         }
         else{
-            welcomeText.setText("Hello, Guest :)");
-            loginT.setText("Login/Register");
+            welcomeText.setText("שלום, אורח :)");
+            loginT.setText("התחבר/הירשם");
         }
     }
 

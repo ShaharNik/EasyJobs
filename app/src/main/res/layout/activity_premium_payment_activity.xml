@@ -83,6 +83,8 @@
         android:layout_height="56dp"
         android:layout_marginTop="52dp"
         android:text=" אישור לתשלום"
+        android:textColor="@color/white"
+        android:background="@color/cardview_dark_background"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

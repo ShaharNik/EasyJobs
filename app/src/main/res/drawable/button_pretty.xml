@@ -16,14 +16,14 @@
     </item>
     <item >
         <shape android:shape="rectangle"  >
-            <corners android:radius="3dip" />
+            <corners android:radius="5dp" />
             <gradient
                 android:type="linear"
                 android:centerX="50%"
                 android:startColor="#0E26A6"
-                android:centerColor="#004AA0"
-                android:endColor="#004AA0"
-                android:angle="45"/>
+                android:centerColor="#0E26A6"
+                android:endColor="#0E26A6"
+                android:angle="90"/>
 
         </shape>
     </item>
