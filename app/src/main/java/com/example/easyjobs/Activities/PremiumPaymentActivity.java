@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,11 +33,9 @@ public class PremiumPaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_premium_payment_activity);
 
         findViews();
-        acvtivateButtonsAndViews();
-
-        //setNormalPicker();
-
         showDatePickerDialog();
+        activateButtonsAndViews();
+
     }
 
     private void showDatePickerDialog() {// Get open DatePickerDialog button.
@@ -73,7 +72,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
 
                 //Set dialog icon and title.
                 //datePickerDialog.setIcon(R.drawable.if_snowman);
-                datePickerDialog.setTitle("Please select date.");
+                datePickerDialog.setTitle("אנא בחר תאריך");
 
                 //Popup the dialog.
                 datePickerDialog.show();
@@ -84,12 +83,41 @@ public class PremiumPaymentActivity extends AppCompatActivity {
     private void findViews(){
         backBLA = findViewById(R.id.back_premium_payment);
         dateTextView = findViewById(R.id.avtivity_premium_payment_cardExprire);
-        cardNumberTextView = findViewById(R.id.avtivity_premium_payment_cardNumber_PlainText);
-        cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC); // TODO
+        cardNumberTextView = findViewById(R.id.avtivity_premium_payment_cardNumber_PlainText); // 16 digits
+        cardNumberCVC = findViewById(R.id.avtivity_premium_payment_cardNumberCVC); // TODO 3 digits only
         acceptButton = findViewById(R.id.activity_premium_payment_acceptButton);
     }
 
-    private void acvtivateButtonsAndViews(){
+    private boolean validateFields()
+    {
+        // Validate card number
+        if (cardNumberTextView.getText().toString().length() != 16) {
+            cardNumberTextView.setError("עליך להקליד 16 ספרות בדיוק");
+            return false;
+        }
+        else if (!cardNumberTextView.getText().toString().matches("[0-9]+"))
+        {
+            cardNumberCVC.setError("עליך להקליד ספרות בלבד");
+            return false;
+        }
+        // Validate CVV
+        if (cardNumberCVC.getText().toString().length() != 3) {
+            cardNumberCVC.setError("עליך להקליד 3 ספרות בלבד");
+            return false;
+        }
+        else if (!cardNumberCVC.getText().toString().matches("[0-9]+"))
+        {
+            cardNumberCVC.setError("עליך להקליד ספרות בלבד");
+            return false;
+        }
+        if (dateTextView.getText().toString().isEmpty())
+        {
+            dateTextView.setError("עליך להזין תוקף");
+            return false;
+        }
+        return true;
+    }
+    private void activateButtonsAndViews(){
         backBLA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,11 +128,16 @@ public class PremiumPaymentActivity extends AppCompatActivity {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fa = FirebaseAuth.getInstance();
-                FirebaseUser user = fa.getCurrentUser();
-                FirebaseDBUsers userDB = new FirebaseDBUsers();
-                userDB.setPremiumToAUser(user.getUid(), PremiumPaymentActivity.this);
-                PremiumPaymentActivity.super.onBackPressed(); // move him back
+                if (validateFields())
+                {
+                    fa = FirebaseAuth.getInstance();
+                    FirebaseUser user = fa.getCurrentUser();
+                    FirebaseDBUsers userDB = new FirebaseDBUsers();
+                    userDB.setPremiumToAUser(user.getUid(), PremiumPaymentActivity.this);
+                    PremiumPaymentActivity.super.onBackPressed(); // move him back
+                }
+                else
+                    Toast.makeText(PremiumPaymentActivity.this, "השדרוג נכשל.", Toast.LENGTH_SHORT).show();
             }
         });
     }
