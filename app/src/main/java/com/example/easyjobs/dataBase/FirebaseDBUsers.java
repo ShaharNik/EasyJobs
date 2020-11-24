@@ -74,6 +74,10 @@ public class FirebaseDBUsers {
                    isChanged=true;
                    oldRating=r.getTo_ID().get(profID);
                }
+               else
+               {
+                   isChanged=false;
+               }
                r.getTo_ID().put(profID,value);
                dr.setValue(r);
                updateRatingForUser(profID,value,isChanged,oldRating,ratingBar);
