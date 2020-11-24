@@ -47,12 +47,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void updateUI(FirebaseUser user) {
+        if(user != null) {
         registerB.setEnabled(false);
         registerB.setVisibility(View.GONE);
         emailED.setEnabled(false);
         pass.setEnabled(false);
         LoginB.setText("התנתק");
-        LoginActivity.super.onBackPressed(); // get back
+            LoginActivity.super.onBackPressed(); // get back
+        }
+        else
+        {
+            emailED.setError("שם משתמש או סיסמא אינם נכונים");
+            pass.setError("שם משתמש או סיסמא אינם נכונים");
+            pass.setText("");
+            emailED.setText("");
+        }
         //moveToProfile(); // after user logged in, move him to profile
     }
 

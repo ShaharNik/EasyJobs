@@ -53,9 +53,6 @@ public class JobProfileActivity extends AppCompatActivity {
                 priceJPTV.setText("מחיר: " + job.getPrice() + " שח");
                 DateFormat df = new SimpleDateFormat("dd/MM/yy");
                 datesJPTV.setText("תאריך: "+ df.format(job.getStartDate())+" - " + df.format(job.getEndDate()));
-                //Add date
-                String jobDate;
-                //End adding
                 FirebaseDBUsers dbUser = new FirebaseDBUsers();
                 DatabaseReference drUser = dbUser.getUserByID(job.getUser_ID());
                 drUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -68,6 +65,7 @@ public class JobProfileActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}

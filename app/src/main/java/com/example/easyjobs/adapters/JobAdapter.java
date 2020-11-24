@@ -7,10 +7,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easyjobs.Objects.Job;
 import com.example.easyjobs.R;
+import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,7 +31,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
 
     private List<Job> JobsFeed=new ArrayList();
     private Context context;
-
+    private static int Regular = 1;
+    private static int Premium = 2;
     public JobAdapter(Context context)
    {
         this.context = context;
@@ -45,6 +54,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Job jobs = JobsFeed.get(position);
         holder.showCallDetails(jobs);
+
     }
 
     @Override
@@ -76,4 +86,6 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
             dateTextView.setText(df.format(startDate.getTime())+" - " + df.format(endDate.getTime()));
         }
     }
+
+
 }

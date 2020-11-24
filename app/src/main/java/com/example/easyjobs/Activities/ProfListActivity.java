@@ -96,7 +96,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
             }
         }));
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
-        initAll();
+        //initAll();
 
         setUpSpinner();
 
