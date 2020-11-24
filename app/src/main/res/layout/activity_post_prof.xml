@@ -84,10 +84,10 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.935"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editDescPP"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.093" />
 
     <EditText
         android:id="@+id/editLocPP"
@@ -103,10 +103,10 @@
         app:layout_constraintVertical_bias="0.01" />
 
     <TextView
-        android:id="@+id/datePP"
-        android:layout_width="163dp"
+        android:id="@+id/IdPP"
+        android:layout_width="230dp"
         android:layout_height="25dp"
-        android:text="תאריכים מועדפים:"
+        android:text="תעודת זהות: (לא יפורסם)"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -114,21 +114,7 @@
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editLocPP"
-        app:layout_constraintVertical_bias="0.01" />
-
-    <TextView
-        android:id="@+id/IdPP"
-        android:layout_width="230dp"
-        android:layout_height="25dp"
-        android:text="תעודת זהת: (לא יפורסם)"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/datePP"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintVertical_bias="0.136" />
 
     <EditText
         android:id="@+id/editIdPP"
