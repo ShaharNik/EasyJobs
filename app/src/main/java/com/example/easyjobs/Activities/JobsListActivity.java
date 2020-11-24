@@ -71,6 +71,12 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         activateButtonsAndViews();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        recyclerView.setAdapter(null);
+    }
+
     private void findViews(){
         backBJL = findViewById(R.id.back_jobs_list);
         postJob = findViewById(R.id.jobList_to_PostJob);
@@ -159,8 +165,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private void setUpSpinner(){
-        FirebaseDBCategories fb = new FirebaseDBCategories();
-        DatabaseReference dr = fb.getAllCat();
+        DatabaseReference dr = FirebaseDBCategories.getAllCat();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -202,8 +207,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         JobAdapter = new JobAdapter(JobsListActivity.this);
         recyclerView.setAdapter(JobAdapter);
 
-        FirebaseDBJobs dbdbj = new FirebaseDBJobs();
-        DatabaseReference dr = dbdbj.getAllJobs();
+        DatabaseReference dr = FirebaseDBJobs.getAllJobs();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -223,8 +227,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         JobAdapter = new JobAdapter(JobsListActivity.this);
         recyclerView.setAdapter(JobAdapter);
 
-        FirebaseDBJobs dbdbj = new FirebaseDBJobs();
-        DatabaseReference dr = dbdbj.getAllJobs();
+        DatabaseReference dr = FirebaseDBJobs.getAllJobs();
 
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

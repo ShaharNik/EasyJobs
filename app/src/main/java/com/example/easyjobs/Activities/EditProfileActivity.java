@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
 
 public class EditProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private FirebaseDBUsers FDBU;
     private User curUser;
 
     private ImageView backButt;
@@ -88,8 +87,7 @@ public class EditProfileActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         String user_email = user.getEmail();
 
-        FDBU = new FirebaseDBUsers();
-        DatabaseReference DR = FDBU.getUserByID(getIntent().getStringExtra("user_id"));
+        DatabaseReference DR = FirebaseDBUsers.getUserByID(getIntent().getStringExtra("user_id"));
         DR.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -116,7 +114,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 // 3) update fire-base with the new inputs.
                 // 4) logout user and send him to main activity
                 FirebaseUser user = mAuth.getCurrentUser();
-                FirebaseDBUsers UsersDB = new FirebaseDBUsers();
 
 
                 // password validation
@@ -184,7 +181,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                                 if (someFieldChanged) {
                                     // Update User in DB
-                                    UsersDB.changeUserByID(curUser);
+                                    FirebaseDBUsers.changeUserByID(curUser);
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(curUser.getFirstName() + " " + curUser.getLastName()).build();
                                     user.updateProfile(profileUpdates);
                                     Toast.makeText(EditProfileActivity.this, "העדכון בוצע בהצלחה, התחבר מחדש", Toast.LENGTH_LONG).show();

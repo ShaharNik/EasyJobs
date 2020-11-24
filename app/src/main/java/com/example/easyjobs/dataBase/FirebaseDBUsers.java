@@ -17,40 +17,40 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class FirebaseDBUsers extends FirebaseBaseModel {
+public class FirebaseDBUsers {
 
-    public void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium) {
+    public static void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium) {
         //String id = idGenerator.tokenGenerator();
         User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0, 0);
-        ref.child("Users").child(User_ID).setValue(user);
+        FirebaseBaseModel.getRef().child("Users").child(User_ID).setValue(user);
     }
-    public void changeUserByID(User user) {
-        ref.child("Users").child(user.getUser_ID()).setValue(user);
+    public static void changeUserByID(User user) {
+        FirebaseBaseModel.getRef().child("Users").child(user.getUser_ID()).setValue(user);
     }
 
-    public DatabaseReference getAllusers()
+    public static DatabaseReference getAllusers()
     {
-        return ref.child("Users");
+        return FirebaseBaseModel.getRef().child("Users");
     }
 
-    public DatabaseReference getUserByID(String id)
+    public static DatabaseReference getUserByID(String id)
     {
-        return ref.child("Users").child(id);
+        return FirebaseBaseModel.getRef().child("Users").child(id);
     }
 
-    public void setPremiumToAUser(String id, Context context) {
-        ref.child("Users").child(id).child("premium").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public static void setPremiumToAUser(String id, Context context) {
+        FirebaseBaseModel.getRef().child("Users").child(id).child("premium").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(context, "payment successful", Toast.LENGTH_SHORT).show();
             }
         });
     }
-    public void setRating(String from_ID, String profID, float value, Context c, RatingBar ratingBar)
+    public static void setRating(String from_ID, String profID, float value, Context c, RatingBar ratingBar)
     {
         //if(ref.child("UserRatings").)
        // boolean IsChanged=true;
-        DatabaseReference dr = ref.child("UserRatings").child(from_ID);
+        DatabaseReference dr = FirebaseBaseModel.getRef().child("UserRatings").child(from_ID);
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -86,7 +86,7 @@ public class FirebaseDBUsers extends FirebaseBaseModel {
         });
     }
 
-    private void updateRatingForUser(String profID,float value,boolean isChanged,float oldRatingAmount,RatingBar ratingBar)
+    private static void updateRatingForUser(String profID,float value,boolean isChanged,float oldRatingAmount,RatingBar ratingBar)
     {
         DatabaseReference dr = getUserByID(profID);
         dr.addListenerForSingleValueEvent(new ValueEventListener() {

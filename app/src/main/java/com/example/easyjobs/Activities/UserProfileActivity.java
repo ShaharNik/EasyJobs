@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class UserProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private FirebaseDBUsers FDBU;
+   // private FirebaseDBUsers FDBU;
 
     private ImageView backButt;
 
@@ -102,8 +102,8 @@ public class UserProfileActivity extends AppCompatActivity {
         String nickname = user.getDisplayName();
         String user_email = user.getEmail();
 
-        FDBU = new FirebaseDBUsers();
-        DatabaseReference DR = FDBU.getUserByID(getIntent().getStringExtra("user_id"));
+      //  FDBU = new FirebaseDBUsers();
+        DatabaseReference DR = FirebaseDBUsers.getUserByID(getIntent().getStringExtra("user_id"));
         DR.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

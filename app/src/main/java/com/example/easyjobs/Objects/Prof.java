@@ -30,14 +30,6 @@ public class Prof {
 
     public void setProf_ID(String prof_ID) { this.prof_ID = prof_ID; }
 
-    public String getJob_ID() {
-        return prof_ID;
-    }
-
-    public void setJob_ID(String prof_ID) {
-        this.prof_ID = prof_ID;
-    }
-
     public String getUser_ID() {
         return User_ID;
     }

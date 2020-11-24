@@ -86,53 +86,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
         });
     }
     private void setUpSpinner(){
-//        new MaterialDialog.Builder(this)
-//                .title(R.string.title)
-//                .items(R.array.items)
-//                .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
-//                    @Override
-//                    public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-//                        /**
-//                         * If you use alwaysCallMultiChoiceCallback(), which is discussed below,
-//                         * returning false here won't allow the newly selected check box to actually be selected.
-//                         * See the limited multi choice dialog example in the sample project for details.
-//                         **/
-//                        return true;
-//                    }
-//                })
-//                .positiveText(R.string.choose)
-//                .show();
-/*
-        FirebaseDBCategories fb = new FirebaseDBCategories();
-        DatabaseReference dr = fb.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<Category> items = new ArrayList<>();
-                for(DataSnapshot category : snapshot.getChildren()){
-                    Category c = category.getValue(Category.class);
-                    items.add(c);
-                }
-                Category[] catArray = new Category[items.size()];
-                items.toArray(catArray);
-                Arrays.sort(catArray);
-                ArrayList<String> str = new ArrayList<>();
-                for(int i=0;i<catArray.length;i++)
-                {
-                    str.add(catArray[i].getCat_name());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostJobActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
-                spinnerPJ.setAdapter(adapter);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-        spinnerPJ.setOnItemSelectedListener(this);
-
-        */
-
-        FirebaseDBCategories fb = new FirebaseDBCategories();
-        DatabaseReference dr = fb.getAllCat();
+        DatabaseReference dr = FirebaseDBCategories.getAllCat();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -171,8 +125,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
-    public void postJobToDB(){//need to configure Multiple Category !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        FirebaseDBProfs db = new FirebaseDBProfs();
+    public void postJobToDB(){
         String desc = descED.getText().toString(); // TODO Length should be at least 3 characters
         String loc = locED.getText().toString();
         String id = IdED.getText().toString();
@@ -190,7 +143,7 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        db.addNewProf(user.getUid(), desc, CatChosen, loc);
+        FirebaseDBProfs.addNewProf(user.getUid(), desc, CatChosen, loc);
         PostProfActivity.super.onBackPressed();
     }
 

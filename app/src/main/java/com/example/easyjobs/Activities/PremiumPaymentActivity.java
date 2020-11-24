@@ -132,8 +132,8 @@ public class PremiumPaymentActivity extends AppCompatActivity {
                 {
                     fa = FirebaseAuth.getInstance();
                     FirebaseUser user = fa.getCurrentUser();
-                    FirebaseDBUsers userDB = new FirebaseDBUsers();
-                    userDB.setPremiumToAUser(user.getUid(), PremiumPaymentActivity.this);
+                  //  FirebaseDBUsers userDB = new FirebaseDBUsers();
+                    FirebaseDBUsers.setPremiumToAUser(user.getUid(), PremiumPaymentActivity.this);
                     PremiumPaymentActivity.super.onBackPressed(); // move him back
                 }
                 else

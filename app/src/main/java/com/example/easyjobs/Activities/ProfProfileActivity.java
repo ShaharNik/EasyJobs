@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Prof;
@@ -63,12 +64,18 @@ public class ProfProfileActivity extends AppCompatActivity {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 if(ProfProfile_UserID!=null) {
-                    FirebaseDBUsers db = new FirebaseDBUsers();
                   if(FirebaseAuth.getInstance().getCurrentUser() != null)
                     {
-                        db.setRating(FirebaseAuth.getInstance().getCurrentUser().getUid(),ProfProfile_UserID,rating,ProfProfileActivity.this,ratingBar);
-                        ratingBar.setEnabled(false);
+                        if(FirebaseAuth.getInstance().getCurrentUser().getUid().compareTo(ProfProfile_UserID) != 0) {
+                            FirebaseDBUsers.setRating(FirebaseAuth.getInstance().getCurrentUser().getUid(), ProfProfile_UserID, rating, ProfProfileActivity.this, ratingBar);
+                            ratingBar.setEnabled(false);
+                        }
+                        else
+                        {
+                            Toast.makeText(ProfProfileActivity.this, "אי אפשר לדרג את עצמך... P:", Toast.LENGTH_SHORT).show();
+                        }
                     }
+
                 }
             }
         });
@@ -84,8 +91,7 @@ public class ProfProfileActivity extends AppCompatActivity {
     }
 
     private void setDataFromDB(){// Gotta make the numbers of the categories to the name of them.
-        FirebaseDBProfs dbProf = new FirebaseDBProfs();
-        DatabaseReference drProf = dbProf.getProfByID(getIntent().getStringExtra("prof_id"));
+        DatabaseReference drProf = FirebaseDBProfs.getProfByID(getIntent().getStringExtra("prof_id"));
         drProf.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -93,11 +99,10 @@ public class ProfProfileActivity extends AppCompatActivity {
                 descPPTV.setText("תיאור: " + profile.getDesc());
                 //Add categories
                 ArrayList<Integer> cats = (ArrayList<Integer>) profile.getCategory();
-                FirebaseDBCategories catDb = new FirebaseDBCategories();
                 DatabaseReference catDR;
                 for (int i=0; i<cats.size(); i++){
                     final int x = i;
-                    catDR = catDb.getCatByID("\"" + cats.get(i) + "\"");
+                    catDR = FirebaseDBCategories.getCatByID("\"" + cats.get(i) + "\"");
                     catDR.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -114,8 +119,7 @@ public class ProfProfileActivity extends AppCompatActivity {
                 //End adding
                 locationPPTV.setText("איזור עבודה: " + profile.getLocation());
 
-                FirebaseDBUsers dbUser = new FirebaseDBUsers();
-                DatabaseReference drUser = dbUser.getUserByID(profile.getUser_ID());
+                DatabaseReference drUser = FirebaseDBUsers.getUserByID(profile.getUser_ID());
                 drUser.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

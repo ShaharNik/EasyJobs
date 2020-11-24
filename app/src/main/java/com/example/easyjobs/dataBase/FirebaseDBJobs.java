@@ -6,19 +6,19 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.Date;
 
-public class FirebaseDBJobs extends FirebaseBaseModel {
+public class FirebaseDBJobs {
 
-    public void addNewJob(String user_id, String desc, int price, String loc, Date startDate,Date endDate, int CatID){
+    public static void addNewJob(String user_id, String desc, int price, String loc, Date startDate,Date endDate, int CatID){
         String id = idGenerator.tokenGenerator();
         Job j = new Job(id, user_id, desc, price, loc, startDate,endDate, CatID);
-        ref.child("Jobs").child(id).setValue(j);
+        FirebaseBaseModel.getRef().child("Jobs").child(id).setValue(j);
     }
 
-    public DatabaseReference getJobByID(String jobID){
-        return ref.child("Jobs").child(jobID);
+    public static DatabaseReference getJobByID(String jobID){
+        return FirebaseBaseModel.getRef().child("Jobs").child(jobID);
     }
 
-    public DatabaseReference getAllJobs(){
-        return ref.child("Jobs");
+    public static DatabaseReference getAllJobs(){
+        return FirebaseBaseModel.getRef().child("Jobs");
     }
 }

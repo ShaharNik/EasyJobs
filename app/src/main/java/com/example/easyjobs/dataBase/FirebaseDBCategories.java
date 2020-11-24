@@ -2,13 +2,13 @@ package com.example.easyjobs.dataBase;
 
 import com.google.firebase.database.DatabaseReference;
 
-public class FirebaseDBCategories extends FirebaseBaseModel {
+public class FirebaseDBCategories {
 
-    public DatabaseReference getCatByID(String CatID){
-        return ref.child("Categories").child(CatID);
+    public static DatabaseReference getCatByID(String CatID){
+        return FirebaseBaseModel.getRef().child("Categories").child(CatID);
     }
 
-    public DatabaseReference getAllCat(){
-        return ref.child("Categories");
+    public static DatabaseReference getAllCat(){
+        return FirebaseBaseModel.getRef().child("Categories");
     }
 }

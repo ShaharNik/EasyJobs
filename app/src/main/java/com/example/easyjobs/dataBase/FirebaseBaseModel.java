@@ -4,7 +4,18 @@ import com.google.firebase.database.*;
 
 public class FirebaseBaseModel {
 
-    protected DatabaseReference ref;
+    protected static DatabaseReference ref;
 
-    public FirebaseBaseModel(){ ref = FirebaseDatabase.getInstance().getReference(); }
+    private FirebaseBaseModel(){
+
+    }
+    public static synchronized DatabaseReference getRef()
+    {
+        if(ref == null)
+        {
+            ref = FirebaseDatabase.getInstance().getReference();
+        }
+        return ref;
+    }
+
 }

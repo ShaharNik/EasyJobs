@@ -137,8 +137,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private void setUpSpinner(){
-        FirebaseDBCategories fb = new FirebaseDBCategories();
-        DatabaseReference dr = fb.getAllCat();
+        DatabaseReference dr = FirebaseDBCategories.getAllCat();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -164,7 +163,6 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private void postJobToDB(){//need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        FirebaseDBJobs db = new FirebaseDBJobs();
         String desc = descED.getText().toString();
         String loc = locED.getText().toString();
         int price = 0;
@@ -173,7 +171,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        db.addNewJob(user.getUid(), desc, price, loc,startD,endD, catNum);
+        FirebaseDBJobs.addNewJob(user.getUid(), desc, price, loc,startD,endD, catNum);
         PostJobActivity.super.onBackPressed();
     }
 

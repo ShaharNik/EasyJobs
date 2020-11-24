@@ -71,7 +71,11 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         super.onResume();
         activateButtonsAndViews();
     }
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        recyclerView.setAdapter(null);
+    }
     private void findViews(){
         backBLA = findViewById(R.id.back_prof_list);
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView_prof_list);
@@ -159,8 +163,8 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private void setUpSpinner(){
-        FirebaseDBCategories fb = new FirebaseDBCategories();
-        DatabaseReference dr = fb.getAllCat();
+        //FirebaseDBCategories fb = new FirebaseDBCategories();
+        DatabaseReference dr = FirebaseDBCategories.getAllCat();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -202,8 +206,8 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         ProfAdapter=new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
 
-        FirebaseDBProfs dbdbj = new FirebaseDBProfs();
-        DatabaseReference dr = dbdbj.getAllProfs();
+       // FirebaseDBProfs dbdbj = new FirebaseDBProfs();
+        DatabaseReference dr = FirebaseDBProfs.getAllProfs();
 
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -224,8 +228,8 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         ProfAdapter=new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
 
-        FirebaseDBProfs dbdbj = new FirebaseDBProfs();
-        DatabaseReference dr = dbdbj.getAllProfs();
+      //  FirebaseDBProfs dbdbj = new FirebaseDBProfs();
+        DatabaseReference dr = FirebaseDBProfs.getAllProfs();
 
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

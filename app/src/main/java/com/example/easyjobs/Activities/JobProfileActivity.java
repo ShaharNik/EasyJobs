@@ -42,8 +42,7 @@ public class JobProfileActivity extends AppCompatActivity {
     }
 
     private void setDataFromDB(){
-        FirebaseDBJobs dbJobs = new FirebaseDBJobs();
-        DatabaseReference drJobs = dbJobs.getJobByID(getIntent().getStringExtra("job_id"));
+        DatabaseReference drJobs = FirebaseDBJobs.getJobByID(getIntent().getStringExtra("job_id"));
         drJobs.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -53,8 +52,7 @@ public class JobProfileActivity extends AppCompatActivity {
                 priceJPTV.setText("מחיר: " + job.getPrice() + " שח");
                 DateFormat df = new SimpleDateFormat("dd/MM/yy");
                 datesJPTV.setText("תאריך: "+ df.format(job.getStartDate())+" - " + df.format(job.getEndDate()));
-                FirebaseDBUsers dbUser = new FirebaseDBUsers();
-                DatabaseReference drUser = dbUser.getUserByID(job.getUser_ID());
+                DatabaseReference drUser = FirebaseDBUsers.getUserByID(job.getUser_ID());
                 drUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
