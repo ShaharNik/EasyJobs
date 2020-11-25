@@ -54,6 +54,10 @@ public class Validator {
     }
     public static boolean ValidateIsraeliId(String id)
     {
+        if (!id.matches("[0-9]+") || id.length() != 9)
+            return false;
+        return true;
+        /*
         String strId = id.trim();
         if (strId.length() > 9) {
             return false;
@@ -68,6 +72,7 @@ public class Validator {
             counter += actualVal;
         }
         return (counter % 10 == 0);
+         */
     }
     public static boolean ValidateDescription(String desc)
     {
