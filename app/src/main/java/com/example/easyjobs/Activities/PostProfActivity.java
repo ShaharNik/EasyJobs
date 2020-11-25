@@ -11,12 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
+import com.example.easyjobs.utils.Validator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -127,24 +129,32 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
 
     public void postJobToDB(){
         String desc = descED.getText().toString(); // TODO Length should be at least 3 characters
-        String loc = locED.getText().toString();
-        String id = IdED.getText().toString();
-        if (id.length() == 9){
-            try { int temp = Integer.parseInt(id); }
-            catch(Exception e){ id = "000000000"; } //Maybe pop-up window to tell user to insert int?????????????
-            //Check ID Algorithm?????????????????????????????????????????????????????
+        String loc = locED.getText().toString(); // at least 3
+        String id = IdED.getText().toString(); // 9 digits
+        if (Validator.ValidateIsraeliId(id)){
+            if (Validator.ValidateDescription(desc))
+            {
+                if (Validator.ValidateLocation(loc))
+                {
+                    // --=== Add new Prof and move user to back activity ==---
+                    mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    FirebaseDBProfs.addNewProf(user.getUid(), desc, CatChosen, loc);
+                    Toast.makeText(PostProfActivity.this, "התפרסמת בהצלחה", Toast.LENGTH_SHORT).show();
+                    PostProfActivity.super.onBackPressed();
+                }
+                else
+                {
+                    locED.setError("המיקום אינו תקין, חייב להיות באורך 3 לפחות");
+                }
+            }
+            else
+                descED.setError("התיאור קצר מידי");
         }
         else {
-            id = "000000000";
-            //Maybe pop-up window to tell user to insert 9-digits (include sifrat bikoret)????????????????????
+            IdED.setError("ת.ז שהזנת אינה תקינה");
         }
-//        List<Integer> temp = new ArrayList<Integer>();
-//        temp.add(catNum);
 
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        FirebaseDBProfs.addNewProf(user.getUid(), desc, CatChosen, loc);
-        PostProfActivity.super.onBackPressed();
     }
 
     @Override

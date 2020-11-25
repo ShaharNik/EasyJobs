@@ -48,11 +48,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public void updateUI(FirebaseUser user) {
         if(user != null) {
-        registerB.setEnabled(false);
-        registerB.setVisibility(View.GONE);
-        emailED.setEnabled(false);
-        pass.setEnabled(false);
-        LoginB.setText("התנתק");
+            registerB.setEnabled(false);
+            registerB.setVisibility(View.GONE);
+            emailED.setEnabled(false);
+            pass.setEnabled(false);
+            LoginB.setText("התנתק");
             LoginActivity.super.onBackPressed(); // get back
         }
         else

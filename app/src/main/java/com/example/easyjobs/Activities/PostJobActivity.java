@@ -16,11 +16,14 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
+import com.example.easyjobs.dataBase.FirebaseDBProfs;
+import com.example.easyjobs.utils.Validator;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.CompositeDateValidator;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -165,14 +168,34 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     private void postJobToDB(){//need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         String desc = descED.getText().toString();
         String loc = locED.getText().toString();
-        int price = 0;
-        try { price = Integer.parseInt(priceED.getText().toString()); }
-        catch(Exception e){ price = 0; } //Maybe pop-up window to tell user to insert int?????????????
-
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        FirebaseDBJobs.addNewJob(user.getUid(), desc, price, loc,startD,endD, catNum);
-        PostJobActivity.super.onBackPressed();
+        String price = priceED.getText().toString();
+        String date = dateEditTextPostJob.getText().toString();
+        if (Validator.ValidateDescription(desc))
+        {
+            if (Validator.ValidateLocation(loc))
+            {
+                if (!date.isEmpty())
+                {
+                    if (Validator.ValidatePrice(price))
+                    {
+                        // --=== Add new Job and move user to back activity ==---
+                        mAuth = FirebaseAuth.getInstance();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseDBJobs.addNewJob(user.getUid(), desc, Integer.parseInt(price), loc, startD, endD, catNum);
+                        Toast.makeText(PostJobActivity.this, "העבודה פורסמה בהצלחה", Toast.LENGTH_SHORT).show();
+                        PostJobActivity.super.onBackPressed();
+                    }
+                    else
+                        priceED.setError("אנא הזן מחיר");
+                }
+                else
+                    dateEditTextPostJob.setError("אנא בחר תאריכים");
+            }
+            else
+                locED.setError("המיקום אינו תקין, חייב להיות באורך 3 לפחות");
+        }
+        else
+            descED.setError("התיאור קצר מידי");
     }
 
     @Override

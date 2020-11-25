@@ -52,7 +52,42 @@ public class Validator {
         }
         return true;
     }
+    public static boolean ValidateIsraeliId(String id)
+    {
+        String strId = id.trim();
+        if (strId.length() > 9) {
+            return false;
+        }
+        if (strId.length() < 9) {
+            while (strId.length() < 9) strId = "0" + strId;
+        }
+        int counter = 0, rawVal, actualVal;
+        for (int i = 0; i < strId.length(); i++) {
+            rawVal = strId.charAt(i) * ((i % 2) + 1); // CHECK
+            actualVal = rawVal > 9 ? (rawVal - 9) : rawVal;
+            counter += actualVal;
+        }
+        return (counter % 10 == 0);
+    }
+    public static boolean ValidateDescription(String desc)
+    {
+        if (desc.length() < 3)
+            return false;
+        return true;
+    }
 
+    public static boolean ValidateLocation(String loc) {
+        if (loc.length() < 3)
+            return false;
+        return true;
+    }
+
+    public static boolean ValidatePrice(String price)
+    {
+        if (!price.matches("[0-9]+") || price.length() > 4)
+            return false;
+        return true;
+    }
 }
 
 
