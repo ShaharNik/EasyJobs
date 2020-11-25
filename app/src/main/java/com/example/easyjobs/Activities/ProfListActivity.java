@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,11 +20,15 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.easyjobs.Objects.Category;
+import com.example.easyjobs.Objects.PremiumJob;
+import com.example.easyjobs.Objects.PremiumProf;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.R;
+import com.example.easyjobs.adapters.JobAdapter;
 import com.example.easyjobs.adapters.profAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
+import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.RecyclerItemClickListener;
 import com.example.easyjobs.utils.SizeUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,7 +52,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private List<Prof> ProfList;
+    private List<PremiumProf> ProfList;
     private profAdapter ProfAdapter;
 
     private FirebaseAuth fa;
@@ -69,11 +74,14 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onResume() {
         super.onResume();
-        activateButtonsAndViews();
+        spinnerPL.setSelection(0); // Important - setting up new jobs and fix flickering
+
     }
+
     @Override
     protected void onPause() {
         super.onPause();
+        spinnerPL.setSelection(1); //  Important - setting up new jobs and fix flickering
         recyclerView.setAdapter(null);
     }
     private void findViews(){
@@ -205,15 +213,30 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         ProfList = new ArrayList<>();
         ProfAdapter=new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
-
-       // FirebaseDBProfs dbdbj = new FirebaseDBProfs();
         DatabaseReference dr = FirebaseDBProfs.getAllProfs();
 
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot s : snapshot.getChildren()) {
-                    ProfList.add(s.getValue(Prof.class));
+                    ProfList.add(s.getValue(PremiumProf.class));
+                }
+                for (PremiumProf PP : ProfList) {
+                    DatabaseReference dr = FirebaseDBUsers.getUserByID(PP.getUser_ID());
+                    dr = dr.child("premium");
+                    dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            PP.setPremium(snapshot.getValue(Boolean.class));
+                            sortArray(ProfList);
+                            ProfAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
                 ProfAdapter.setProfsFeed(ProfList);
                 ProfAdapter.notifyDataSetChanged();
@@ -242,7 +265,24 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
                     ArrayList<Integer> categoriesList = categories.getValue(genericTypeIndicator );
 
                     if(categoriesList.contains(chosenCategory)){
-                        ProfList.add(s.getValue(Prof.class));
+                        ProfList.add(s.getValue(PremiumProf.class));
+                    }
+                    for (PremiumProf PP : ProfList) {
+                        DatabaseReference dr = FirebaseDBUsers.getUserByID(PP.getUser_ID());
+                        dr = dr.child("premium");
+                        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                PP.setPremium(snapshot.getValue(Boolean.class));
+                                sortArray(ProfList);
+                                ProfAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
                 ProfAdapter.setProfsFeed(ProfList);
@@ -252,7 +292,13 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
             public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
-
+    public void sortArray(List<PremiumProf> ProfList)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ProfList.sort(PremiumProf::compareTo);
+            System.out.println(ProfList.toString());
+        }
+    }
     public void moveToProfProfile(int id){
         Intent i = new Intent(ProfListActivity.this, ProfProfileActivity.class);
         i.putExtra("prof_id",ProfList.get(id).getProf_ID());

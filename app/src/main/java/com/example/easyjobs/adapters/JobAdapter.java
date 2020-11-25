@@ -1,6 +1,8 @@
 package com.example.easyjobs.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easyjobs.Objects.Job;
+import com.example.easyjobs.Objects.PremiumJob;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.google.firebase.database.ChildEventListener;
@@ -29,7 +32,7 @@ import java.util.List;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
 
-    private List<Job> JobsFeed=new ArrayList();
+    private List<PremiumJob> JobsFeed=new ArrayList();
     private Context context;
     private static int Regular = 1;
     private static int Premium = 2;
@@ -38,18 +41,27 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
         this.context = context;
    }
 
-    public void setJobsFeed(List<Job> jobsFeed){
+    public void setJobsFeed(List<PremiumJob> jobsFeed){
         this.JobsFeed=jobsFeed;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layout = R.layout.jobs_feed_layout;
-        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
-        return new ViewHolder(v);
-    }
+//        int layout = R.layout.jobs_feed_layout;
+//        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+//        return new ViewHolder(v);
+        View view;
+        if (viewType == Regular) { // for call layout
+            view = LayoutInflater.from(context).inflate(R.layout.jobs_feed_layout, parent, false);
+        } else { // for email layout
+            view = LayoutInflater.from(context).inflate(R.layout.jobs_feed_layout, parent, false);
+            view.setBackgroundColor(Color.YELLOW);
 
+        }
+        return new ViewHolder(view);
+    }
+ // implementation
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Job jobs = JobsFeed.get(position);
@@ -86,6 +98,15 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
             dateTextView.setText(df.format(startDate.getTime())+" - " + df.format(endDate.getTime()));
         }
     }
+    @Override
+    public int getItemViewType(int position) {
+        if (JobsFeed.get(position).isPremium()) {
+            return Premium;
 
+        } else {
+            return Regular;
+        }
+    }
 
 }
+

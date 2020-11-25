@@ -13,7 +13,6 @@ public class Job {
     Date endDate;
 
 
-
     /// PICTURE
     int category_ID;
 
