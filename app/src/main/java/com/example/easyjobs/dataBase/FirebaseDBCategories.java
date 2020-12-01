@@ -17,4 +17,5 @@ public class FirebaseDBCategories {
     public static void addCat(String cat){
         //TODO
     }
+
 }

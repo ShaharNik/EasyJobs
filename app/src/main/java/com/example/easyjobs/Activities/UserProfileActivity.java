@@ -38,6 +38,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button UpgradeToPremium;
     private Button EditProfile;
     private Button profileEditButt;
+    private Button AdminsButt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class UserProfileActivity extends AppCompatActivity {
         UpgradeToPremium = findViewById(R.id.premiumButt);
         EditProfile = findViewById(R.id.profileEditButt);
         profileEditButt = findViewById(R.id.profileEditButt);
+        AdminsButt = findViewById(R.id.MoveToAdminButt);
     }
 
     private void activateButtonsAndViews(){
@@ -94,7 +96,9 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 moveToEditProfile_activity();
             }
+
         });
+
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -136,6 +140,12 @@ public class UserProfileActivity extends AppCompatActivity {
                 moveToPremiumPaymentActivity();
             }
         });
+        AdminsButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToAdminActivity();
+            }
+        });
     }
 
     @Override
@@ -158,6 +168,10 @@ public class UserProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         i.putExtra("user_id", user.getUid());
+        startActivity(i);
+    }
+    private void moveToAdminActivity() {
+        Intent i = new Intent(UserProfileActivity.this, AdminActivity.class);
         startActivity(i);
     }
 }

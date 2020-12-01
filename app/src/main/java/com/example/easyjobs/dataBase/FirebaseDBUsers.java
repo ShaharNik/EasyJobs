@@ -140,6 +140,4 @@ public class FirebaseDBUsers {
         return FirebaseBaseModel.getRef().child("Admins").child(uid);
     }
 
-
-
 }

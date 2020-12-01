@@ -1,7 +1,11 @@
 package com.example.easyjobs.utils;
 
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.example.easyjobs.Objects.Category;
+
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,6 +96,29 @@ public class Validator {
         if (!price.matches("[0-9]+") || price.length() > 4)
             return false;
         return true;
+    }
+
+    public static boolean ValidateCategory(String catName) {
+        System.err.println(catName);
+        if (catName.length() < 3) {
+            return false;
+        }
+        if (catName.matches(("[0-9]+"))) {
+            return false;
+
+        }
+        return true;
+    }
+
+    public static boolean isStringExistsInAdapter(String categoryName, SpinnerAdapter adapter)
+    {
+        for (int i = 0; i< adapter.getCount(); i++)
+        {
+            Category cat = (Category)adapter.getItem(i);
+            if (cat.equals(categoryName))
+                return false;
+        }
+        return  true;
     }
 }
 

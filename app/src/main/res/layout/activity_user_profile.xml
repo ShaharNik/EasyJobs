@@ -178,4 +178,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.96" />
 
+    <Button
+        android:id="@+id/MoveToAdminButt"
+        android:layout_width="148dp"
+        android:layout_height="72dp"
+        android:background="@drawable/admin_button_pretty"
+        android:text="עבור למסך ניהול"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.836"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.773" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
