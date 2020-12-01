@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 public class Validator {
     public static boolean ValidateUserEmail(String email) {
+
         String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
@@ -115,10 +116,10 @@ public class Validator {
         for (int i = 0; i < adapter.getCount(); i++)
         {
             Category cat = (Category)adapter.getItem(i);
-            if (cat.equals(categoryName))
-                return false;
+            if (cat.getCat_name().compareTo(categoryName) == 0)
+                return true;
         }
-        return  true;
+        return false;
     }
 }
 

@@ -8,14 +8,14 @@ import android.widget.ImageView;
 
 import com.example.easyjobs.R;
 
-public class AdminEditPostActivity extends AppCompatActivity {
+public class AdminEditJobActivity extends AppCompatActivity {
 
     private ImageView backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_edit_post);
+        setContentView(R.layout.activity_admin_edit_job);
 
         findViews();
         activateButtons();
@@ -29,7 +29,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AdminEditPostActivity.super.onBackPressed();
+                AdminEditJobActivity.super.onBackPressed();
             }
         });
     }
