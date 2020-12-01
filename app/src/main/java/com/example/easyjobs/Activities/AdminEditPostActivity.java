@@ -43,7 +43,6 @@ public class AdminEditPostActivity extends AppCompatActivity {
 
     private User user;
     private Prof prof;
-    List<Category> oldCatList;
     List<String> catList;
 
     private boolean changedIt;
@@ -55,7 +54,6 @@ public class AdminEditPostActivity extends AppCompatActivity {
 
         user = (User) getIntent().getSerializableExtra("User");
         prof = (Prof) getIntent().getSerializableExtra("Prof");
-        oldCatList = new ArrayList<Category>();
         catList = new ArrayList<String>();
 
         findViews();
@@ -80,26 +78,6 @@ public class AdminEditPostActivity extends AppCompatActivity {
         namesText.setText(user.getFirstName() + " " + user.getLastName());
         rateText.setText(user.getRating()+ " ("+ user.getRatingsAmount()+")");
         descText.setText(prof.getDesc());
-
-//        DatabaseReference catDR;
-//        for (int i=0; i<prof.getCategory().size(); i++){
-//            final int x = i;
-//            catDR = FirebaseDBCategories.getCatByID("\"" + prof.getCategory().get(i) + "\"");
-//            catDR.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    Category c = snapshot.getValue(Category.class);
-//                    oldCatList.add(c);
-//                    catText.setText(catText.getText().toString() + c.getCat_name());
-//                    if (x < prof.getCategory().size() - 1){
-//                        catText.setText(catText.getText().toString() + ", ");
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) { }
-//            });
-//        }
-
         locText.setText(prof.getLocation());
         phoneText.setText(user.getPhoneNumber());
     }
@@ -116,7 +94,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
                 for(DataSnapshot category : snapshot.getChildren()){
                     Category c = category.getValue(Category.class);
                     if(prof.getCategory().contains(c.getCategory_id())) {
-                        oldCatList.add(c);
+                        catList.add(c.getCategory_id());
                         catText.setText(catText.getText().toString() + c.getCat_name()+" ");
                         itemIndexs.add(index);
                     }
@@ -142,13 +120,6 @@ public class AdminEditPostActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println("ASD");
-                catList.clear();
-                catText.setText("");
-                for (Category c : oldCatList){
-                    catList.add(c.getCat_name());
-                    catText.setText(catText.getText().toString() + c.getCat_name()+ " ");
-                }
             }
         });
     }

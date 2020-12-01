@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    tools:context=".Activities.AdminEditPostActivity">
+    tools:context=".Activities.AdminEditPostActivity"
+    >
 
     <ImageView
         android:id="@+id/back_admin_editPost"
@@ -39,6 +40,7 @@
         android:layout_width="320dp"
         android:layout_height="41dp"
         android:text=" "
+        android:textAlignment="viewEnd"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +73,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.29" />
+        app:layout_constraintVertical_bias="0.29"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/descriptionEPperma"
@@ -97,7 +100,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.42" />
+        app:layout_constraintVertical_bias="0.42"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/catEPperma"
@@ -110,7 +114,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.49" />
+        app:layout_constraintVertical_bias="0.49"
+        android:textAlignment="viewEnd"/>
 
     <Button
         android:id="@+id/pickCategoryEditProf"
@@ -138,7 +143,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.55" />
+        app:layout_constraintVertical_bias="0.55"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/locationEPperma"
@@ -164,7 +170,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.68" />
+        app:layout_constraintVertical_bias="0.68"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/phoneEPperma"
@@ -190,7 +197,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.81" />
+        app:layout_constraintVertical_bias="0.81"
+        android:textAlignment="viewEnd"/>
 
     <Button
         android:id="@+id/changeProfDetails"

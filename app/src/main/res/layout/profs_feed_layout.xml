@@ -18,7 +18,6 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="STFU"
             android:src="@drawable/prof_logo"
             android:layout_marginLeft="10dp"/>
 
