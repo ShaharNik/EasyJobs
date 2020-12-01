@@ -3,8 +3,11 @@ package com.example.easyjobs.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -37,14 +40,19 @@ public class ProfProfileActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private String ProfProfile_UserID;
 
+    private Button adminBanProf;
+    private Button adminEditProf;
+
+    private Prof profile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prof_profile);
 
         findViews();
-        activateBackButton();
         setDataFromDB();
+        activateButtons();
         setRatingBarListener();
     }
 
@@ -57,7 +65,11 @@ public class ProfProfileActivity extends AppCompatActivity {
         locationPPTV = findViewById(R.id.locationPP);
         phonePPTV = findViewById(R.id.phonePP);
         ratingBar = findViewById(R.id.ratingBarProfProfile);
+
+        adminBanProf = findViewById(R.id.admin_ban_prof);
+        adminEditProf = findViewById(R.id.admin_edit_prof);
     }
+
     private void setRatingBarListener()
     {
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -81,11 +93,39 @@ public class ProfProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void activateBackButton(){
+    private void activateButtons(){
         backBPP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ProfProfileActivity.super.onBackPressed();
+            }
+        });
+
+        boolean adminFlag = FirebaseDBUsers.isAdmin("");
+        if(adminFlag){
+            adminEditProf.setVisibility(View.VISIBLE);
+            adminBanProf.setVisibility(View.VISIBLE);
+        }
+        else{
+            adminEditProf.setVisibility(View.INVISIBLE);
+            adminBanProf.setVisibility(View.INVISIBLE);
+        }
+/*
+        adminEditProf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ProfProfileActivity.this, AdminEditPostActivity.class);
+                i.putExtra("Prof", profile);
+                startActivity(i);
+            }
+        });
+*/
+        adminBanProf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Ban user
+
+                // We want to disable his posts for other users (Jobs and Posts)
             }
         });
     }
@@ -95,7 +135,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         drProf.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Prof profile = snapshot.getValue(Prof.class);
+                profile = snapshot.getValue(Prof.class);
                 descPPTV.setText("תיאור: " + profile.getDesc());
                 //Add categories
                 ArrayList<Integer> cats = (ArrayList<Integer>) profile.getCategory();

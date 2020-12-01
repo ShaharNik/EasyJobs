@@ -1,8 +1,9 @@
 package com.example.easyjobs.Objects;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Prof {
+public class Prof implements Serializable {
     String prof_ID;
     String User_ID;
     String desc;

@@ -3,8 +3,10 @@ package com.example.easyjobs.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,14 +33,19 @@ public class JobProfileActivity extends AppCompatActivity {
     private TextView datesJPTV;
     private TextView phoneJPTV;
 
+    private Button adminBanJob;
+    private Button adminEditJob;
+
+    private Job job;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_profile);
 
         findViews();
-        activateBackButton();
         setDataFromDB();
+        activateButtons();
     }
 
     private void setDataFromDB(){
@@ -46,7 +53,7 @@ public class JobProfileActivity extends AppCompatActivity {
         drJobs.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Job job = snapshot.getValue(Job.class);
+                job = snapshot.getValue(Job.class);
                 descJPTV.setText("תיאור: " + job.getDesc());
                 locationJPTV.setText("מיקום עבודה: " + job.getLocation());
                 priceJPTV.setText("מחיר: " + job.getPrice() + " שח");
@@ -78,13 +85,34 @@ public class JobProfileActivity extends AppCompatActivity {
         priceJPTV = findViewById(R.id.priceJP);
         datesJPTV = findViewById(R.id.dateJP);
         phoneJPTV = findViewById(R.id.phoneJP);
+
+        adminBanJob = findViewById(R.id.admin_ban_jobAsker);
+        adminEditJob = findViewById(R.id.admin_edit_job);
     }
 
-    private void activateBackButton(){
+    private void activateButtons(){
         backBJP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 JobProfileActivity.super.onBackPressed();
+            }
+        });
+/*
+        adminEditJob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(JobProfileActivity.this, AdminEditPostActivity.class);
+                i.putExtra("Job", job);
+                startActivity(i);
+            }
+        });
+*/
+        adminBanJob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Ban user
+
+                // We want to disable his posts for other users (Jobs and Posts)
             }
         });
     }

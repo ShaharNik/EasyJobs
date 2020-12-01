@@ -1,8 +1,9 @@
 package com.example.easyjobs.Objects;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Job {
+public class Job implements Serializable {
 
     String job_ID;
     String User_ID;
