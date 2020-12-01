@@ -43,6 +43,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class JobsListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -223,7 +225,10 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot s : snapshot.getChildren()) {
-                    JobList.add(s.getValue(PremiumJob.class));
+                    PremiumJob pj = s.getValue(PremiumJob.class);
+                    if(pj.getEndDate().after(Calendar.getInstance().getTime())) {
+                        JobList.add(pj);
+                    }
                 }
                 for (PremiumJob pj : JobList) {
                     DatabaseReference dr = FirebaseDBUsers.getUserByID(pj.getUser_ID());
@@ -269,7 +274,10 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                 for (DataSnapshot s : snapshot.getChildren()) {
                     s.child("category_ID").getValue();
                     if(((String)s.child("category_ID").getValue()).compareTo(x.getCategory_id())==0 ){
-                        JobList.add(s.getValue(PremiumJob.class));
+                        PremiumJob pj = s.getValue(PremiumJob.class);
+                        if(pj.getEndDate().after(Calendar.getInstance().getTime())) {
+                            JobList.add(s.getValue(PremiumJob.class));
+                        }
                     }
                 }
                 for (PremiumJob pj : JobList) {

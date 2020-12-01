@@ -140,11 +140,7 @@ public class FirebaseDBUsers {
                         String Usermail = s.child("email").getValue(String.class);
                         if(Usermail.compareTo(mail)==0)
                         {
-//                            User u = s.getValue(User.class);
                             FirebaseBaseModel.getRef().child("Admins").child(s.child("user_ID").getValue(String.class)).setValue(true);
-//                            System.out.println(u);
-//                            System.out.println("--------------");
-//                            System.out.println(s.child("user_ID").getValue(String.class));
                             break;
                         }
 

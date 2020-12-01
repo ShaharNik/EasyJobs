@@ -22,6 +22,11 @@ public class FirebaseDBProfs {
         return FirebaseBaseModel.getRef().child("Profs");
 
     }
+    public static void EditProf(String prof_id,String user_id, String desc, List<String> cats, String loc)
+    {
+        Prof p = new Prof(prof_id,user_id, desc, cats, loc);
+        FirebaseBaseModel.getRef().child("Profs").child(prof_id).setValue(p);
+    }
     public static void removeProf(String profID)
     {
         FirebaseBaseModel.getRef().child("Profs").child(profID).removeValue();

@@ -24,10 +24,12 @@ public class PremiumJob extends Job implements Comparable<PremiumJob>{
 
     @Override
     public int compareTo(PremiumJob o) {
-        //return 0; return
-       // return this.isPremium-o.isPremium;
-        return (o.isPremium == isPremium ? 0 : (isPremium ? -1 : 1));
-        //if(this.isPremium )
+        if(o.isPremium == isPremium)
+        {
+            return this.startDate.compareTo(o.startDate);
+        }
+        return isPremium ? -1 : 1;
+
     }
 
 }
