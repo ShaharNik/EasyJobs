@@ -158,6 +158,29 @@ public class FirebaseDBUsers {
         });
 
     }
+    public static void removeAdmin(String mail)
+    {
+        DatabaseReference dr = getAllusers();
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot s : snapshot.getChildren())
+                {
+                    String Usermail = s.child("email").getValue(String.class);
+                    if(Usermail.compareTo(mail)==0)
+                    {
+                        FirebaseBaseModel.getRef().child("Admins").child(s.child("user_ID").getValue(String.class)).removeValue();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     public static DatabaseReference CheckAdmin()
     {

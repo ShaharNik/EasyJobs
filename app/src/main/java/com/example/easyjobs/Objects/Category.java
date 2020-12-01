@@ -35,7 +35,11 @@ public class Category implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return  Integer.parseInt(this.getCategory_id()) - Integer.parseInt(((Category)o).getCategory_id());
-//        return  Integer.parseInt(((Category)o).getCategory_id()) -Integer.parseInt(this.getCategory_id()) ;
+        //TODO
+        if (this.cat_name.compareTo("כללי") == 0)
+            return 0;
+        //if (((Category)o).compareTo("כללי") == 0)
+        //    return 1;
+        return 1;
     }
 }
