@@ -160,7 +160,7 @@ public class RegisterActivity extends AppCompatActivity {
         System.err.println(user.getDisplayName()); // don't display asynchronic maybe
 
       //  FirebaseDBUsers UsersDB = new FirebaseDBUsers();
-        FirebaseDBUsers.addUserToDB(User_ID,fname,lname,phoneNumber,false);
+        FirebaseDBUsers.addUserToDB(User_ID,fname,lname,phoneNumber,false,user.getEmail());
     }
 
     private void premiumDialog(String fname,String lname) {

@@ -21,9 +21,9 @@ import java.util.HashMap;
 public class FirebaseDBUsers {
 
     public static boolean isAdmin;
-    public static void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium) {
+    public static void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium,String email) {
         //String id = idGenerator.tokenGenerator();
-        User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0, 0);
+        User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0, 0,email);
         FirebaseBaseModel.getRef().child("Users").child(User_ID).setValue(user);
     }
     public static void changeUserByID(User user) {
@@ -129,9 +129,34 @@ public class FirebaseDBUsers {
         });
     }
 
-    public static void makeNewAdmin(String Uid)
+    public static void makeNewAdmin(String mail)
     {
-        FirebaseBaseModel.getRef().child("Admins").child(Uid).setValue(true);
+        DatabaseReference dr = getAllusers();
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot s : snapshot.getChildren())
+                {
+                        String Usermail = s.child("email").getValue(String.class);
+                        if(Usermail.compareTo(mail)==0)
+                        {
+//                            User u = s.getValue(User.class);
+                            FirebaseBaseModel.getRef().child("Admins").child(s.child("user_ID").getValue(String.class)).setValue(true);
+//                            System.out.println(u);
+//                            System.out.println("--------------");
+//                            System.out.println(s.child("user_ID").getValue(String.class));
+                            break;
+                        }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     public static DatabaseReference CheckAdmin()
@@ -139,5 +164,10 @@ public class FirebaseDBUsers {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         return FirebaseBaseModel.getRef().child("Admins").child(uid);
     }
+    public static void banUserName(String uid)
+    {
+        //TODO to think if possible it is not possible without admin sdk
+    }
+
 
 }

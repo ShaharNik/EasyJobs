@@ -24,7 +24,7 @@ public class FirebaseDBProfs {
     }
     public static void removeProf(String profID)
     {
-        //TODO
+        FirebaseBaseModel.getRef().child("Profs").child(profID).removeValue();
     }
 
 

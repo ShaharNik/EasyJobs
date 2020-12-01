@@ -263,7 +263,6 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         recyclerView.setAdapter(JobAdapter);
         Category x = (Category)spinnerJL.getAdapter().getItem(chosenCategory);
         DatabaseReference dr = FirebaseDBJobs.getAllJobs();
-
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

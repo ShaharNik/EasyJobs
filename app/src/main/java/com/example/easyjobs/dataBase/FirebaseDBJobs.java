@@ -24,6 +24,7 @@ public class FirebaseDBJobs {
 
     public static void RemoveJob(String jobId)
     {
-        // TODO
+        FirebaseBaseModel.getRef().child("Jobs").child(jobId).removeValue();
+
     }
 }

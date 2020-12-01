@@ -1,5 +1,7 @@
 package com.example.easyjobs.dataBase;
 
+import com.example.easyjobs.Objects.Category;
+import com.example.easyjobs.utils.idGenerator;
 import com.google.firebase.database.DatabaseReference;
 
 public class FirebaseDBCategories {
@@ -12,10 +14,13 @@ public class FirebaseDBCategories {
         return FirebaseBaseModel.getRef().child("Categories");
     }
     public static void changeCatName(String catId,String newname){
-        //TODO
+        Category c = new Category(catId,newname);
+        FirebaseBaseModel.getRef().child("Categories").child(catId).setValue(c);
     }
     public static void addCat(String cat){
-        //TODO
+        String id = idGenerator.tokenGenerator();
+        Category c = new Category(id,cat);
+        FirebaseBaseModel.getRef().child("Categories").child(id).setValue(c);
     }
 
 }
