@@ -50,29 +50,28 @@
 
     <ScrollView
         android:id="@+id/ScrollViewPL"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/gradient_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profList_to_PostProf"
-        android:layout_marginTop="80dp"
-        app:layout_constraintVertical_bias="0.5">
+        app:layout_constraintTop_toBottomOf="@+id/pickCategoryProfList"
+        app:layout_constraintVertical_bias="0"
+        >
 
 
         <RelativeLayout
             android:id="@+id/activity_recycler_view_prof_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.digitstory.testapplication.RecyclerViewActivity">
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp"
+            >
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_prof_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/gradient_bg"
-                android:padding="5dp"
+
                 />
         </RelativeLayout>
     </ScrollView>

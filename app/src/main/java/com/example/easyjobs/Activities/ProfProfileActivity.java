@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProfProfileActivity extends AppCompatActivity {
 
@@ -51,9 +52,15 @@ public class ProfProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_prof_profile);
 
         findViews();
-        setDataFromDB();
         activateButtons();
         setRatingBarListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cleanTexts();
+        setDataFromDB();
     }
 
     private void findViews(){
@@ -68,7 +75,14 @@ public class ProfProfileActivity extends AppCompatActivity {
 
         adminEditProf = findViewById(R.id.admin_edit_prof);
     }
-
+    private void cleanTexts()
+    {
+        descPPTV.setText("");
+        catPPTV.setText("");
+        locationPPTV.setText("");
+        namesPPTV.setText("");
+        phonePPTV.setText("");
+    }
     private void setRatingBarListener()
     {
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -126,11 +140,11 @@ public class ProfProfileActivity extends AppCompatActivity {
                 profile = snapshot.getValue(Prof.class);
                 descPPTV.setText("תיאור: " + profile.getDesc());
                 //Add categories
-                ArrayList<String> cats = (ArrayList<String>) profile.getCategory();
+                List<String> cats = profile.getCategory();
                 DatabaseReference catDR;
                 for (int i=0; i<cats.size(); i++){
                     final int x = i;
-                    catDR = FirebaseDBCategories.getCatByID("\"" + cats.get(i) + "\"");
+                    catDR = FirebaseDBCategories.getCatByID(cats.get(i));
                     catDR.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,7 +46,8 @@ public class profAdapter extends RecyclerView.Adapter<profAdapter.ViewHolder> {
             view = LayoutInflater.from(context).inflate(R.layout.profs_feed_layout, parent, false);
         } else { // for email layout
             view = LayoutInflater.from(context).inflate(R.layout.profs_feed_layout, parent, false);
-            view.setBackgroundColor(Color.YELLOW);
+            LinearLayout LL = view.findViewById(R.id.ProfLayout);
+            LL.setBackgroundColor(Color.rgb(233,237,180));
         }
         return new profAdapter.ViewHolder(view);
     }

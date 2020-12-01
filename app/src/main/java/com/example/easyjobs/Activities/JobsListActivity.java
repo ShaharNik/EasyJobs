@@ -239,7 +239,6 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                             pj.setPremium(snapshot.getValue(Boolean.class));
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                 JobList.sort(PremiumJob::compareTo);
-                                System.out.println("Doing comere");
                                 System.out.println(JobList.toString());
                             }
                             JobAdapter.notifyDataSetChanged();
@@ -268,6 +267,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         recyclerView.setAdapter(JobAdapter);
         Category x = (Category)spinnerJL.getAdapter().getItem(chosenCategory);
         DatabaseReference dr = FirebaseDBJobs.getAllJobs();
+
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

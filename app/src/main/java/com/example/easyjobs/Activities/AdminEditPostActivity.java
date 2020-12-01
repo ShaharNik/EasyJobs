@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AdminEditPostActivity extends AppCompatActivity {
 
@@ -79,24 +81,24 @@ public class AdminEditPostActivity extends AppCompatActivity {
         rateText.setText(user.getRating()+ " ("+ user.getRatingsAmount()+")");
         descText.setText(prof.getDesc());
 
-        DatabaseReference catDR;
-        for (int i=0; i<prof.getCategory().size(); i++){
-            final int x = i;
-            catDR = FirebaseDBCategories.getCatByID("\"" + prof.getCategory().get(i) + "\"");
-            catDR.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Category c = snapshot.getValue(Category.class);
-                    oldCatList.add(c);
-                    catText.setText(catText.getText().toString() + c.getCat_name());
-                    if (x < prof.getCategory().size() - 1){
-                        catText.setText(catText.getText().toString() + ", ");
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) { }
-            });
-        }
+//        DatabaseReference catDR;
+//        for (int i=0; i<prof.getCategory().size(); i++){
+//            final int x = i;
+//            catDR = FirebaseDBCategories.getCatByID("\"" + prof.getCategory().get(i) + "\"");
+//            catDR.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    Category c = snapshot.getValue(Category.class);
+//                    oldCatList.add(c);
+//                    catText.setText(catText.getText().toString() + c.getCat_name());
+//                    if (x < prof.getCategory().size() - 1){
+//                        catText.setText(catText.getText().toString() + ", ");
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) { }
+//            });
+//        }
 
         locText.setText(prof.getLocation());
         phoneText.setText(user.getPhoneNumber());
@@ -108,24 +110,44 @@ public class AdminEditPostActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Category> items = new ArrayList<>();
+                ArrayList<Integer> itemIndexs = new ArrayList<Integer>();
+
+                int index=0;
                 for(DataSnapshot category : snapshot.getChildren()){
                     Category c = category.getValue(Category.class);
+                    if(prof.getCategory().contains(c.getCategory_id())) {
+                        oldCatList.add(c);
+                        catText.setText(catText.getText().toString() + c.getCat_name()+" ");
+                        itemIndexs.add(index);
+                    }
+                    index++;
                     items.add(c);
                 }
                 md = new MaterialDialog.Builder(AdminEditPostActivity.this).title("בחר קטגוריות").items(items).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                        catList.clear();
+                        catText.setText("");
                         for (Integer i : which) {
                             catList.add(items.get(i).getCategory_id());
+                            catText.setText(catText.getText().toString() + items.get(i).getCat_name()+" ");
                         }
                         return true;
                     }
                 }).positiveText("אישור").build();
+                Integer[] ArrayIndexs = new Integer[itemIndexs.size()];
+                ArrayIndexs = itemIndexs.toArray(ArrayIndexs);
+                itemIndexs.toArray(ArrayIndexs);
+                md.setSelectedIndices(ArrayIndexs);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("ASD");
+                catList.clear();
+                catText.setText("");
                 for (Category c : oldCatList){
                     catList.add(c.getCat_name());
+                    catText.setText(catText.getText().toString() + c.getCat_name()+ " ");
                 }
             }
         });
@@ -159,7 +181,8 @@ public class AdminEditPostActivity extends AppCompatActivity {
                     locText.setError("מיקום לא טוב");
                 }
                 if(changedIt){
-                    FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString());
+                    FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString(),AdminEditPostActivity.this);
+                    AdminEditPostActivity.super.onBackPressed();
                 }
             }
         });
