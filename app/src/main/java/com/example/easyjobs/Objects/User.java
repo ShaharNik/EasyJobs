@@ -1,6 +1,8 @@
 package com.example.easyjobs.Objects;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     String User_ID;
     String firstName;

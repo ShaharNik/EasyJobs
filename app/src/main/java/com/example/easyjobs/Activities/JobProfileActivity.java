@@ -33,10 +33,10 @@ public class JobProfileActivity extends AppCompatActivity {
     private TextView datesJPTV;
     private TextView phoneJPTV;
 
-    private Button adminBanJob;
     private Button adminEditJob;
 
     private Job job;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class JobProfileActivity extends AppCompatActivity {
                 drUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user = snapshot.getValue(User.class);
+                        user = snapshot.getValue(User.class);
                         namesJPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
                         phoneJPTV.setText("טלפון: " + user.getPhoneNumber());
                     }
@@ -86,7 +86,6 @@ public class JobProfileActivity extends AppCompatActivity {
         datesJPTV = findViewById(R.id.dateJP);
         phoneJPTV = findViewById(R.id.phoneJP);
 
-        adminBanJob = findViewById(R.id.admin_ban_jobAsker);
         adminEditJob = findViewById(R.id.admin_edit_job);
     }
 
@@ -97,31 +96,21 @@ public class JobProfileActivity extends AppCompatActivity {
                 JobProfileActivity.super.onBackPressed();
             }
         });
-        boolean adminFlag = FirebaseDBUsers.isAdmin;
-        if(adminFlag){
-            adminBanJob.setVisibility(View.VISIBLE);
+
+        if(FirebaseDBUsers.isAdmin){
             adminEditJob.setVisibility(View.VISIBLE);
         }
         else{
-            adminBanJob.setVisibility(View.INVISIBLE);
-            adminEditJob.setVisibility(View.INVISIBLE);
+            adminEditJob.setVisibility(View.GONE);
         }
-/*
+
         adminEditJob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(JobProfileActivity.this, AdminEditPostActivity.class);
+                Intent i = new Intent(JobProfileActivity.this, AdminEditJobActivity.class);
                 i.putExtra("Job", job);
+                i.putExtra("User", user);
                 startActivity(i);
-            }
-        });
-*/
-        adminBanJob.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ban user
-
-                // We want to disable his posts for other users (Jobs and Posts)
             }
         });
     }

@@ -40,10 +40,10 @@ public class ProfProfileActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private String ProfProfile_UserID;
 
-    private Button adminBanProf;
     private Button adminEditProf;
 
     private Prof profile;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,6 @@ public class ProfProfileActivity extends AppCompatActivity {
         phonePPTV = findViewById(R.id.phonePP);
         ratingBar = findViewById(R.id.ratingBarProfProfile);
 
-        adminBanProf = findViewById(R.id.admin_ban_prof);
         adminEditProf = findViewById(R.id.admin_edit_prof);
     }
 
@@ -93,7 +92,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void activateButtons(){
+    private void activateButtons() {
         backBPP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,31 +100,20 @@ public class ProfProfileActivity extends AppCompatActivity {
             }
         });
 
-        boolean adminFlag = FirebaseDBUsers.isAdmin;
-        if(adminFlag){
+        if (FirebaseDBUsers.isAdmin) {
             adminEditProf.setVisibility(View.VISIBLE);
-            adminBanProf.setVisibility(View.VISIBLE);
         }
-        else{
-            adminEditProf.setVisibility(View.INVISIBLE);
-            adminBanProf.setVisibility(View.INVISIBLE);
+        else {
+            adminEditProf.setVisibility(View.GONE);
         }
-/*
+
         adminEditProf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ProfProfileActivity.this, AdminEditPostActivity.class);
                 i.putExtra("Prof", profile);
+                i.putExtra("User", user);
                 startActivity(i);
-            }
-        });
-*/
-        adminBanProf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ban user
-
-                // We want to disable his posts for other users (Jobs and Posts)
             }
         });
     }
@@ -163,7 +151,7 @@ public class ProfProfileActivity extends AppCompatActivity {
                 drUser.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user = snapshot.getValue(User.class);
+                        user = snapshot.getValue(User.class);
                         ProfProfile_UserID = user.getUser_ID();
                         namesPPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
                         ratingPPTV.setText("דירוג: " + user.getRating()+ " ("+ user.getRatingsAmount()+")");
