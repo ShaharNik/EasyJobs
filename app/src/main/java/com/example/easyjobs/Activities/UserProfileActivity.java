@@ -46,6 +46,9 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         findViews(); // Find all TextViews By ID
+
+        if (FirebaseDBUsers.isAdmin == false)
+            AdminsButt.setVisibility(View.GONE);
         activateButtonsAndViews();
     }
 

@@ -54,13 +54,20 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
         removeFromCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!Validator.ValidateCategory(categoryName.getText().toString()))
+                if (!Validator.ValidateCategoryName(categoryName.getText().toString()))
                 {
                     categoryName.setError("שם הקטגוריה שהכנסת אינה תקינה");
                 }
                 else {
-                    // FirebaseDBCategories.removeCat(categoryName.getText().toString());
-                    Toast.makeText(AdminActivity.this, "הקטגוריה נמחקה בהצלחה", Toast.LENGTH_SHORT).show(); // maybe better to move to the function
+                    if (Validator.isStringExistsInAdapter(categoryName.getText().toString(), spinnerCA.getAdapter()))
+                    {
+                        categoryName.setError("שם הקטגוריה כבר קיים");
+                    }
+                    else {
+                        //TODO Send old Category ID and the new name. How to get catID?
+                        FirebaseDBCategories.changeCatName(catUID, categoryName.getText().toString());
+                        Toast.makeText(AdminActivity.this, "הקטגוריה נמחקה בהצלחה", Toast.LENGTH_SHORT).show(); // maybe better to move to the function
+                    }
                 }
             }
         });
@@ -70,12 +77,11 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
         addToCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!Validator.ValidateCategory(categoryName.getText().toString()))
+                if (!Validator.ValidateCategoryName(categoryName.getText().toString()))
                 {
                     categoryName.setError("שם הקטגוריה שהכנסת אינה תקינה");
                 }
                 else {
-                    // TODO make this in validotr need to check 1 by 1 ((ArrayList<Category>)spinnerCA.getAdapter()).contains(categoryName.getText().toString())
                     if (Validator.isStringExistsInAdapter(categoryName.getText().toString(), spinnerCA.getAdapter()))
                     {
                         categoryName.setError("שם הקטגוריה כבר קיים");
@@ -96,12 +102,10 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
             public void onClick(View view) {
                 if (!Validator.ValidateUserEmail(emailToAdmin.getText().toString()))
                     emailToAdmin.setError("האימייל שהזנת אינו תקין!");
-                else
-                {
-                    // TODO How to Have the user UID by The user email??
-                    String userEmailToAdmin = emailToAdmin.getText().toString();
-                    String userID = "How to get it by user email ?";
-                    FirebaseDBUsers.makeNewAdmin(userID);
+                else {
+                    if (Validator.isStringExistsInAdapter(categoryName.getText().toString(), spinnerCA.getAdapter())) {
+                        FirebaseDBUsers.makeNewAdmin(emailToAdmin.getText().toString());
+                    }
                 }
             }});
     }

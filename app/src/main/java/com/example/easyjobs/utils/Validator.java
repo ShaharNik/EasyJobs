@@ -98,7 +98,7 @@ public class Validator {
         return true;
     }
 
-    public static boolean ValidateCategory(String catName) {
+    public static boolean ValidateCategoryName(String catName) {
         System.err.println(catName);
         if (catName.length() < 3) {
             return false;
@@ -112,7 +112,7 @@ public class Validator {
 
     public static boolean isStringExistsInAdapter(String categoryName, SpinnerAdapter adapter)
     {
-        for (int i = 0; i< adapter.getCount(); i++)
+        for (int i = 0; i < adapter.getCount(); i++)
         {
             Category cat = (Category)adapter.getItem(i);
             if (cat.equals(categoryName))
