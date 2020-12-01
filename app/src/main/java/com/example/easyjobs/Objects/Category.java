@@ -28,6 +28,10 @@ public class Category implements Comparable {
         this.cat_name = cat_name;
     }
 
+    @Override
+    public String toString() {
+        return cat_name;
+    }
 
     @Override
     public int compareTo(Object o) {

@@ -11,4 +11,10 @@ public class FirebaseDBCategories {
     public static DatabaseReference getAllCat(){
         return FirebaseBaseModel.getRef().child("Categories");
     }
+    public static void changeCatName(String catId,String newname){
+        //TODO
+    }
+    public static void addCat(String cat){
+        //TODO
+    }
 }

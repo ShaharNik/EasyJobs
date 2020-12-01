@@ -1,5 +1,6 @@
 package com.example.easyjobs.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -14,8 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.easyjobs.R;
+import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private TextView welcomeText;
@@ -36,22 +42,13 @@ public class MainActivity extends AppCompatActivity {
         setLogoSize();
         activateButtonsAndViews();
         logedInModifier();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null){ // logged in
-            String disp_name = user.getDisplayName();
-            welcomeText.setText("שלום, " + disp_name + " :)");
-            loginT.setText("פרופיל");
-        }
-        else{
-            welcomeText.setText("שלום, אורח :)");
-            loginT.setText("התחבר/הירשם");
-        }
+        logedInModifier();
     }
 
     private void findViews(){
@@ -113,6 +110,26 @@ public class MainActivity extends AppCompatActivity {
             String disp_name = user.getDisplayName();
             welcomeText.setText("שלום, " + disp_name + " :)");
             loginT.setText("פרופיל");
+            DatabaseReference dr = FirebaseDBUsers.CheckAdmin();
+            dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists())
+                    {
+                        FirebaseDBUsers.isAdmin=true;
+                        System.out.println("ADMIN OKAY");
+                    }
+                    else
+                    {
+                        FirebaseDBUsers.isAdmin=false;
+                        System.out.println("NOT ADMIN OKAY");
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
         else{
             welcomeText.setText("שלום, אורח :)");

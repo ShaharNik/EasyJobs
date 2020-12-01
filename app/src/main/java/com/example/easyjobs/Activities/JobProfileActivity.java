@@ -97,6 +97,15 @@ public class JobProfileActivity extends AppCompatActivity {
                 JobProfileActivity.super.onBackPressed();
             }
         });
+        boolean adminFlag = FirebaseDBUsers.isAdmin;
+        if(adminFlag){
+            adminBanJob.setVisibility(View.VISIBLE);
+            adminEditJob.setVisibility(View.VISIBLE);
+        }
+        else{
+            adminBanJob.setVisibility(View.INVISIBLE);
+            adminEditJob.setVisibility(View.INVISIBLE);
+        }
 /*
         adminEditJob.setOnClickListener(new View.OnClickListener() {
             @Override

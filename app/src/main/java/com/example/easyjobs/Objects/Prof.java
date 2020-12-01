@@ -7,12 +7,12 @@ public class Prof implements Serializable {
     String prof_ID;
     String User_ID;
     String desc;
-    List<Integer> category;
+    List<String> category;
     String location;
 
     public Prof(){}
 
-    public Prof(String prof_ID, String user_ID, String desc, List<Integer> category, String location) {
+    public Prof(String prof_ID, String user_ID, String desc, List<String> category, String location) {
         this.prof_ID = prof_ID;
         User_ID = user_ID;
         this.desc = desc;
@@ -20,7 +20,7 @@ public class Prof implements Serializable {
         this.location = location;
     }
 
-    public Prof(String user_ID, String desc, List<Integer> category, String location) {// Don't know if required
+    public Prof(String user_ID, String desc, List<String> category, String location) {// Don't know if required
         User_ID = user_ID;
         this.desc = desc;
         this.category = category;
@@ -45,11 +45,11 @@ public class Prof implements Serializable {
         this.desc = desc;
     }
 
-    public List<Integer> getCategory() {
+    public List<String> getCategory() {
         return category;
     }
 
-    public void setCategory(List<Integer> category) {
+    public void setCategory(List<String> category) {
         this.category = category;
     }
 

@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class FirebaseDBJobs {
 
-    public static void addNewJob(String user_id, String desc, int price, String loc, Date startDate,Date endDate, int CatID){
+    public static void addNewJob(String user_id, String desc, int price, String loc, Date startDate,Date endDate, String CatID){
         String id = idGenerator.tokenGenerator();
         Job j = new Job(id, user_id, desc, price, loc, startDate,endDate, CatID);
         FirebaseBaseModel.getRef().child("Jobs").child(id).setValue(j);
@@ -20,5 +20,10 @@ public class FirebaseDBJobs {
 
     public static DatabaseReference getAllJobs(){
         return FirebaseBaseModel.getRef().child("Jobs");
+    }
+
+    public static void RemoveJob(String jobId)
+    {
+        // TODO
     }
 }

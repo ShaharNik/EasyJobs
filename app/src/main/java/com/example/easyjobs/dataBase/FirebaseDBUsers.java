@@ -10,6 +10,7 @@ import com.example.easyjobs.Objects.Rating;
 import com.example.easyjobs.Objects.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 
 public class FirebaseDBUsers {
 
+    public static boolean isAdmin;
     public static void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium) {
         //String id = idGenerator.tokenGenerator();
         User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0, 0);
@@ -126,9 +128,18 @@ public class FirebaseDBUsers {
             }
         });
     }
-    public static boolean isAdmin(String Uid)
+
+    public static void makeNewAdmin(String Uid)
     {
-        return true;
+        FirebaseBaseModel.getRef().child("Admins").child(Uid).setValue(true);
     }
+
+    public static DatabaseReference CheckAdmin()
+    {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return FirebaseBaseModel.getRef().child("Admins").child(uid);
+    }
+
+
 
 }

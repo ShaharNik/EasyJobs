@@ -15,11 +15,11 @@ public class Job implements Serializable {
 
 
     /// PICTURE
-    int category_ID;
+    String category_ID;
 
     public Job(){}
 
-    public Job(String job_ID, String user_ID, String desc, int price, String location, Date startDate,Date endDate, int category_ID) {
+    public Job(String job_ID, String user_ID, String desc, int price, String location, Date startDate,Date endDate, String category_ID) {
         this.job_ID = job_ID;
         User_ID = user_ID;
         this.desc = desc;
@@ -30,7 +30,7 @@ public class Job implements Serializable {
         this.category_ID = category_ID;
     }
 
-    public Job(String user_ID, String desc, int price, String location, Date date, int category_ID) {// Don't know if required
+    public Job(String user_ID, String desc, int price, String location, Date date, String category_ID) {// Don't know if required
         User_ID = user_ID;
         this.desc = desc;
         this.price = price;
@@ -79,11 +79,11 @@ public class Job implements Serializable {
         this.location = location;
     }
 
-    public int getCategory_ID() {
+    public String getCategory_ID() {
         return category_ID;
     }
 
-    public void setCategory_ID(int category_ID) {
+    public void setCategory_ID(String category_ID) {
         this.category_ID = category_ID;
     }
 

@@ -101,7 +101,7 @@ public class ProfProfileActivity extends AppCompatActivity {
             }
         });
 
-        boolean adminFlag = FirebaseDBUsers.isAdmin("");
+        boolean adminFlag = FirebaseDBUsers.isAdmin;
         if(adminFlag){
             adminEditProf.setVisibility(View.VISIBLE);
             adminBanProf.setVisibility(View.VISIBLE);
@@ -138,7 +138,7 @@ public class ProfProfileActivity extends AppCompatActivity {
                 profile = snapshot.getValue(Prof.class);
                 descPPTV.setText("תיאור: " + profile.getDesc());
                 //Add categories
-                ArrayList<Integer> cats = (ArrayList<Integer>) profile.getCategory();
+                ArrayList<String> cats = (ArrayList<String>) profile.getCategory();
                 DatabaseReference catDR;
                 for (int i=0; i<cats.size(); i++){
                     final int x = i;

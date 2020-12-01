@@ -183,14 +183,14 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                     Category c = category.getValue(Category.class);
                     items.add(c);
                 }
-                Category[] catArray = new Category[items.size()];
-                items.toArray(catArray);
-                Arrays.sort(catArray);
-                ArrayList<String> str = new ArrayList<>();
-                for(int i=0;i<catArray.length;i++) {
-                    str.add(catArray[i].getCat_name());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(JobsListActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
+//                Category[] catArray = new Category[items.size()];
+//                items.toArray(catArray);
+//                Arrays.sort(catArray);
+//                ArrayList<Category> str = new ArrayList<>();
+//                for(int i=0;i<catArray.length;i++) {
+//                    str.add(catArray[i]);
+//                }
+                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(JobsListActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
                 spinnerJL.setAdapter(adapter);
             }
             @Override
@@ -261,7 +261,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         JobList = new ArrayList<>();
         JobAdapter = new JobAdapter(JobsListActivity.this);
         recyclerView.setAdapter(JobAdapter);
-
+        Category x = (Category)spinnerJL.getAdapter().getItem(chosenCategory);
         DatabaseReference dr = FirebaseDBJobs.getAllJobs();
 
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -269,7 +269,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot s : snapshot.getChildren()) {
                     s.child("category_ID").getValue();
-                    if((long)s.child("category_ID").getValue() == chosenCategory){
+                    if(((String)s.child("category_ID").getValue()).compareTo(x.getCategory_id())==0 ){
                         JobList.add(s.getValue(PremiumJob.class));
                     }
                 }
@@ -282,8 +282,6 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                             pj.setPremium(snapshot.getValue(Boolean.class));
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                 JobList.sort(PremiumJob::compareTo);
-                                System.out.println("Doing comere");
-                                System.out.println(JobList.toString());
                             }
                             JobAdapter.notifyDataSetChanged();
                         }

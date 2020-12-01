@@ -59,7 +59,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     private Spinner spinnerPJ;
     private Date startD;
     private Date endD;
-    private int catNum = 0;
+    private String catNum = "0";
 
     private FirebaseAuth mAuth;
 
@@ -149,14 +149,14 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
                     Category c = category.getValue(Category.class);
                     items.add(c);
                 }
-                Category[] catArray = new Category[items.size()];
+              /*  Category[] catArray = new Category[items.size()];
                 items.toArray(catArray);
                 Arrays.sort(catArray);
                 ArrayList<String> str = new ArrayList<>();
                 for(int i=0;i<catArray.length;i++) {
                     str.add(catArray[i].getCat_name());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(PostJobActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
+                }*/
+                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(PostJobActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
                 spinnerPJ.setAdapter(adapter);
             }
             @Override
@@ -200,11 +200,11 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-        catNum = position;
+        catNum = ((Category)spinnerPJ.getAdapter().getItem(position)).getCategory_id();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        catNum = 0;
+        catNum = "0";
     }
 }

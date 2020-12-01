@@ -182,14 +182,14 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
                     Category c = category.getValue(Category.class);
                     items.add(c);
                 }
-                Category[] catArray = new Category[items.size()];
-                items.toArray(catArray);
-                Arrays.sort(catArray);
-                ArrayList<String> str = new ArrayList<>();
-                for(int i=0;i<catArray.length;i++) {
-                    str.add(catArray[i].getCat_name());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ProfListActivity.this, android.R.layout.simple_spinner_dropdown_item, str);
+//                Category[] catArray = new Category[items.size()];
+//                items.toArray(catArray);
+//                Arrays.sort(catArray);
+//                ArrayList<String> str = new ArrayList<>();
+//                for(int i=0;i<catArray.length;i++) {
+//                    str.add(catArray[i].getCat_name());
+//                }
+                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(ProfListActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
                 spinnerPL.setAdapter(adapter);
             }
             @Override
@@ -212,6 +212,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
 
     private void initAll() {
         ProfList = new ArrayList<>();
+
         ProfAdapter=new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
         DatabaseReference dr = FirebaseDBProfs.getAllProfs();
@@ -251,7 +252,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         ProfList = new ArrayList<>();
         ProfAdapter=new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
-
+        Category x= (Category)spinnerPL.getAdapter().getItem(chosenCategory);
       //  FirebaseDBProfs dbdbj = new FirebaseDBProfs();
         DatabaseReference dr = FirebaseDBProfs.getAllProfs();
 
@@ -262,10 +263,10 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
                     DataSnapshot categories = s.child("category");
 
                     // Passing all the Categories as an ArrayList
-                    GenericTypeIndicator<ArrayList<Integer>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Integer>>() {};
-                    ArrayList<Integer> categoriesList = categories.getValue(genericTypeIndicator );
+                    GenericTypeIndicator<ArrayList<String>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<String>>() {};
+                    ArrayList<String> categoriesList = categories.getValue(genericTypeIndicator );
 
-                    if(categoriesList.contains(chosenCategory)){
+                    if(categoriesList.contains(x.getCategory_id() )){
                         ProfList.add(s.getValue(PremiumProf.class));
                     }
                     for (PremiumProf PP : ProfList) {

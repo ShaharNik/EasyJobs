@@ -8,7 +8,7 @@ import java.util.List;
 
 public class FirebaseDBProfs {
 
-    public static void addNewProf(String user_id, String desc, List<Integer> cats, String loc){
+    public static void addNewProf(String user_id, String desc, List<String> cats, String loc){
         String id = idGenerator.tokenGenerator();
         Prof p = new Prof(id,user_id, desc, cats, loc);
         FirebaseBaseModel.getRef().child("Profs").child(id).setValue(p);
@@ -22,5 +22,10 @@ public class FirebaseDBProfs {
         return FirebaseBaseModel.getRef().child("Profs");
 
     }
+    public static void removeProf(String profID)
+    {
+        //TODO
+    }
+
 
 }

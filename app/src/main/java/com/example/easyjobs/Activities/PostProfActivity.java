@@ -32,19 +32,18 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class PostProfActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class PostProfActivity extends AppCompatActivity {
 
     private ImageView backBPP;
 
     private Button spinnerPP;
-    private int catNum = 0;
     private EditText descED;
     private EditText locED;
     private EditText IdED;
     private FirebaseAuth mAuth;
     private Button postProfB;
     private MaterialDialog md;
-    private ArrayList<Integer> CatChosen;
+    private ArrayList<String> CatChosen;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,23 +96,23 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
                     Category c = category.getValue(Category.class);
                     items.add(c);
                 }
-                Category[] catArray = new Category[items.size()];
-                items.toArray(catArray);
-                Arrays.sort(catArray);
-                ArrayList<String> str = new ArrayList<>();
-                for(int i=0;i<catArray.length;i++)
-                {
-                    str.add(catArray[i].getCat_name());
-                }
+//                Category[] catArray = new Category[items.size()];
+//                items.toArray(catArray);
+//                Arrays.sort(catArray);
+//                ArrayList<String> str = new ArrayList<>();
+//                for(int i=0;i<catArray.length;i++)
+//                {
+//                    str.add(catArray[i].getCat_name());
+//                }
                 md = new MaterialDialog.Builder(PostProfActivity.this)
                         .title("בחר קטגוריות")
-                        .items(str)
+                        .items(items)
                         .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
                                 for (Integer i :
                                         which) {
-                                    CatChosen.add(i);
+                                    CatChosen.add(items.get(i).getCategory_id());
                                 }
 
                                 return true;
@@ -157,15 +156,5 @@ public class PostProfActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-        catNum = position;//Need to make it multiple choice.
-    }
-
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        catNum = 0;
-    }
 
 }
