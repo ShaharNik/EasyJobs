@@ -2,14 +2,14 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="5dp"
+    app:cardCornerRadius="10dp"
     android:layout_margin="3dp"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/gradient_bg">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:padding="15dp"
@@ -18,19 +18,23 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/prof_logo" />
+            android:src="@drawable/prof_logo"
+            android:contentDescription="STFU" />
 
         <RelativeLayout
             android:layout_width="312dp"
             android:layout_height="90dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             >
 
             <TextView
                 android:id="@+id/Prof_desc"
-                android:layout_width="321dp"
+                android:layout_width="match_parent"
+
                 android:layout_height="47dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+
+                android:layout_marginEnd="17dp"
                 android:text="בדיקה"
                 android:textColor="#3498DB"
                 android:textSize="18sp" />
@@ -40,9 +44,9 @@
                 android:layout_width="321dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/Prof_desc"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="2dp"
-                android:layout_marginRight="0dp"
+                android:layout_marginEnd="0dp"
                 android:text="TEST TEST TEST"
                 android:textColor="#3498DB"
                 android:textSize="18sp" />

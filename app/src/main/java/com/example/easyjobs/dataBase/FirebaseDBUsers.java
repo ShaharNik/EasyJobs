@@ -126,5 +126,9 @@ public class FirebaseDBUsers {
             }
         });
     }
+    public static boolean isAdmin(String Uid)
+    {
+        return true;
+    }
 
 }

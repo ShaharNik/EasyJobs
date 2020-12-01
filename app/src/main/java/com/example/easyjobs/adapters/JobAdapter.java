@@ -61,7 +61,6 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
         }
         return new ViewHolder(view);
     }
- // implementation
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Job jobs = JobsFeed.get(position);

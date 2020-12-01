@@ -69,6 +69,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
 
         findViews();
         activateButtonsAndViews();
+
     }
 
     @Override

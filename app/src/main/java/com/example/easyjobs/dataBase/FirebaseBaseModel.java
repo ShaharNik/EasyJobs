@@ -14,6 +14,7 @@ public class FirebaseBaseModel {
         if(ref == null)
         {
             ref = FirebaseDatabase.getInstance().getReference();
+
         }
         return ref;
     }

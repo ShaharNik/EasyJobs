@@ -114,6 +114,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View v) {
                 fa = FirebaseAuth.getInstance();
+
                 FirebaseUser user = fa.getCurrentUser();
                 if(user!=null){
                     moveToPostJob();
