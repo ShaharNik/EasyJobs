@@ -1,8 +1,10 @@
 package com.example.easyjobs.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -62,7 +64,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
         BackButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               AdminActivity.super.onBackPressed();
+                AdminActivity.super.onBackPressed();
             }
         });
     }
@@ -81,9 +83,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                         categoryName.setError("שם הקטגוריה כבר קיים");
                     }
                     else {
-                        FirebaseDBCategories.changeCatName(catUID, categoryName.getText().toString());
-                        setUpCategoriesSpinner();
-                        Toast.makeText(AdminActivity.this, "הקטגוריה נערכה בהצלחה", Toast.LENGTH_SHORT).show(); // maybe better to move to the function
+                        areYouSureDialog("עריכת קטגוריה");
                     }
                 }
             }
@@ -104,9 +104,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                         categoryName.setError("שם הקטגוריה כבר קיים");
                     }
                     else {
-                        FirebaseDBCategories.addCat(categoryName.getText().toString());
-                        setUpCategoriesSpinner();
-                        Toast.makeText(AdminActivity.this, "הקטגוריה נוספה בהצלחה", Toast.LENGTH_SHORT).show();// maybe better to move to the function
+                        areYouSureDialog("הוספת קטגוריה");
                     }
                 }
             }
@@ -124,8 +122,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                     emailToAdmin.setError("האימייל שהזנת אינו תקין!");
                 }
                 else {
-                    FirebaseDBUsers.makeNewAdmin(emailToAdmin.getText().toString());
-                    Toast.makeText(AdminActivity.this, "האדמין נוסף בהצלחה", Toast.LENGTH_SHORT).show();
+                    areYouSureDialog("הוספת אדמין חדש");
                 }
             }});
     }
@@ -145,15 +142,53 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                         Toast.makeText(AdminActivity.this, "למה שתמחוק לעצמך הרשאת מנהל?!", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        // TODO dialog "are you sure?"
-                        FirebaseDBUsers.removeAdmin(emailToAdmin.getText().toString());
-                        Toast.makeText(AdminActivity.this, "הורדת הרשאת מנהל בוצעה בהצלחה", Toast.LENGTH_SHORT).show();
+                        areYouSureDialog("מחיקת אדמין");
                     }
                 }
             }
         });
     }
+    private void areYouSureDialog(String action)
+    {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        if (action.compareTo("הוספת אדמין חדש") == 0) {
+                            FirebaseDBUsers.makeNewAdmin(emailToAdmin.getText().toString());
+                            Toast.makeText(AdminActivity.this, "האדמין נוסף בהצלחה", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (action.compareTo("מחיקת אדמין") == 0)
+                        {
+                            FirebaseDBUsers.removeAdmin(emailToAdmin.getText().toString());
+                            Toast.makeText(AdminActivity.this, "הורדת הרשאת מנהל בוצעה בהצלחה", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (action.compareTo("הוספת קטגוריה") == 0)
+                        {
+                            FirebaseDBCategories.addCat(categoryName.getText().toString());
+                            setUpCategoriesSpinner();
+                            Toast.makeText(AdminActivity.this, "הקטגוריה נוספה בהצלחה", Toast.LENGTH_SHORT).show();// maybe better to move to the function
+                        }
+                        else if (action.compareTo("עריכת קטגוריה") == 0) {
+                            FirebaseDBCategories.changeCatName(catUID, categoryName.getText().toString());
+                            setUpCategoriesSpinner();
+                            Toast.makeText(AdminActivity.this, "הקטגוריה נערכה בהצלחה", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
 
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AdminActivity.this);
+        builder.setMessage("האם אתה בטוח?").setPositiveButton("כן", dialogClickListener)
+                .setNegativeButton("לא", dialogClickListener).show();
+    }
     private void findViews()
     {
         emailToAdmin = findViewById(R.id.emailForAdmin);
