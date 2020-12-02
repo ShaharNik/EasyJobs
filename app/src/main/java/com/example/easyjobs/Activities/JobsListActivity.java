@@ -67,13 +67,14 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_jobs_list);
 
         findViews();
-        activateButtonsAndViews();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        spinnerJL.setSelection(0); // Important - setting up new jobs and fix flickering
+        activateButtonsAndViews();
+         // Important - setting up new jobs and fix flickering
 
     }
 
@@ -239,8 +240,8 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                             pj.setPremium(snapshot.getValue(Boolean.class));
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                 JobList.sort(PremiumJob::compareTo);
-                                System.out.println(JobList.toString());
                             }
+
                             JobAdapter.notifyDataSetChanged();
                         }
 
@@ -251,9 +252,10 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                     });
                 }
                 //JobList.sort(compareTo);
-
                 JobAdapter.setJobsFeed(JobList);
-                JobAdapter.notifyDataSetChanged();
+
+
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}

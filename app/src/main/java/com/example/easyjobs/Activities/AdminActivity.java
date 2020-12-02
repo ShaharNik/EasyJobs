@@ -131,7 +131,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
         removeAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                emailToAdmin.setText("");
+
                 if (!Validator.ValidateUserEmail(emailToAdmin.getText().toString())) {
                     emailToAdmin.setError("האימייל שהזנת אינו תקין!");
                 }
@@ -163,6 +163,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                         else if (action.compareTo("מחיקת אדמין") == 0)
                         {
                             FirebaseDBUsers.removeAdmin(emailToAdmin.getText().toString());
+                            emailToAdmin.setText("");
                             Toast.makeText(AdminActivity.this, "הורדת הרשאת מנהל בוצעה בהצלחה", Toast.LENGTH_SHORT).show();
                         }
                         else if (action.compareTo("הוספת קטגוריה") == 0)
@@ -199,6 +200,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
         removeFromCategory = findViewById(R.id.editFromCatButt);
         categoryName = findViewById(R.id.catEditText);
         BackButt = findViewById(R.id.back_admin_activity);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void setUpCategoriesSpinner(){

@@ -1,6 +1,7 @@
 package com.example.easyjobs.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -126,6 +127,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
                 else{
                     isPremium.setText("משתמש פרימיום: כן");
+                    UpgradeToPremium.setEnabled(false);
+                    UpgradeToPremium.setBackgroundColor(Color.GRAY);
                 }
 
                 email.setText("אימייל: " + user_email);

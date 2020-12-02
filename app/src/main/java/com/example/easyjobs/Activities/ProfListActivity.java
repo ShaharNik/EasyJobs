@@ -68,14 +68,14 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_prof_list);
 
         findViews();
-        activateButtonsAndViews();
+
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        spinnerPL.setSelection(0); // Important - setting up new jobs and fix flickering
+        activateButtonsAndViews(); // Important - setting up new jobs and fix flickering
 
     }
 
@@ -231,6 +231,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             PP.setPremium(snapshot.getValue(Boolean.class));
                             sortArray(ProfList);
+
                             ProfAdapter.notifyDataSetChanged();
                         }
 
@@ -241,7 +242,6 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
                     });
                 }
                 ProfAdapter.setProfsFeed(ProfList);
-                ProfAdapter.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
