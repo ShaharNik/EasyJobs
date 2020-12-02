@@ -39,6 +39,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
     private EditText locText;
     private TextView phoneText;
     private Button approveChanges;
+    private Button deletePost;
     private MaterialDialog md;
 
     private User user;
@@ -72,6 +73,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
         locText = findViewById(R.id.locationEP);
         phoneText = findViewById(R.id.phoneEP);
         approveChanges = findViewById(R.id.changeProfDetails);
+        deletePost = findViewById(R.id.deleteProfButton);
     }
 
     private void inputTempData() {

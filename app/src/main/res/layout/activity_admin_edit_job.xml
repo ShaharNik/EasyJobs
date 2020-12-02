@@ -22,6 +22,19 @@
         app:srcCompat="@drawable/back_button" />
 
     <TextView
+        android:id="@+id/namesEJperma"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="שם:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.10" />
+
+    <TextView
         android:id="@+id/namesEJ"
         android:layout_width="320dp"
         android:layout_height="41dp"
@@ -35,6 +48,19 @@
         app:layout_constraintVertical_bias="0.16" />
 
     <TextView
+        android:id="@+id/descriptionEJperma"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text=" תיאור:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.23" />
+
+    <EditText
         android:id="@+id/descriptionEJ"
         android:layout_width="320dp"
         android:layout_height="41dp"
@@ -48,6 +74,19 @@
         app:layout_constraintVertical_bias="0.29" />
 
     <TextView
+        android:id="@+id/locationEJperma"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="מיקום: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.36" />
+
+    <EditText
         android:id="@+id/locationEJ"
         android:layout_width="320dp"
         android:layout_height="41dp"
@@ -61,6 +100,20 @@
         app:layout_constraintVertical_bias="0.42" />
 
     <TextView
+        android:id="@+id/priceEJperma"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="מחיר: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.49"
+        android:textAlignment="viewEnd"/>
+
+    <EditText
         android:id="@+id/priceEJ"
         android:layout_width="320dp"
         android:layout_height="41dp"
@@ -72,6 +125,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.55" />
+
+    <TextView
+        android:id="@+id/dateEJperma"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="תאריך: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.62" />
 
     <TextView
         android:id="@+id/dateEJ"
@@ -87,7 +153,33 @@
         app:layout_constraintVertical_bias="0.68" />
 
     <TextView
-        android:id="@+id/phoneEJ"
+        android:id="@+id/catEJperma"
+        android:layout_width="320dp"
+        android:layout_height="41dp"
+        android:text="קטגוריה: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75" />
+
+    <Spinner
+        android:id="@+id/AdminPickCatEditJob"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.815" />
+
+    <TextView
+        android:id="@+id/catEJ"
         android:layout_width="320dp"
         android:layout_height="41dp"
         android:text=""
@@ -111,6 +203,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.93" />
+        app:layout_constraintVertical_bias="0.90" />
+
+    <Button
+        android:id="@+id/deleteJobButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="מחק מודעה"
+        android:background="@drawable/admin_button_pretty"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.98" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
