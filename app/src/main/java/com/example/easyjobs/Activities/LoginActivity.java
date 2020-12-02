@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.easyjobs.R;
+import com.example.easyjobs.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -35,33 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
         findViews();
         acvtivateButtonsAndViews();
-    }
-
-    public void moveToRegister(){
-        Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(i);
-    }
-
-
-
-    public void updateUI(FirebaseUser user) {
-        if(user != null) {
-            registerB.setEnabled(false);
-            registerB.setVisibility(View.GONE);
-            emailED.setEnabled(false);
-            pass.setEnabled(false);
-            resetButton.setVisibility(View.GONE);
-            resetButton.setEnabled(false);
-            LoginB.setText("התנתק");
-            LoginActivity.super.onBackPressed(); // get back
-        }
-        else
-        {
-            emailED.setError("שם משתמש או סיסמא אינם נכונים");
-            pass.setError("שם משתמש או סיסמא אינם נכונים");
-            pass.setText("");
-            emailED.setText("");
-        }
     }
 
     private void findViews(){
@@ -91,7 +65,12 @@ public class LoginActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToReset();
+                if(Validator.ValidateUserEmail(emailED.getText().toString())){
+                    mAuth.sendPasswordResetEmail(emailED.getText().toString());
+                }
+               else{
+                   emailED.setError("המייל שהזנת אינו תקין");
+                }
             }
         });
 
@@ -144,8 +123,28 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void moveToReset() {
-        Intent i = new Intent(LoginActivity.this, PassResetActivity.class);
+    public void updateUI(FirebaseUser user) {
+        if(user != null) {
+            registerB.setEnabled(false);
+            registerB.setVisibility(View.GONE);
+            emailED.setEnabled(false);
+            pass.setEnabled(false);
+            resetButton.setVisibility(View.GONE);
+            resetButton.setEnabled(false);
+            LoginB.setText("התנתק");
+            LoginActivity.super.onBackPressed(); // get back
+        }
+        else
+        {
+            emailED.setError("שם משתמש או סיסמא אינם נכונים");
+            pass.setError("שם משתמש או סיסמא אינם נכונים");
+            pass.setText("");
+            emailED.setText("");
+        }
+    }
+
+    public void moveToRegister(){
+        Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(i);
     }
 }
