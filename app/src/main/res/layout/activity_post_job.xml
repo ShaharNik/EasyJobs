@@ -8,7 +8,85 @@
     tools:context=".Activities.PostJobActivity">
 
 
+    <Button
+        android:id="@+id/postJobBtn"
+        android:layout_width="188dp"
+        android:layout_height="59dp"
+        android:background="@drawable/button_pretty"
+        android:text="פרסם עבודה"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.851" />
 
+    <Button
+        android:id="@+id/chooseDate_postJobButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_pretty"
+        android:text="בחר תאריך"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/pricePJ"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.278"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/datePJ"
+        app:layout_constraintVertical_bias="0.348" />
+
+    <EditText
+        android:id="@+id/editDescPJ"
+        android:layout_width="394dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:hint="תאר בקצרה את העבודה המבוקשת..."
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descPJ" />
+
+    <EditText
+        android:id="@+id/editLocPJ"
+        android:layout_width="394dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:hint="עיר..."
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locPJ"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <EditText
+        android:id="@+id/editPricePJ"
+        android:layout_width="210dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="תן הצעת מחיר ראשונית..."
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pricePJ" />
+
+    <EditText
+        android:id="@+id/dateEditTextPostJob"
+        android:layout_width="221dp"
+        android:layout_height="47dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.72"
+        app:layout_constraintStart_toEndOf="@+id/chooseDate_postJobButton"
+        tools:layout_editor_absoluteY="355dp" />
 
     <ImageView
         android:id="@+id/back_post_job"
@@ -24,21 +102,6 @@
         app:layout_constraintVertical_bias="0.022"
         app:srcCompat="@drawable/back_button" />
 
-    <TextView
-        android:id="@+id/PostJobDummy"
-        android:layout_width="231dp"
-        android:layout_height="63dp"
-        android:gravity="center"
-        android:text="פרסום עבודה"
-        android:textSize="40sp"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
     <Spinner
         android:id="@+id/pickCategoryPostJob"
         android:layout_width="180dp"
@@ -47,44 +110,48 @@
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintHorizontal_bias="0.969"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.139" />
+
+    <TextView
+        android:id="@+id/PostJobDummy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="פרסום עבודה"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.021" />
 
     <TextView
         android:id="@+id/descPJ"
         android:layout_width="163dp"
         android:layout_height="25dp"
         android:text="תיאור העבודה:"
-        android:textSize="20dp"
         android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.951"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.229" />
-
-    <EditText
-        android:id="@+id/editDescPJ"
-        android:layout_width="394dp"
-        android:layout_height="40dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="תאר בקצרה את העבודה המבוקשת..."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descPJ" />
 
     <TextView
         android:id="@+id/locPJ"
         android:layout_width="163dp"
         android:layout_height="25dp"
         android:text="מיקום:"
-        android:textSize="20dp"
         android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
@@ -92,101 +159,33 @@
         app:layout_constraintTop_toBottomOf="@+id/editDescPJ"
         app:layout_constraintVertical_bias="0.01" />
 
-    <EditText
-        android:id="@+id/editLocPJ"
-        android:layout_width="394dp"
-        android:layout_height="40dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="עיר..."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locPJ"
-        app:layout_constraintVertical_bias="0.01"/>
-
     <TextView
         android:id="@+id/datePJ"
         android:layout_width="163dp"
         android:layout_height="25dp"
         android:text="תאריכים מועדפים:"
-        android:textSize="20dp"
         android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.935"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editLocPJ"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.046" />
 
     <TextView
         android:id="@+id/pricePJ"
-        android:layout_width="163dp"
-        android:layout_height="25dp"
+        android:layout_width="158dp"
+        android:layout_height="41dp"
         android:text="הצעת מחיר:"
-        android:textSize="20dp"
         android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.936"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/datePJ"
-        app:layout_constraintVertical_bias="0.12" />
-
-    <EditText
-        android:id="@+id/editPricePJ"
-        android:layout_width="210dp"
-        android:layout_height="45dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="תן הצעת מחיר ראשונית..."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.96"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pricePJ" />
-
-    <Button
-        android:id="@+id/postJobBtn"
-        android:layout_width="188dp"
-        android:layout_height="59dp"
-        android:text="פרסם עבודה"
-        android:background="@drawable/button_pretty"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.851" />
-
-    <EditText
-        android:id="@+id/dateEditTextPostJob"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="date"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/chooseDate_postJobButton"
-        app:layout_constraintHorizontal_bias="0.129"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editLocPJ"
-        app:layout_constraintVertical_bias="0.079" />
-
-    <Button
-        android:id="@+id/chooseDate_postJobButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="בחר תאריך"
-        android:background="@drawable/button_pretty"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/pricePJ"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.894"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/datePJ" />
+        app:layout_constraintVertical_bias="0.25" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
