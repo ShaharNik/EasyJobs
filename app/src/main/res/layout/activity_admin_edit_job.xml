@@ -19,7 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022"
-        app:srcCompat="@drawable/back_button" />
+        app:srcCompat="@drawable/back_button"
+        />
 
     <TextView
         android:id="@+id/namesEJperma"
@@ -32,7 +33,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.10" />
+        app:layout_constraintVertical_bias="0.10"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/namesEJ"
@@ -45,7 +47,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.16" />
+        app:layout_constraintVertical_bias="0.16"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/descriptionEJperma"
@@ -58,7 +61,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.23" />
+        app:layout_constraintVertical_bias="0.23"
+        android:textAlignment="viewEnd"/>
 
     <EditText
         android:id="@+id/descriptionEJ"
@@ -71,7 +75,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.29" />
+        app:layout_constraintVertical_bias="0.29"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/locationEJperma"
@@ -84,7 +89,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.36" />
+        app:layout_constraintVertical_bias="0.36"
+        android:textAlignment="viewEnd"/>
 
     <EditText
         android:id="@+id/locationEJ"
@@ -97,7 +103,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.42" />
+        app:layout_constraintVertical_bias="0.42"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/priceEJperma"
@@ -117,14 +124,15 @@
         android:id="@+id/priceEJ"
         android:layout_width="320dp"
         android:layout_height="41dp"
-        android:text=" "
+        android:text=""
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.55" />
+        app:layout_constraintVertical_bias="0.55"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/dateEJperma"
@@ -137,7 +145,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.62" />
+        app:layout_constraintVertical_bias="0.62"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/dateEJ"
@@ -150,7 +159,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.68" />
+        app:layout_constraintVertical_bias="0.68"
+        android:textAlignment="viewEnd"/>
 
     <TextView
         android:id="@+id/catEJperma"
@@ -163,7 +173,8 @@
         app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.75"
+        android:textAlignment="viewEnd"/>
 
     <Spinner
         android:id="@+id/AdminPickCatEditJob"
@@ -176,20 +187,8 @@
         app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.815" />
-
-    <TextView
-        android:id="@+id/catEJ"
-        android:layout_width="320dp"
-        android:layout_height="41dp"
-        android:text=""
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.903"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.81" />
+        app:layout_constraintVertical_bias="0.815"
+        android:textAlignment="viewEnd"/>
 
     <Button
         android:id="@+id/changeJobDetails"

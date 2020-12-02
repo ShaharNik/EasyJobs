@@ -3,12 +3,15 @@ package com.example.easyjobs.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.easyjobs.Objects.Category;
@@ -16,6 +19,7 @@ import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
+import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +45,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
     private Button approveChanges;
     private Button deletePost;
     private MaterialDialog md;
+    private AlertDialog.Builder builder;
 
     private User user;
     private Prof prof;
@@ -61,6 +66,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
         inputTempData();
         setUpSpinner();
         activateButtons();
+        setupDialog();
     }
 
     private void findViews() {
@@ -74,6 +80,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
         phoneText = findViewById(R.id.phoneEP);
         approveChanges = findViewById(R.id.changeProfDetails);
         deletePost = findViewById(R.id.deleteProfButton);
+        builder = new AlertDialog.Builder(this);
     }
 
     private void inputTempData() {
@@ -126,6 +133,27 @@ public class AdminEditPostActivity extends AppCompatActivity {
         });
     }
 
+    private void setupDialog()
+    {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+
+                        FirebaseDBProfs.removeProf(prof.getProf_ID(),AdminEditPostActivity.this);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        Toast.makeText(AdminEditPostActivity.this, ":)", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+        builder.setMessage("האם אתה בטוח?").setPositiveButton("כן", dialogClickListener)
+                .setNegativeButton("לא", dialogClickListener);
+    }
+
     private void activateButtons() {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,8 +183,14 @@ public class AdminEditPostActivity extends AppCompatActivity {
                 }
                 if(changedIt){
                     FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString(),AdminEditPostActivity.this);
-                    AdminEditPostActivity.super.onBackPressed();
                 }
+            }
+        });
+
+        deletePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.show();
             }
         });
     }

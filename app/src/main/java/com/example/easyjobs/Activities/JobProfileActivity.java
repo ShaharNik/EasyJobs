@@ -44,8 +44,14 @@ public class JobProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_job_profile);
 
         findViews();
-        setDataFromDB();
+
         activateButtons();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setDataFromDB();
     }
 
     private void setDataFromDB(){
@@ -53,24 +59,33 @@ public class JobProfileActivity extends AppCompatActivity {
         drJobs.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                job = snapshot.getValue(Job.class);
-                descJPTV.setText("תיאור: " + job.getDesc());
-                locationJPTV.setText("מיקום עבודה: " + job.getLocation());
-                priceJPTV.setText("מחיר: " + job.getPrice() + " שח");
-                DateFormat df = new SimpleDateFormat("dd/MM/yy");
-                datesJPTV.setText("תאריך: "+ df.format(job.getStartDate())+" - " + df.format(job.getEndDate()));
-                DatabaseReference drUser = FirebaseDBUsers.getUserByID(job.getUser_ID());
-                drUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        user = snapshot.getValue(User.class);
-                        namesJPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
-                        phoneJPTV.setText("טלפון: " + user.getPhoneNumber());
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
 
+                job = snapshot.getValue(Job.class);
+                if(job == null)
+                {
+                    JobProfileActivity.this.onBackPressed();
+
+                }
+                else {
+                    descJPTV.setText("תיאור: " + job.getDesc());
+                    locationJPTV.setText("מיקום עבודה: " + job.getLocation());
+                    priceJPTV.setText("מחיר: " + job.getPrice() + " שח");
+                    DateFormat df = new SimpleDateFormat("dd/MM/yy");
+                    datesJPTV.setText("תאריך: " + df.format(job.getStartDate()) + " - " + df.format(job.getEndDate()));
+                    DatabaseReference drUser = FirebaseDBUsers.getUserByID(job.getUser_ID());
+                    drUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            user = snapshot.getValue(User.class);
+                            namesJPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
+                            phoneJPTV.setText("טלפון: " + user.getPhoneNumber());
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}

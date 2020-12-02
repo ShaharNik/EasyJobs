@@ -137,44 +137,54 @@ public class ProfProfileActivity extends AppCompatActivity {
         drProf.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 profile = snapshot.getValue(Prof.class);
-                descPPTV.setText("תיאור: " + profile.getDesc());
-                //Add categories
-                List<String> cats = profile.getCategory();
-                DatabaseReference catDR;
-                for (int i=0; i<cats.size(); i++){
-                    final int x = i;
-                    catDR = FirebaseDBCategories.getCatByID(cats.get(i));
-                    catDR.addListenerForSingleValueEvent(new ValueEventListener() {
+                if(profile == null)
+                {
+                    ProfProfileActivity.this.onBackPressed();
+                }
+                else {
+                    descPPTV.setText("תיאור: " + profile.getDesc());
+                    //Add categories
+                    List<String> cats = profile.getCategory();
+                    DatabaseReference catDR;
+                    for (int i = 0; i < cats.size(); i++) {
+                        final int x = i;
+                        catDR = FirebaseDBCategories.getCatByID(cats.get(i));
+                        catDR.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Category c = snapshot.getValue(Category.class);
+                                catPPTV.setText(catPPTV.getText().toString() + c.getCat_name());
+                                if (x < cats.size() - 1) {
+                                    catPPTV.setText(catPPTV.getText().toString() + ", ");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
+                    }
+                    //End adding
+                    locationPPTV.setText("איזור עבודה: " + profile.getLocation());
+
+                    DatabaseReference drUser = FirebaseDBUsers.getUserByID(profile.getUser_ID());
+                    drUser.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Category c = snapshot.getValue(Category.class);
-                            catPPTV.setText(catPPTV.getText().toString() + c.getCat_name());
-                            if (x<cats.size() - 1){
-                                catPPTV.setText(catPPTV.getText().toString() + ", ");
-                            }
+                            user = snapshot.getValue(User.class);
+                            ProfProfile_UserID = user.getUser_ID();
+                            namesPPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
+                            ratingPPTV.setText("דירוג: " + user.getRating() + " (" + user.getRatingsAmount() + ")");
+                            phonePPTV.setText("טלפון: " + user.getPhoneNumber());
                         }
+
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) { }
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
                     });
                 }
-                //End adding
-                locationPPTV.setText("איזור עבודה: " + profile.getLocation());
-
-                DatabaseReference drUser = FirebaseDBUsers.getUserByID(profile.getUser_ID());
-                drUser.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        user = snapshot.getValue(User.class);
-                        ProfProfile_UserID = user.getUser_ID();
-                        namesPPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
-                        ratingPPTV.setText("דירוג: " + user.getRating()+ " ("+ user.getRatingsAmount()+")");
-                        phonePPTV.setText("טלפון: " + user.getPhoneNumber());
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}

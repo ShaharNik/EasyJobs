@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.easyjobs.Activities.AdminEditPostActivity;
 import com.example.easyjobs.Activities.ProfProfileActivity;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.utils.idGenerator;
@@ -30,20 +31,26 @@ public class FirebaseDBProfs {
         return FirebaseBaseModel.getRef().child("Profs");
 
     }
-    public static void EditProf(String prof_id, String user_id, String desc, List<String> cats, String loc, Context c)
+    public static void EditProf(String prof_id, String user_id, String desc, List<String> cats, String loc, AdminEditPostActivity c)
     {
         Prof p = new Prof(prof_id,user_id, desc, cats, loc);
         FirebaseBaseModel.getRef().child("Profs").child(prof_id).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(c, "עודכן בהצלחה", Toast.LENGTH_SHORT).show();
+                c.onBackPressed();
 
             }
         });
     }
-    public static void removeProf(String profID)
+    public static void removeProf(String profID,AdminEditPostActivity c)
     {
-        FirebaseBaseModel.getRef().child("Profs").child(profID).removeValue();
+        FirebaseBaseModel.getRef().child("Profs").child(profID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                c.finish();
+            }
+        });
     }
 
 
