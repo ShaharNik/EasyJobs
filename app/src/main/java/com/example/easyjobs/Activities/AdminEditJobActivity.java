@@ -23,6 +23,7 @@ import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
+import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -149,7 +150,18 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         approveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id,AdminEditJobActivity.this);
+                boolean changedIt = true;
+                if (!Validator.ValidateDescription(descText.getText().toString())) {
+                    changedIt = false;
+                    descText.setError("תיאור לא טוב");
+                }
+                if (!Validator.ValidateLocation(locText.getText().toString())) {
+                    changedIt = false;
+                    locText.setError("מיקום לא טוב");
+                }
+                if (changedIt) {
+                    FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id, AdminEditJobActivity.this);
+                }
             }
         });
 
