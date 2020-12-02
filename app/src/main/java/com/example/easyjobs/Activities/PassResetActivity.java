@@ -18,8 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class PassResetActivity extends AppCompatActivity {
 
     private ImageView backButt;
-    private TextView resetCode_asker;
-    private TextView enterPass;
     private EditText enterMail;
     private EditText resetCode;
     private EditText enterNewPass;
@@ -41,8 +39,6 @@ public class PassResetActivity extends AppCompatActivity {
 
     private void findViews() {
         backButt = findViewById(R.id.back_resetPass);
-        resetCode_asker = findViewById(R.id.resetCode_asker_PR);
-        enterPass = findViewById(R.id.enterPass_PR);
         enterMail = findViewById(R.id.enterMail_PR);
         resetCode = findViewById(R.id.resetCode_PR);
         enterNewPass = findViewById(R.id.enterNewPass_PR);
@@ -94,7 +90,7 @@ public class PassResetActivity extends AppCompatActivity {
                     changePassButt.setBackgroundColor(R.drawable.button_pretty);
                 }
                 else{
-                    confirmResetCodeButt.setError("קוד האיפוס שהזנת אינו תקין");
+                    resetCode.setError("קוד האיפוס שהזנת אינו תקין");
                 }
             }
         });
