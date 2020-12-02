@@ -111,7 +111,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
     {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         List<Integer> yearsValues = new ArrayList<>();
-        for (int i=0;i<20;i++)
+        for (int i=0;i<10;i++)
             yearsValues.add(year + i);
         ArrayAdapter<Integer> adp1 = new ArrayAdapter<Integer>(this,
                 android.R.layout.simple_list_item_1, yearsValues);

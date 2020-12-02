@@ -1,6 +1,8 @@
 package com.example.easyjobs.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -14,12 +16,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.Console;
+import java.io.File;
+import java.io.IOException;
 
 public class UserProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -40,17 +51,20 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button EditProfile;
     private Button profileEditButt;
     private Button AdminsButt;
+    private File localFile;
+    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         findViews(); // Find all TextViews By ID
 
         if (FirebaseDBUsers.isAdmin == false)
             AdminsButt.setVisibility(View.GONE);
         activateButtonsAndViews();
+        setProfilePicture();
     }
 
     private void findViews(){
@@ -179,6 +193,50 @@ public class UserProfileActivity extends AppCompatActivity {
     private void moveToAdminActivity() {
         Intent i = new Intent(UserProfileActivity.this, AdminActivity.class);
         startActivity(i);
+    }
+
+    private void setProfilePicture()
+    {
+        StorageReference riversRef = mStorageRef.child("UserProfilePicture/"+mAuth.getCurrentUser().getUid()+"/profilePic.jpeg");
+        localFile = null;
+        try {
+            localFile = File.createTempFile(mAuth.getCurrentUser().getUid(), "jpeg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+      //  mAuth.password
+       // mAuth.confirmPasswordReset()
+        riversRef.getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            DisplayImage();
+                        // Successfully downloaded data to local file
+//                        riversRef.get
+
+                        // ...
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle failed download
+                // ...
+            }
+        });
+    }
+    private void DisplayImage()
+    {
+        System.out.println("PIRCTURE");
+        if(localFile.exists()){
+
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+
+            ImageView myImage = (ImageView) findViewById(R.id.ProfilePic);
+
+            myImage.setImageBitmap(myBitmap);
+
+        }
     }
 }
 

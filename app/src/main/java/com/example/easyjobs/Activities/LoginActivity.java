@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailED;
     private EditText pass;
     private Button registerB;
+    private Button resetButton;
     private ImageView backBL;
     private FirebaseAuth mAuth; // For User Email & Password authentication
 
@@ -41,10 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void moveToProfile(){
-        Intent i = new Intent(LoginActivity.this, UserProfileActivity.class);
-        startActivity(i);
-    }
+
 
     public void updateUI(FirebaseUser user) {
         if(user != null) {
@@ -52,6 +50,8 @@ public class LoginActivity extends AppCompatActivity {
             registerB.setVisibility(View.GONE);
             emailED.setEnabled(false);
             pass.setEnabled(false);
+            resetButton.setVisibility(View.GONE);
+            resetButton.setEnabled(false);
             LoginB.setText("התנתק");
             LoginActivity.super.onBackPressed(); // get back
         }
@@ -62,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
             pass.setText("");
             emailED.setText("");
         }
-        //moveToProfile(); // after user logged in, move him to profile
     }
 
     private void findViews(){
@@ -71,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         pass = findViewById(R.id.editTextPassword);
         LoginB = findViewById(R.id.LoginButton);
         backBL = findViewById(R.id.back_login);
+        resetButton = findViewById(R.id.resetButton);
     }
 
     private void acvtivateButtonsAndViews(){
@@ -88,6 +88,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToReset();
+            }
+        });
+
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() != null) { // logged in
@@ -96,6 +103,8 @@ public class LoginActivity extends AppCompatActivity {
             emailED.setEnabled(false);
             pass.setEnabled(false);
             LoginB.setText("התנתק");
+            resetButton.setVisibility(View.GONE);
+            resetButton.setEnabled(false);
         }
 
         LoginB.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email = emailED.getText().toString();
                 String password = pass.getText().toString();
                 if (mAuth.getCurrentUser() == null){
+
                     mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -127,8 +137,15 @@ public class LoginActivity extends AppCompatActivity {
                     emailED.setEnabled(true);
                     pass.setEnabled(true);
                     LoginB.setText("התחבר");
+                    resetButton.setVisibility(View.VISIBLE);
+                    resetButton.setEnabled(true);
                 }
             }
         });
+    }
+
+    private void moveToReset() {
+        Intent i = new Intent(LoginActivity.this, PassResetActivity.class);
+        startActivity(i);
     }
 }
