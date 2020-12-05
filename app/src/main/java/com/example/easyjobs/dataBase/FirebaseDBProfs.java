@@ -1,12 +1,10 @@
 package com.example.easyjobs.dataBase;
 
-import android.content.Context;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.easyjobs.Activities.AdminEditPostActivity;
-import com.example.easyjobs.Activities.ProfProfileActivity;
+import com.example.easyjobs.Activities.Profs.AdminEditPostActivity;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.utils.idGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;

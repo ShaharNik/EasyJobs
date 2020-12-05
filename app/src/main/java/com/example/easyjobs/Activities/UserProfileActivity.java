@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.easyjobs.Activities.Jobs.JobsListActivity;
+import com.example.easyjobs.Activities.Profs.ProfListActivity;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
@@ -53,12 +55,14 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button AdminsButt;
     private File localFile;
     private StorageReference mStorageRef;
+    private Button profileShowJobs;
+    private Button profileShowProfs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         findViews(); // Find all TextViews By ID
 
         if (FirebaseDBUsers.isAdmin == false)
@@ -84,9 +88,25 @@ public class UserProfileActivity extends AppCompatActivity {
         EditProfile = findViewById(R.id.profileEditButt);
         profileEditButt = findViewById(R.id.profileEditButt);
         AdminsButt = findViewById(R.id.MoveToAdminButt);
+        profileShowJobs = findViewById(R.id.profileShowJobs);
+        profileShowProfs = findViewById(R.id.profileShowProfs);
     }
 
     private void activateButtonsAndViews(){
+        profileShowJobs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToJobList();
+            }
+        });
+
+        profileShowProfs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToProfList();
+            }
+        });
+
         backButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,13 +214,17 @@ public class UserProfileActivity extends AppCompatActivity {
         Intent i = new Intent(UserProfileActivity.this, AdminActivity.class);
         startActivity(i);
     }
+    private void uploadProfilePicture()
+    {
+
+    }
 
     private void setProfilePicture()
     {
-        StorageReference riversRef = mStorageRef.child("UserProfilePicture/"+mAuth.getCurrentUser().getUid()+"/profilePic.jpeg");
+        StorageReference riversRef = mStorageRef.child("UserProfilePicture/"+mAuth.getCurrentUser().getUid()+"/ProfilePic.jpg");
         localFile = null;
         try {
-            localFile = File.createTempFile(mAuth.getCurrentUser().getUid(), "jpeg");
+            localFile = File.createTempFile(mAuth.getCurrentUser().getUid(), "jpg");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -233,10 +257,24 @@ public class UserProfileActivity extends AppCompatActivity {
             Bitmap myBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
 
             ImageView myImage = (ImageView) findViewById(R.id.ProfilePic);
-
+            myImage.setMaxHeight(5);
+            myImage.setMaxWidth(5);
             myImage.setImageBitmap(myBitmap);
 
         }
+    }
+    private void moveToJobList()
+    {
+        Intent i = new Intent(UserProfileActivity.this, JobsListActivity.class);
+        i.putExtra("personal",true);
+        startActivity(i);
+    }
+
+    private void moveToProfList()
+    {
+        Intent i = new Intent(UserProfileActivity.this, ProfListActivity.class);
+        i.putExtra("personal",true);
+        startActivity(i);
     }
 }
 

@@ -29,11 +29,11 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.ProfListActivity"
+            android:name=".Activities.Profs.ProfListActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.JobsListActivity"
+            android:name=".Activities.Jobs.JobsListActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
@@ -41,19 +41,19 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.ProfProfileActivity"
+            android:name=".Activities.Profs.ProfProfileActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.PostProfActivity"
+            android:name=".Activities.Profs.PostProfActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.JobProfileActivity"
+            android:name=".Activities.Jobs.JobProfileActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.PostJobActivity"
+            android:name=".Activities.Jobs.PostJobActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.EasyJobs" />
         <activity
@@ -69,11 +69,11 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.AdminEditJobActivity"
+            android:name=".Activities.Jobs.AdminEditJobActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Activities.AdminEditPostActivity"
+            android:name=".Activities.Profs.AdminEditPostActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity

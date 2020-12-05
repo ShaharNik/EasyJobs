@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    tools:context=".Activities.JobProfileActivity">
+    tools:context=".Activities.Jobs.JobProfileActivity">
 
     <ImageView
         android:id="@+id/back_job_profile"

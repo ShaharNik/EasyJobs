@@ -1,9 +1,8 @@
-package com.example.easyjobs.Activities;
+package com.example.easyjobs.Activities.Profs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProfProfileActivity extends AppCompatActivity {
@@ -116,9 +114,11 @@ public class ProfProfileActivity extends AppCompatActivity {
 
         if (FirebaseDBUsers.isAdmin) {
             adminEditProf.setVisibility(View.VISIBLE);
+            adminEditProf.setEnabled(true);
         }
         else {
             adminEditProf.setVisibility(View.GONE);
+            adminEditProf.setEnabled(false);
         }
 
         adminEditProf.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +168,11 @@ public class ProfProfileActivity extends AppCompatActivity {
                     }
                     //End adding
                     locationPPTV.setText("איזור עבודה: " + profile.getLocation());
-
+                    if(profile.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0)
+                    {
+                        adminEditProf.setVisibility(View.VISIBLE);
+                        adminEditProf.setEnabled(true);
+                    }
                     DatabaseReference drUser = FirebaseDBUsers.getUserByID(profile.getUser_ID());
                     drUser.addValueEventListener(new ValueEventListener() {
                         @Override

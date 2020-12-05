@@ -49,9 +49,9 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView editTextOldPassword;
     private TextView editTextNewPassword;
     private TextView editTextCheckNewPassword;
-
+    private ImageView EditProfileImage;
     private Boolean someFieldChanged = false;
-
+    private Button ChoosePictureButton;
     private Button UpdateButton;
 
     @Override
@@ -73,6 +73,8 @@ public class EditProfileActivity extends AppCompatActivity {
         UpdateButton = findViewById(R.id.UpdateButton);
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
         editTextCheckNewPassword = findViewById(R.id.editTextCheckNewPassword);
+        EditProfileImage= findViewById(R.id.EditProfileImage);
+        ChoosePictureButton = findViewById(R.id.ChoosePictureButton);
     }
 
     private void activateButtonsAndViews(){
@@ -80,6 +82,13 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 EditProfileActivity.super.onBackPressed();
+            }
+        });
+
+        ChoosePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadPicture();// TODO
             }
         });
 
@@ -246,4 +255,10 @@ public class EditProfileActivity extends AppCompatActivity {
         mAuth.signOut();
         EditProfileActivity.super.onBackPressed();
     }
+
+    private void uploadPicture()
+    {
+
+    }
+
 }

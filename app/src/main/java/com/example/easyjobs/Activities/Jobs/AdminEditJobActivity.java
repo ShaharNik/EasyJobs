@@ -1,4 +1,4 @@
-package com.example.easyjobs.Activities;
+package com.example.easyjobs.Activities.Jobs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Job;
-import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
@@ -32,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AdminEditJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

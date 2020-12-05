@@ -1,4 +1,4 @@
-package com.example.easyjobs.Activities;
+package com.example.easyjobs.Activities.Profs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +19,6 @@ import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
-import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
@@ -28,9 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AdminEditPostActivity extends AppCompatActivity {
 

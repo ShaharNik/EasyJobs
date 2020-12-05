@@ -12,21 +12,21 @@
         android:layout_width="48dp"
         android:layout_height="35dp"
         android:clickable="true"
+        android:contentDescription="back button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022"
-        app:srcCompat="@drawable/back_button"
-        android:contentDescription="back button" />
+        app:srcCompat="@drawable/back_button" />
 
     <TextView
         android:id="@+id/UserProfilePage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         android:text="הפרופיל שלי"
+        android:textAlignment="center"
         android:textColor="#424242"
         android:textSize="28dp"
         android:textStyle="bold"
@@ -42,14 +42,14 @@
         android:layout_width="250dp"
         android:layout_height="27dp"
         android:text="שם פרטי:"
-        android:textStyle="bold"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.862"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintTop_toBottomOf="@+id/ProfilePic"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/LNamePtextView"
@@ -60,24 +60,25 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.901"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.16" />
+        app:layout_constraintTop_toBottomOf="@+id/FNamePtextView"
+        app:layout_constraintVertical_bias="0.037" />
 
     <TextView
         android:id="@+id/emailPtextView"
         android:layout_width="250dp"
         android:layout_height="27dp"
+        android:layout_marginTop="23dp"
         android:text="אימייל:"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.901"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.22" />
+        app:layout_constraintTop_toBottomOf="@+id/LNamePtextView"
+        app:layout_constraintVertical_bias="0.015" />
 
     <TextView
         android:id="@+id/phonePtextView"
@@ -88,10 +89,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.901"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.28" />
+        app:layout_constraintTop_toBottomOf="@+id/emailPtextView"
+        app:layout_constraintVertical_bias="0.068" />
 
     <TextView
         android:id="@+id/ratingPtextView"
@@ -102,24 +103,26 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.901"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.34" />
+        app:layout_constraintTop_toBottomOf="@+id/phonePtextView"
+        app:layout_constraintVertical_bias="0.041" />
 
     <TextView
         android:id="@+id/ratingPAmounttextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="24dp"
         android:text="(---)"
         android:textSize="20dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.416"
+        app:layout_constraintBottom_toTopOf="@+id/logoutButt"
+        app:layout_constraintEnd_toStartOf="@+id/ratingPtextView"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.34" />
+        app:layout_constraintTop_toBottomOf="@+id/phonePtextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/isPremiumPtextView"
@@ -130,55 +133,89 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.901"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.40" />
+        app:layout_constraintTop_toBottomOf="@+id/ratingPtextView"
+        app:layout_constraintVertical_bias="0.047" />
 
     <Button
         android:id="@+id/premiumButt"
         android:layout_width="145dp"
         android:layout_height="38dp"
         android:background="@drawable/button_pretty"
-        android:textStyle="bold"
-        android:textColor="@color/white"
         android:gravity="center"
         android:text="שדרג לפרימיום"
+        android:textColor="@color/white"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.944"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47" />
+        app:layout_constraintTop_toBottomOf="@+id/isPremiumPtextView"
+        app:layout_constraintVertical_bias="0.109" />
+
+    <Button
+        android:id="@+id/profileShowJobs"
+        android:layout_width="145dp"
+        android:layout_height="38dp"
+        android:background="@drawable/button_pretty"
+        android:gravity="center"
+        android:text="הצג עבודות"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/premiumButt"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isPremiumPtextView"
+        app:layout_constraintVertical_bias="0.111" />
 
     <Button
         android:id="@+id/profileEditButt"
         android:layout_width="135dp"
         android:layout_height="37dp"
         android:background="@drawable/button_pretty"
-        android:textStyle="bold"
-        android:textColor="@color/white"
         android:gravity="center"
-        android:textSize="20dp"
         android:text="ערוך פרופיל"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.946"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.555" />
+        app:layout_constraintTop_toBottomOf="@+id/premiumButt"
+        app:layout_constraintVertical_bias="0.106" />
+
+    <Button
+        android:id="@+id/profileShowProfs"
+        android:layout_width="145dp"
+        android:layout_height="38dp"
+        android:background="@drawable/button_pretty"
+        android:gravity="center"
+        android:text="הצג שירותים"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/MoveToAdminButt"
+        app:layout_constraintEnd_toStartOf="@+id/profileEditButt"
+        app:layout_constraintHorizontal_bias="0.617"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileShowJobs"
+        app:layout_constraintVertical_bias="0.48" />
 
     <Button
         android:id="@+id/logoutButt"
         android:layout_width="wrap_content"
         android:layout_height="38dp"
         android:background="@drawable/button_pretty"
-        android:textStyle="bold"
-        android:textColor="@color/white"
         android:gravity="center"
         android:text="התנתק"
+        android:textColor="@color/white"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.089"
@@ -197,22 +234,21 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.836"
+        app:layout_constraintHorizontal_bias="0.954"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.773" />
+        app:layout_constraintTop_toBottomOf="@+id/profileEditButt"
+        app:layout_constraintVertical_bias="0.19" />
 
     <ImageView
         android:id="@+id/ProfilePic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         app:layout_constraintBottom_toTopOf="@+id/logoutButt"
-        app:layout_constraintEnd_toStartOf="@+id/LNamePtextView"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.147"
+        app:layout_constraintTop_toBottomOf="@+id/UserProfilePage"
+        app:layout_constraintVertical_bias="0.039"
         tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

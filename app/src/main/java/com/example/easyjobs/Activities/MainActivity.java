@@ -5,15 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.easyjobs.Activities.Jobs.JobsListActivity;
+import com.example.easyjobs.Activities.Profs.ProfListActivity;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.google.firebase.auth.FirebaseAuth;
@@ -145,11 +145,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void moveToJobList(){
         Intent i = new Intent(MainActivity.this, JobsListActivity.class);
+        i.putExtra("personal",false);
         startActivity(i);
     }
 
     private void moveToProfList(){
         Intent i = new Intent(MainActivity.this, ProfListActivity.class);
+        i.putExtra("personal",false);
         startActivity(i);
     }
 

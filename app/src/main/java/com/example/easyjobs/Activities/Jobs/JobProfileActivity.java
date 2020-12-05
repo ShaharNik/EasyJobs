@@ -1,4 +1,4 @@
-package com.example.easyjobs.Activities;
+package com.example.easyjobs.Activities.Jobs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +15,7 @@ import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -73,6 +74,11 @@ public class JobProfileActivity extends AppCompatActivity {
                     DateFormat df = new SimpleDateFormat("dd/MM/yy");
                     datesJPTV.setText("תאריך: " + df.format(job.getStartDate()) + " - " + df.format(job.getEndDate()));
                     DatabaseReference drUser = FirebaseDBUsers.getUserByID(job.getUser_ID());
+                    if(job.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) ==0)
+                    {
+                        adminEditJob.setVisibility(View.VISIBLE);
+                        adminEditJob.setEnabled(true);
+                    }
                     drUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -114,9 +120,11 @@ public class JobProfileActivity extends AppCompatActivity {
 
         if(FirebaseDBUsers.isAdmin){
             adminEditJob.setVisibility(View.VISIBLE);
+            adminEditJob.setEnabled(true);
         }
         else{
             adminEditJob.setVisibility(View.GONE);
+            adminEditJob.setEnabled(false);
         }
 
         adminEditJob.setOnClickListener(new View.OnClickListener() {

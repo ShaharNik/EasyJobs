@@ -1,4 +1,4 @@
-package com.example.easyjobs.Activities;
+package com.example.easyjobs.Activities.Jobs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,10 +19,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.easyjobs.Activities.RegisterActivity;
 import com.example.easyjobs.Objects.Category;
-import com.example.easyjobs.Objects.Job;
 import com.example.easyjobs.Objects.PremiumJob;
-import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.JobAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
@@ -38,13 +37,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class JobsListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -55,19 +51,19 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     private com.example.easyjobs.adapters.JobAdapter JobAdapter;
 
     private FirebaseAuth fa;
-
+    private FirebaseUser user;
     private Button postJob;
     private ImageView backBJL;
-
+    private boolean personal;
     private Spinner spinnerJL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
-
+        personal = getIntent().getBooleanExtra("personal",false);
         findViews();
-
+        setupRecyclerView();
     }
 
     @Override
@@ -93,19 +89,29 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     }
 
 
-
-    private void activateButtonsAndViews(){
-
-
+    private void setupRecyclerView()
+    {
         linearLayoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
+    }
+    private void activateButtonsAndViews(){
+
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
-                moveToJobProfile(position);
+                fa = FirebaseAuth.getInstance();
+                FirebaseUser user = fa.getCurrentUser();
+                if(user!=null) {
+                    moveToJobProfile(position);
+                }
+                else
+                {
+                    openDialog();
+                }
             }
         }));
-        recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
+
 
         backBJL.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,57 +123,12 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View v) {
                 fa = FirebaseAuth.getInstance();
-
-                FirebaseUser user = fa.getCurrentUser();
+                user = fa.getCurrentUser();
                 if(user!=null){
                     moveToPostJob();
                 }
                 else{
-                    Dialog d= new Dialog(JobsListActivity.this);
-                    d.setContentView(R.layout.activity_login);
-                    d.setTitle("Login");
-                    d.setCancelable(true);
-
-                    ImageView iv = d.findViewById(R.id.back_login);
-                    iv.setEnabled(false);
-                    iv.setVisibility(View.GONE);
-
-                    EditText ed1 = d.findViewById(R.id.emailEditText);
-                    EditText ed2 = d.findViewById(R.id.editTextPassword);
-                    Button log = d.findViewById(R.id.LoginButton);
-                    Button reg = d.findViewById(R.id.button_login_toregister);
-                    log.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String ed1s = ed1.getText().toString();
-                            String ed2s = ed2.getText().toString();
-                            if(!ed1s.isEmpty() && !ed2s.isEmpty()) {
-                                fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            FirebaseUser user = fa.getCurrentUser();
-                                            Toast.makeText(JobsListActivity.this, "Connected Successfully", Toast.LENGTH_SHORT).show();
-                                            d.dismiss();
-                                        }
-                                        else{
-                                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                            Toast.makeText(JobsListActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-                    reg.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            d.dismiss();
-                            Intent i = new Intent(JobsListActivity.this, RegisterActivity.class);
-                            startActivity(i);
-                        }
-                    });
-                    d.show();
+                    openDialog();
                 }
             }
         });
@@ -175,7 +136,54 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         setUpSpinner();
 
     }
+    private void openDialog()
+    {
+        Dialog d= new Dialog(JobsListActivity.this);
+        d.setContentView(R.layout.activity_login);
+        d.setTitle("Login");
+        d.setCancelable(true);
 
+        ImageView iv = d.findViewById(R.id.back_login);
+        iv.setEnabled(false);
+        iv.setVisibility(View.GONE);
+
+        EditText ed1 = d.findViewById(R.id.emailEditText);
+        EditText ed2 = d.findViewById(R.id.editTextPassword);
+        Button log = d.findViewById(R.id.LoginButton);
+        Button reg = d.findViewById(R.id.button_login_toregister);
+        log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String ed1s = ed1.getText().toString();
+                String ed2s = ed2.getText().toString();
+                if(!ed1s.isEmpty() && !ed2s.isEmpty()) {
+                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseUser user = fa.getCurrentUser();
+                                Toast.makeText(JobsListActivity.this, "Connected Successfully", Toast.LENGTH_SHORT).show();
+                                d.dismiss();
+                            }
+                            else{
+                                //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(JobsListActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        reg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                Intent i = new Intent(JobsListActivity.this, RegisterActivity.class);
+                startActivity(i);
+            }
+        });
+        d.show();
+    }
     private void setUpSpinner(){
         DatabaseReference dr = FirebaseDBCategories.getAllCat();
         dr.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -206,6 +214,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (i == 0){
             initAll();
+
         }
         else{
             initByCat(i);
@@ -228,7 +237,16 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                 for (DataSnapshot s : snapshot.getChildren()) {
                     PremiumJob pj = s.getValue(PremiumJob.class);
                     if(pj.getEndDate().after(Calendar.getInstance().getTime())) {
-                        JobList.add(pj);
+                        if(!personal) {
+                            JobList.add(pj);
+                        }
+                        else
+                        {
+                            if(pj.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0)
+                            {
+                                JobList.add(pj);
+                            }
+                        }
                     }
                 }
                 for (PremiumJob pj : JobList) {
@@ -278,7 +296,15 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                     if(((String)s.child("category_ID").getValue()).compareTo(x.getCategory_id())==0 ){
                         PremiumJob pj = s.getValue(PremiumJob.class);
                         if(pj.getEndDate().after(Calendar.getInstance().getTime())) {
-                            JobList.add(s.getValue(PremiumJob.class));
+                            if(!personal) {
+                                JobList.add(pj);
+                            }
+                            else
+                            {
+                                if(pj.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0) {
+                                    JobList.add(pj);
+                                }
+                            }
                         }
                     }
                 }
@@ -312,7 +338,7 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
 
     public void moveToJobProfile(int Position){
         Intent i = new Intent(JobsListActivity.this, JobProfileActivity.class);
-        i.putExtra("job_id",JobList.get(Position).getJob_ID());
+        i.putExtra("job_id", JobList.get(Position).getJob_ID());
         startActivity(i);
     }
 
@@ -325,7 +351,6 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
 
         private int mSpace = 0;
         private boolean mVerticalOrientation = true;
-
         public CommonItemSpaceDecoration(int space) {
             this.mSpace = space;
         }
