@@ -54,6 +54,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Button profileEditButt;
     private Button AdminsButt;
     private File localFile;
+    private ImageView myImage;
     private StorageReference mStorageRef;
     private Button profileShowJobs;
     private Button profileShowProfs;
@@ -88,6 +89,7 @@ public class UserProfileActivity extends AppCompatActivity {
         EditProfile = findViewById(R.id.profileEditButt);
         profileEditButt = findViewById(R.id.profileEditButt);
         AdminsButt = findViewById(R.id.MoveToAdminButt);
+        myImage = (ImageView) findViewById(R.id.ProfilePic);
         profileShowJobs = findViewById(R.id.profileShowJobs);
         profileShowProfs = findViewById(R.id.profileShowProfs);
     }
@@ -194,9 +196,11 @@ public class UserProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
-            super.onBackPressed();
+            UserProfileActivity.super.onBackPressed();
         }
-        activateButtonsAndViews();
+        else {
+            activateButtonsAndViews();
+        }
     }
 
     private void moveToPremiumPaymentActivity(){
@@ -252,11 +256,7 @@ public class UserProfileActivity extends AppCompatActivity {
     {
         System.out.println("PIRCTURE");
         if(localFile.exists()){
-
-
             Bitmap myBitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-
-            ImageView myImage = (ImageView) findViewById(R.id.ProfilePic);
             myImage.setMaxHeight(5);
             myImage.setMaxWidth(5);
             myImage.setImageBitmap(myBitmap);
@@ -276,5 +276,8 @@ public class UserProfileActivity extends AppCompatActivity {
         i.putExtra("personal",true);
         startActivity(i);
     }
+
+
+
 }
 

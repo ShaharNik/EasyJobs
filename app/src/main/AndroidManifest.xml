@@ -4,7 +4,7 @@
     package="com.example.easyjobs">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"  />
 
     <application
         android:allowBackup="true"

@@ -1,11 +1,19 @@
 package com.example.easyjobs.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +27,7 @@ import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -32,11 +41,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.core.utilities.Validation;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EditProfileActivity extends AppCompatActivity {
+    public static final int RequestPermissionCode = 1;
     private FirebaseAuth mAuth;
     private User curUser;
 
@@ -53,12 +67,14 @@ public class EditProfileActivity extends AppCompatActivity {
     private Boolean someFieldChanged = false;
     private Button ChoosePictureButton;
     private Button UpdateButton;
+    private StorageReference mStorageRef;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
+        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         findViews();
         activateButtonsAndViews();
     }
@@ -193,6 +209,11 @@ public class EditProfileActivity extends AppCompatActivity {
                                     FirebaseDBUsers.changeUserByID(curUser);
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(curUser.getFirstName() + " " + curUser.getLastName()).build();
                                     user.updateProfile(profileUpdates);
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                                    byte[] data = baos.toByteArray();
+                                    StorageReference storageReference = mStorageRef.child("UserProfilePicture/"+mAuth.getCurrentUser().getUid()+"/ProfilePic.jpg");
+                                    storageReference.putBytes(data);
                                     Toast.makeText(EditProfileActivity.this, "העדכון בוצע בהצלחה, התחבר מחדש", Toast.LENGTH_LONG).show();
                                     // Sign user out and move to main
                                     signOutAndMoveToMainActivity();
@@ -256,9 +277,54 @@ public class EditProfileActivity extends AppCompatActivity {
         EditProfileActivity.super.onBackPressed();
     }
 
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private static final int CAMERA_REQUEST = 1888;
+
     private void uploadPicture()
     {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(EditProfileActivity.this,
+                Manifest.permission.CAMERA) )
+        {
+            ActivityCompat.requestPermissions(EditProfileActivity.this
+                    , new String[] {Manifest.permission.CAMERA}, RequestPermissionCode);
+        } else
+        {
 
+            ActivityCompat.requestPermissions(EditProfileActivity.this,new String[]{
+                    Manifest.permission.CAMERA}, RequestPermissionCode);
+        }
+
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+            bitmap = (Bitmap) data.getExtras().get("data");
+            EditProfileImage.setImageBitmap(bitmap);
+            someFieldChanged=true;
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] result) {
+        switch (requestCode) {
+            case RequestPermissionCode:
+                if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(EditProfileActivity.this, "Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
+                      takePicture();
+                } else {
+                    Toast.makeText(EditProfileActivity.this, "Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
+    private void takePicture()
+    {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
 
 }
