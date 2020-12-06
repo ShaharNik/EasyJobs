@@ -2,8 +2,12 @@ package com.example.easyjobs.Activities.Profs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,19 +16,30 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.easyjobs.Activities.Jobs.JobProfileActivity;
 import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
+import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfProfileActivity extends AppCompatActivity {
@@ -38,7 +53,9 @@ public class ProfProfileActivity extends AppCompatActivity {
     private TextView phonePPTV;
     private RatingBar ratingBar;
     private String ProfProfile_UserID;
-
+    private ImageView profProfileImage;
+    private StorageReference mStorageRef;
+    private ArrayList<File> localFile;
     private Button adminEditProf;
 
     private Prof profile;
@@ -62,6 +79,8 @@ public class ProfProfileActivity extends AppCompatActivity {
     }
 
     private void findViews(){
+        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+        localFile = new ArrayList<>();
         backBPP = findViewById(R.id.back_prof_profile);
         namesPPTV = findViewById(R.id.namesPP);
         ratingPPTV = findViewById(R.id.ratingPP);
@@ -70,8 +89,9 @@ public class ProfProfileActivity extends AppCompatActivity {
         locationPPTV = findViewById(R.id.locationPP);
         phonePPTV = findViewById(R.id.phonePP);
         ratingBar = findViewById(R.id.ratingBarProfProfile);
-
+        profProfileImage = findViewById(R.id.profProfileImage);
         adminEditProf = findViewById(R.id.admin_edit_prof);
+        profProfileImage.setEnabled(false);
     }
     private void cleanTexts()
     {
@@ -130,10 +150,18 @@ public class ProfProfileActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        profProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createDialog();
+            }
+        });
     }
 
     private void setDataFromDB(){// Gotta make the numbers of the categories to the name of them.
-        DatabaseReference drProf = FirebaseDBProfs.getProfByID(getIntent().getStringExtra("prof_id"));
+        String prof_id = getIntent().getStringExtra("prof_id");
+        DatabaseReference drProf = FirebaseDBProfs.getProfByID(prof_id);
         drProf.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -193,5 +221,56 @@ public class ProfProfileActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+        setFirstPicture(prof_id);
+    }
+
+
+
+    private void setFirstPicture(String prof_id)
+    {
+        StorageReference riversRef = mStorageRef.child("ProfPictures/").child(prof_id);
+        riversRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference sr : listResult.getItems())
+                {
+                    File Image=null;
+                    try {
+                        Image = File.createTempFile(sr.getName(), "jpg");
+                        File finalImage = Image;
+                        sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                                if(finalImage.exists()){
+                                    Bitmap myBitmap = BitmapFactory.decodeFile(finalImage.getAbsolutePath());
+                                    profProfileImage.setImageBitmap(myBitmap);
+                                    profProfileImage.setEnabled(true);
+                                    localFile.add(finalImage);
+                                }
+
+                            }
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+    }
+    private void createDialog()
+    {
+
+        Dialog d= new Dialog(ProfProfileActivity.this);
+        d.setContentView(R.layout.view_pager_layout);
+        d.setTitle("Pictures");
+        d.setCancelable(true);
+        ViewPager vpPager = (ViewPager) d.findViewById(R.id.vpPager);
+        viewPageAdapter vpa = new viewPageAdapter(this,localFile);
+        vpPager.setAdapter(vpa);
+        d.show();
+
     }
 }

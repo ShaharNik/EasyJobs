@@ -1,5 +1,6 @@
 package com.example.easyjobs.dataBase;
 
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,15 +11,31 @@ import com.example.easyjobs.utils.idGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class FirebaseDBJobs {
 
-    public static void addNewJob(String user_id, String desc, int price, String loc, Date startDate,Date endDate, String CatID){
+    public static void addNewJob(String user_id, String desc, int price, String loc, Date startDate, Date endDate, String CatID, ArrayList<Uri> picsUri){
         String id = idGenerator.tokenGenerator();
         Job j = new Job(id, user_id, desc, price, loc, startDate,endDate, CatID);
         FirebaseBaseModel.getRef().child("Jobs").child(id).setValue(j);
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+        for(Uri u:picsUri)
+        {
+            StorageReference storageReference = mStorageRef.child("JobPictures/"+id+"/"+u.getLastPathSegment());
+            storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    System.out.println("GOOD !");
+                }
+            });
+        }
+
     }
 
     public static DatabaseReference getJobByID(String jobID){

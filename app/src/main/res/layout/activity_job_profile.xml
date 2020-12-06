@@ -103,14 +103,25 @@
         android:id="@+id/admin_edit_job"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ערוך מודעה"
         android:background="@drawable/admin_button_pretty"
-        android:textStyle="bold"
+        android:text="ערוך מודעה"
         android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneJP"
         app:layout_constraintVertical_bias="0.85" />
+
+    <ImageView
+        android:id="@+id/JobProfileFirstPicture"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/admin_edit_job"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneJP"
+        android:clickable="true"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -189,5 +189,20 @@
         app:layout_constraintTop_toBottomOf="@+id/datePJ"
         app:layout_constraintVertical_bias="0.25" />
 
+    <Button
+        android:id="@+id/postJobUploadButton"
+        android:background="@drawable/button_pretty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="העלה תמונות"
+        app:layout_constraintBottom_toTopOf="@+id/postJobBtn"
+        app:layout_constraintEnd_toStartOf="@+id/editPricePJ"
+        app:layout_constraintHorizontal_bias="0.567"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pricePJ"
+        app:layout_constraintVertical_bias="0.12" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

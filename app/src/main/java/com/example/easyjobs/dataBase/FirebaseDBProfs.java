@@ -1,5 +1,6 @@
 package com.example.easyjobs.dataBase;
 
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,15 +11,31 @@ import com.example.easyjobs.utils.idGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseDBProfs {
 
-    public static void addNewProf(String user_id, String desc, List<String> cats, String loc){
+    public static void addNewProf(String user_id, String desc, List<String> cats, String loc, ArrayList<Uri> picsUri){
         String id = idGenerator.tokenGenerator();
         Prof p = new Prof(id,user_id, desc, cats, loc);
         FirebaseBaseModel.getRef().child("Profs").child(id).setValue(p);
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+        for(Uri u:picsUri)
+        {
+            StorageReference storageReference = mStorageRef.child("ProfPictures/"+id+"/"+u.getLastPathSegment());
+            storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    System.out.println("GOOD !");
+                }
+            });
+        }
+
     }
 
     public static DatabaseReference getProfByID(String ProfID){
