@@ -6,7 +6,7 @@ Created during a computer <strong>Software Engineering</strong> during the third
 ### A social application that enables post and ask easy daily jobs.
 The apllications allows user to offer help and ask for it.. add more..
 ## Gallery
-<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/mainPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/profilePage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/adminsPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/jobsPage.png" width="250" height="500"> 
+<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/mainPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/profilePage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/adminsPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/jobsPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/EasyJobsTrailer.gif" width="250" height="500">
 
 ## Features
 tell about application featrues
