@@ -130,9 +130,7 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 curUser = snapshot.getValue(User.class);
                 fname.setHint(fname.getText().toString() + " " + curUser.getFirstName());
-                System.out.println("Fname set "+ fname.getText().toString());
                 lname.setHint(lname.getText().toString() + " " + curUser.getLastName());
-                System.out.println("Lname set "+ fname.getText().toString());
 
                 email.setText(email.getText().toString() + " " + user_email);
                 email.setEnabled(false);
@@ -261,7 +259,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 curUser.setLastName(lname.getText().toString());
                 someFieldChanged = true;
             } else {
-                lname.setError("שם משפחה לא אמור להכיל מספרים");
+                fname.setError("שם משפחה לא אמור להכיל מספרים");
             }
         }
     }
@@ -295,7 +293,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
                         cameraPermission();
-                        break;
+
                     case DialogInterface.BUTTON_NEGATIVE:
                         //No button clicked
                         uploadExistingPicture();// TODO uploading existing image
@@ -315,6 +313,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private void uploadExistingPicture() {
         // TODO
         galleryPermission();
+        SelectImage();
         //uploadImage();
     }
     private void galleryPermission() {
@@ -322,20 +321,22 @@ public class EditProfileActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
             } else {
-                SelectImage();
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
             }
     }
     private void cameraPermission() {
 
-        if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED )
-        {
-            ActivityCompat.requestPermissions(EditProfileActivity.this,new String[]{
-                    Manifest.permission.CAMERA}, RequestPermissionCode);
-        } else
+        if (ActivityCompat.shouldShowRequestPermissionRationale(EditProfileActivity.this,
+                Manifest.permission.CAMERA) )
         {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        } else
+        {
 
+            ActivityCompat.requestPermissions(EditProfileActivity.this,new String[]{
+                    Manifest.permission.CAMERA}, RequestPermissionCode);
         }
     }
     private void SelectImage()
@@ -396,7 +397,8 @@ public class EditProfileActivity extends AppCompatActivity {
             case PICK_FROM_GALLERY:
                 // If request is cancelled, the result arrays are empty.
                 if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED) {
-                    SelectImage();
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
                 } else {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
                     Toast.makeText(EditProfileActivity.this, "עליך לאשר שימוש בגלריה..", Toast.LENGTH_LONG).show();

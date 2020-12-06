@@ -22,6 +22,7 @@ import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
+import com.example.easyjobs.dataBase.FirebaseStorage;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -166,7 +167,8 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         deletePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                   builder.show();
+                FirebaseStorage.deleteJobPictures(job.getJob_ID()); //TODO Check!
+                builder.show();
             }
         });
     }

@@ -20,6 +20,7 @@ import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
+import com.example.easyjobs.dataBase.FirebaseStorage;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminEditPostActivity extends AppCompatActivity {
+public class AdminEditProfActivity extends AppCompatActivity {
 
     private ImageView backButton;
     private TextView namesText;
@@ -107,7 +108,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
                     index++;
                     items.add(c);
                 }
-                md = new MaterialDialog.Builder(AdminEditPostActivity.this).title("בחר קטגוריות").items(items).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                md = new MaterialDialog.Builder(AdminEditProfActivity.this).title("בחר קטגוריות").items(items).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
                         catList.clear();
@@ -137,11 +138,11 @@ public class AdminEditPostActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
-                        FirebaseDBProfs.removeProf(prof.getProf_ID(),AdminEditPostActivity.this);
+                        FirebaseDBProfs.removeProf(prof.getProf_ID(), AdminEditProfActivity.this);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        Toast.makeText(AdminEditPostActivity.this, ":)", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AdminEditProfActivity.this, ":)", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -154,7 +155,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AdminEditPostActivity.super.onBackPressed();
+                AdminEditProfActivity.super.onBackPressed();
             }
         });
 
@@ -178,7 +179,7 @@ public class AdminEditPostActivity extends AppCompatActivity {
                     locText.setError("מיקום לא טוב");
                 }
                 if(changedIt){
-                    FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString(),AdminEditPostActivity.this);
+                    FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString(), AdminEditProfActivity.this);
                 }
             }
         });
@@ -186,8 +187,10 @@ public class AdminEditPostActivity extends AppCompatActivity {
         deletePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseStorage.deleteProfPictures(prof.getProf_ID()); //TODO Check!
                 builder.show();
             }
+
         });
     }
 }

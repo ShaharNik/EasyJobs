@@ -5,7 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.easyjobs.Activities.Profs.AdminEditPostActivity;
+import com.example.easyjobs.Activities.Profs.AdminEditProfActivity;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.utils.idGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,7 +46,7 @@ public class FirebaseDBProfs {
         return FirebaseBaseModel.getRef().child("Profs");
 
     }
-    public static void EditProf(String prof_id, String user_id, String desc, List<String> cats, String loc, AdminEditPostActivity c)
+    public static void EditProf(String prof_id, String user_id, String desc, List<String> cats, String loc, AdminEditProfActivity c)
     {
         Prof p = new Prof(prof_id,user_id, desc, cats, loc);
         FirebaseBaseModel.getRef().child("Profs").child(prof_id).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -58,7 +58,7 @@ public class FirebaseDBProfs {
             }
         });
     }
-    public static void removeProf(String profID,AdminEditPostActivity c)
+    public static void removeProf(String profID, AdminEditProfActivity c)
     {
         FirebaseBaseModel.getRef().child("Profs").child(profID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

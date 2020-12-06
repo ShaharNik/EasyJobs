@@ -144,7 +144,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         adminEditProf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ProfProfileActivity.this, AdminEditPostActivity.class);
+                Intent i = new Intent(ProfProfileActivity.this, AdminEditProfActivity.class);
                 i.putExtra("Prof", profile);
                 i.putExtra("User", user);
                 startActivity(i);
