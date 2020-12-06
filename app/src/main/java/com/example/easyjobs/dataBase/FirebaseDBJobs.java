@@ -61,6 +61,7 @@ public class FirebaseDBJobs {
         FirebaseBaseModel.getRef().child("Jobs").child(jobId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                com.example.easyjobs.dataBase.FirebaseStorage.deleteJobPictures(jobId); //TODO Check!
                 c.finish();
 
             }

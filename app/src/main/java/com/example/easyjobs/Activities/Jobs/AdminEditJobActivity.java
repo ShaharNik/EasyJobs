@@ -167,7 +167,6 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         deletePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseStorage.deleteJobPictures(job.getJob_ID()); //TODO Check!
                 builder.show();
             }
         });
