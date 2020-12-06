@@ -2,11 +2,14 @@ package com.example.easyjobs.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -22,11 +25,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.easyjobs.Activities.Jobs.PostJobActivity;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
+import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -42,15 +48,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.core.utilities.Validation;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EditProfileActivity extends AppCompatActivity {
     public static final int RequestPermissionCode = 1;
+    private static final int PICK_IMAGE_REQUEST = 2;
+    private static final int PICK_FROM_GALLERY = 333;
     private FirebaseAuth mAuth;
     private User curUser;
 
@@ -69,6 +80,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private Button UpdateButton;
     private StorageReference mStorageRef;
     private Bitmap bitmap;
+    private Uri filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +101,11 @@ public class EditProfileActivity extends AppCompatActivity {
         UpdateButton = findViewById(R.id.UpdateButton);
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
         editTextCheckNewPassword = findViewById(R.id.editTextCheckNewPassword);
-        EditProfileImage= findViewById(R.id.EditProfileImage);
+        EditProfileImage = findViewById(R.id.EditProfileImage);
         ChoosePictureButton = findViewById(R.id.ChoosePictureButton);
     }
 
-    private void activateButtonsAndViews(){
+    private void activateButtonsAndViews() {
         backButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,8 +137,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 phone.setHint(phone.getText().toString() + " " + curUser.getPhoneNumber());
                 //System.err.println(user.getDisplayName() + " " + user.getEmail() + " " + user.getPhoneNumber());
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
 
         // Update Button Pressed !
@@ -170,30 +184,25 @@ public class EditProfileActivity extends AppCompatActivity {
                                                     if (task.isSuccessful()) {
                                                         System.out.println("successful" + newPassword);
                                                         Toast.makeText(EditProfileActivity.this, "הסיסמא שונתה בהצלחה", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    else {
+                                                    } else {
                                                         System.out.println("NOT Successful !!");
                                                         Toast.makeText(EditProfileActivity.this, "הסיסמא אינה השתנתה, נסה שנית", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
-                                        }
-                                        else {
+                                        } else {
                                             editTextNewPassword.setError("הסיסמאות אינן תואמות");
                                             editTextCheckNewPassword.setError("הסיסמאות אינן תואמות");
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         editTextNewPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                                         editTextCheckNewPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                                     }
-                                }
-                                else {// new pass or new passAuth is empty
+                                } else {// new pass or new passAuth is empty
                                     if (!newPassword.isEmpty() || !new_passAuth.isEmpty()) { // If one of them is not empty
                                         if (newPassword.isEmpty()) {
                                             editTextNewPassword.setError("חייב להקליד סיסמא חדשה פעמיים");
-                                        }
-                                        else {
+                                        } else {
                                             editTextCheckNewPassword.setError("חייב להקליד סיסמא חדשה פעמיים");
                                         }
                                     }
@@ -210,51 +219,46 @@ public class EditProfileActivity extends AppCompatActivity {
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(curUser.getFirstName() + " " + curUser.getLastName()).build();
                                     user.updateProfile(profileUpdates);
                                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                                     byte[] data = baos.toByteArray();
-                                    StorageReference storageReference = mStorageRef.child("UserProfilePicture/"+mAuth.getCurrentUser().getUid()+"/ProfilePic.jpg");
+                                    StorageReference storageReference = mStorageRef.child("UserProfilePicture/" + mAuth.getCurrentUser().getUid() + "/profilePic.jpg");
                                     storageReference.putBytes(data);
                                     Toast.makeText(EditProfileActivity.this, "העדכון בוצע בהצלחה, התחבר מחדש", Toast.LENGTH_LONG).show();
                                     // Sign user out and move to main
                                     signOutAndMoveToMainActivity();
-                                }
-                                else {
+                                } else {
                                     Toast.makeText(EditProfileActivity.this, "לא ביצעת שינוי", Toast.LENGTH_SHORT).show();
                                 }
                                 //Log.d(TAG, "User re-authenticated.");
                             }
                         });
-                    }
-                    else {
+                    } else {
                         editTextOldPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                     }
-                }
-                else { // current password empty
+                } else { // current password empty
                     editTextOldPassword.setError("הסיסמה הנוכחית שלך אינה תקינה!");
                 }
             }
         });
     }
 
-    private void firstNameUpdate(){
+    private void firstNameUpdate() {
         if (!fname.getText().toString().isEmpty()) {
             if (Validator.ValidateUserFName(fname.getText().toString())) {
                 curUser.setFirstName(fname.getText().toString());
                 someFieldChanged = true;
-            }
-            else {
+            } else {
                 fname.setError("שם פרטי לא אמור להכיל מספרים");
             }
         }
     }
 
-    private void lastNameUpdate(){
+    private void lastNameUpdate() {
         if (!lname.getText().toString().isEmpty()) {
             if (Validator.ValidateUserLName(lname.getText().toString())) {
                 curUser.setLastName(lname.getText().toString());
                 someFieldChanged = true;
-            }
-            else {
+            } else {
                 fname.setError("שם משפחה לא אמור להכיל מספרים");
             }
         }
@@ -265,8 +269,7 @@ public class EditProfileActivity extends AppCompatActivity {
             if (Validator.ValidateUserPhone(phone.getText().toString())) {
                 curUser.setPhoneNumber(phone.getText().toString());
                 someFieldChanged = true;
-            }
-            else {
+            } else {
                 phone.setError("מספר פלאפון תקין מכיל מספרים בלבד ובאורך 10");
             }
         }
@@ -277,47 +280,132 @@ public class EditProfileActivity extends AppCompatActivity {
         EditProfileActivity.super.onBackPressed();
     }
 
+
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_REQUEST = 1888;
 
-    private void uploadPicture()
-    {
+    private void uploadPicture() {
+        // Dialog Camera or Upload
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        cameraPermission();
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        uploadExistingPicture();// TODO uploading existing image
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
+        builder.setMessage("איך תרצה להעלות תמונה?").setPositiveButton("מצלמה", dialogClickListener)
+                .setNegativeButton("גלריה", dialogClickListener).show();
+
+
+    }
+
+
+    private void uploadExistingPicture() {
+        // TODO
+        galleryPermission();
+        SelectImage();
+        //uploadImage();
+    }
+    private void galleryPermission() {
+
+            if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+            } else {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+            }
+    }
+    private void cameraPermission() {
+
         if (ActivityCompat.shouldShowRequestPermissionRationale(EditProfileActivity.this,
                 Manifest.permission.CAMERA) )
         {
-            ActivityCompat.requestPermissions(EditProfileActivity.this
-                    , new String[] {Manifest.permission.CAMERA}, RequestPermissionCode);
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAMERA_REQUEST);
         } else
         {
 
             ActivityCompat.requestPermissions(EditProfileActivity.this,new String[]{
                     Manifest.permission.CAMERA}, RequestPermissionCode);
         }
-
-
+    }
+    private void SelectImage()
+    {
+        // Defining Implicit Intent to mobile gallery
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(
+                Intent.createChooser(
+                        intent, "בחר תמונות..."), PICK_IMAGE_REQUEST); // 2
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) { // CameraPermission and UserAprroval
             bitmap = (Bitmap) data.getExtras().get("data");
             EditProfileImage.setImageBitmap(bitmap);
             someFieldChanged=true;
         }
+
+        // checking request code and result code
+        // if request code is PICK_IMAGE_REQUEST and
+        // resultCode is RESULT_OK
+        // then set image in the image view
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null)
+        {
+            // Get the Uri of data
+            filePath = data.getData();
+            try
+            {// Setting image on image view using Bitmap
+                bitmap = MediaStore
+                        .Images.Media.getBitmap(
+                                getContentResolver(),
+                                filePath);
+                EditProfileImage.setImageBitmap(bitmap);
+                someFieldChanged = true;
+            }
+            catch (IOException e) {
+                // Log the exception
+                e.printStackTrace();
+
+            }
+
+        }
     }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] result) {
         switch (requestCode) {
             case RequestPermissionCode:
                 if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(EditProfileActivity.this, "Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditProfileActivity.this, "האישור התקבל, ניתן להשתמש במצלמה", Toast.LENGTH_LONG).show();
                       takePicture();
                 } else {
-                    Toast.makeText(EditProfileActivity.this, "Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditProfileActivity.this, "עליך לאשר שימוש במצלמה..", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case PICK_FROM_GALLERY:
+                // If request is cancelled, the result arrays are empty.
+                if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+                } else {
+                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                    Toast.makeText(EditProfileActivity.this, "עליך לאשר שימוש בגלריה..", Toast.LENGTH_LONG).show();
+                }
+                break;
+
+
         }
     }
 
@@ -326,5 +414,6 @@ public class EditProfileActivity extends AppCompatActivity {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
+
 
 }

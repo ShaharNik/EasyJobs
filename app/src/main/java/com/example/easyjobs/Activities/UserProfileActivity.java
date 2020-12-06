@@ -225,7 +225,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void setProfilePicture()
     {
-        StorageReference riversRef = mStorageRef.child("UserProfilePicture/"+mAuth.getCurrentUser().getUid()+"/ProfilePic.jpg");
+        StorageReference riversRef = mStorageRef.child("UserProfilePicture/"+mAuth.getCurrentUser().getUid()+"/profilePic.jpg");
         localFile = null;
         try {
             localFile = File.createTempFile(mAuth.getCurrentUser().getUid(), "jpg");
