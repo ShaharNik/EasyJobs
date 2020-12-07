@@ -2,10 +2,13 @@ package com.example.easyjobs.Activities.Profs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import com.example.easyjobs.Objects.Picture;
@@ -46,6 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfProfileActivity extends AppCompatActivity {
+
+    private static final int PHONE_CALL_APPROVE = 420;
 
     private ImageView backBPP;
     private TextView namesPPTV;
@@ -160,10 +165,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         phoneCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String phoneNumber = "tel:" + phonePPTV.getText().toString();
-                Intent i = new Intent(Intent.ACTION_CALL);
-                i.setData(Uri.parse(phoneNumber));
-                startActivity(i);
+                phoneCallMaker();
             }
         });
 
@@ -313,5 +315,17 @@ public class ProfProfileActivity extends AppCompatActivity {
     {
         d.show();
 
+    }
+
+    private void phoneCallMaker() {
+        if (ActivityCompat.checkSelfPermission(ProfProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(ProfProfileActivity.this, new String[]{Manifest.permission.CALL_PHONE}, PHONE_CALL_APPROVE);
+        }
+        else{
+            String s = "tel:" + phonePPTV.getText().toString();
+            Intent i = new Intent(Intent.ACTION_CALL);
+            i.setData(Uri.parse(s));
+            startActivity(i);
+        }
     }
 }
