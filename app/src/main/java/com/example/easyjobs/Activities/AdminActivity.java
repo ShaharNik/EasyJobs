@@ -49,9 +49,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
-
         findViews();
-
         activateBackButt();
         changeUserToAdmin();
         removeAdmin();

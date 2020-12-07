@@ -80,12 +80,13 @@ public class JobProfileActivity extends AppCompatActivity {
         findViews();
 
         activateButtons();
-        createDialog();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        createDialog();
         setDataFromDB();
     }
 

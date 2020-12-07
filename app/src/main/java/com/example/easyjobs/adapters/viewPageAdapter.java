@@ -70,7 +70,6 @@ public class viewPageAdapter extends PagerAdapter {
                 @Override
                 public void onClick(View v) {
                     System.out.println(pages.get(position).getName());
-
                     if (job) {
                         FirebaseStorage.deleteSpecificJobPicture(adName, pages.get(position).getName());
                     } else {

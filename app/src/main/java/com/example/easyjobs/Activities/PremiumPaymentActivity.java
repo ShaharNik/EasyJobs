@@ -98,7 +98,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
         monthsSpinner = findViewById(R.id.monthSpinner);
         yearsSpinner = findViewById(R.id.yearSpinner);
     }
-    private  void setUpMonthsSpinner() //TODO
+    private  void setUpMonthsSpinner()
     {
         Resources res = getResources();
         String[] MonthsValues = res.getStringArray(R.array.months_array);
@@ -107,7 +107,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
         adp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         monthsSpinner.setAdapter(adp1);
     }
-    private  void setUpYearsSpinner()//TODO
+    private  void setUpYearsSpinner()
     {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         List<Integer> yearsValues = new ArrayList<>();

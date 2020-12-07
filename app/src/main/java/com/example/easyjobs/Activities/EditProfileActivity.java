@@ -116,7 +116,7 @@ public class EditProfileActivity extends AppCompatActivity {
         ChoosePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadPicture();// TODO
+                uploadPicture();
             }
         });
 
@@ -296,7 +296,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     case DialogInterface.BUTTON_NEGATIVE:
                         //No button clicked
-                        uploadExistingPicture();// TODO uploading existing image
+                        uploadExistingPicture();
                         break;
                 }
             }
@@ -311,7 +311,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     private void uploadExistingPicture() {
-        // TODO
         galleryPermission();
         SelectImage();
         //uploadImage();

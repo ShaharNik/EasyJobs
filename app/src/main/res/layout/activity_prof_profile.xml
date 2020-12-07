@@ -34,20 +34,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.064" />
 
+
     <TextView
         android:id="@+id/ratingPP"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="41dp"
         android:text=" "
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionPP"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.969"
+        app:layout_constraintHorizontal_bias="0.941"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.134" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/namesPP"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/descriptionPP"
@@ -57,10 +56,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.901"
+        app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.206" />
+        app:layout_constraintTop_toBottomOf="@+id/namesPP"
+        app:layout_constraintVertical_bias="0.078" />
 
     <TextView
         android:id="@+id/catPP"
@@ -166,14 +165,14 @@
 
     <ImageView
         android:id="@+id/starPP"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         app:layout_constraintBottom_toTopOf="@+id/descriptionPP"
         app:layout_constraintEnd_toStartOf="@+id/ratingPP"
-        app:layout_constraintHorizontal_bias="0.995"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/namesPP"
-        app:layout_constraintVertical_bias="0.47"
+        app:layout_constraintVertical_bias="0"
         app:srcCompat="@drawable/star" />
 
 

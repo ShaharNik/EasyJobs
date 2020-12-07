@@ -144,7 +144,7 @@ public class PostProfActivity extends AppCompatActivity {
     }
 
     public void postJobToDB(){
-        String desc = descED.getText().toString(); // TODO Length should be at least 3 characters
+        String desc = descED.getText().toString();
         String loc = locED.getText().toString(); // at least 3
         String id = IdED.getText().toString(); // 9 digits
         if (Validator.ValidateIsraeliId(id)){

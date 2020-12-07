@@ -29,4 +29,6 @@ public class Picture implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
 }
+

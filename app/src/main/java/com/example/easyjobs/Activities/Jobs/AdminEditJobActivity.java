@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,7 +42,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -100,6 +103,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         builder = new AlertDialog.Builder(this);
         editJobImage = findViewById(R.id.editJobImage);
         addImages = findViewById(R.id.addImagesJob);
+        PicsUri = new ArrayList<>();
     }
 
     private void inputTempData() {
@@ -191,6 +195,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                 }
                 if (changedIt) {
                     FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id, AdminEditJobActivity.this, PicsUri);
+                    //TODO Try to figure out how know what shit to delete and what shit to keep
                 }
             }
         });
@@ -255,13 +260,70 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                     int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
                     for(int i = 0; i < count; i++) {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
-
                         PicsUri.add(imageUri);
+                        try {
+                            Bitmap bitmap = MediaStore
+                                    .Images.Media.getBitmap(
+                                            getContentResolver(),
+                                            imageUri);
+                            File Image = File.createTempFile("Picture", ".jpg");
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                            byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                            FileOutputStream fos = new FileOutputStream(Image);
+                            fos.write(bitmapdata);
+                            fos.flush();
+                            fos.close();
+                            Picture p = new Picture(Image,imageUri.getLastPathSegment());
+                            localFile.add(p);
+                            vpa.notifyDataSetChanged();
+
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+//                        localFile.add()
+//                        File f = new File(imageUri.toString());
+//                        Picture p = new Picture(f,imageUri.getLastPathSegment());
+//                        localFile.add(p);
+//                        vpa.notifyDataSetChanged();
                     }
+
                     //do something with the image (save it to some directory or whatever you need to do with it here)
                 }
             } else if(data!= null && data.getData() != null) {
                 PicsUri.add(data.getData());
+                try {
+                    Bitmap bitmap = MediaStore
+                            .Images.Media.getBitmap(
+                                    getContentResolver(),
+                                    data.getData());
+                    File Image = File.createTempFile("Picture", ".jpg");
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                    byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                    FileOutputStream fos = new FileOutputStream(Image);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                    Picture p = new Picture(Image,data.getData().getLastPathSegment());
+                    localFile.add(p);
+                    vpa.notifyDataSetChanged();
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+//                File f = new File(data.getData().toString());
+//                Picture p = new Picture(f,data.getData().getLastPathSegment());
+//                localFile.add(p);
+//                vpa.notifyDataSetChanged();
                 //do something with the image (save it to some directory or whatever you need to do with it here)
             }
         }

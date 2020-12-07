@@ -207,7 +207,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
         deletePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseStorage.deleteProfPictures(prof.getProf_ID()); //TODO Check!
+                FirebaseStorage.deleteProfPictures(prof.getProf_ID());
                 builder.show();
             }
 
