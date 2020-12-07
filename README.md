@@ -9,7 +9,8 @@ The apllications allows user to offer help and ask for it.. add more..
 <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/mainPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/profilePage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/adminsPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/jobsPage.png" width="250" height="500"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/EasyJobsTrailer.gif" width="250" height="500">
 
 ## Features
-tell about application featrues
+<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/whatsappCircle.png" width="50" height="50">Automatically open chat on whatsapp with the client.<br />
+<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/call-icon.png" width="50" height="50">Automatically call the client. <br />
 ## Diagrams
 adding phothos here of diagrams and uml...
 ## Technology:
