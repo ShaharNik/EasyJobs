@@ -276,7 +276,9 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void signOutAndMoveToMainActivity() {
-        mAuth.signOut();
+        if (!editTextNewPassword.getText().toString().isEmpty()){
+            mAuth.signOut();
+        }
         EditProfileActivity.super.onBackPressed();
     }
 
