@@ -8,9 +8,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -51,6 +53,7 @@ public class ProfProfileActivity extends AppCompatActivity {
     private TextView catPPTV;
     private TextView locationPPTV;
     private TextView phonePPTV;
+    private ImageButton phoneCall;
     private RatingBar ratingBar;
     private String ProfProfile_UserID;
     private ImageView profProfileImage;
@@ -88,6 +91,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         catPPTV = findViewById(R.id.catPP);
         locationPPTV = findViewById(R.id.locationPP);
         phonePPTV = findViewById(R.id.phonePP);
+        phoneCall = findViewById(R.id.call_butt);
         ratingBar = findViewById(R.id.ratingBarProfProfile);
         profProfileImage = findViewById(R.id.profProfileImage);
         adminEditProf = findViewById(R.id.admin_edit_prof);
@@ -140,6 +144,16 @@ public class ProfProfileActivity extends AppCompatActivity {
             adminEditProf.setVisibility(View.GONE);
             adminEditProf.setEnabled(false);
         }
+
+        phoneCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String phoneNumber = "tel:" + phonePPTV.getText().toString();
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse(phoneNumber));
+                startActivity(i);
+            }
+        });
 
         adminEditProf.setOnClickListener(new View.OnClickListener() {
             @Override
