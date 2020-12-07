@@ -2,14 +2,21 @@ package com.example.easyjobs.Activities.Profs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,11 +41,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdminEditProfActivity extends AppCompatActivity {
 
+    private static final int PICK_FROM_GALLERY = 420;
     private ImageView backButton;
     private TextView namesText;
     private TextView rateText;
@@ -49,6 +60,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
     private TextView phoneText;
     private Button approveChanges;
     private Button deletePost;
+    private Button addImages;
     private MaterialDialog md;
     private AlertDialog.Builder builder;
     private ImageView adminEditPostImage;
@@ -59,6 +71,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
     private User user;
     private Prof prof;
     List<String> catList;
+    private ArrayList<Uri> PicsUri;
 
     private boolean changedIt;
 
@@ -93,6 +106,8 @@ public class AdminEditProfActivity extends AppCompatActivity {
         deletePost = findViewById(R.id.deleteProfButton);
         adminEditPostImage = findViewById(R.id.adminEditPostImage);
         builder = new AlertDialog.Builder(this);
+        addImages = findViewById(R.id.addImagesProf);
+        PicsUri = new ArrayList<Uri>();
     }
 
     private void inputTempData() {
@@ -199,7 +214,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
                     locText.setError("מיקום לא טוב");
                 }
                 if(changedIt){
-                    FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString(), AdminEditProfActivity.this);
+                    FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString(), AdminEditProfActivity.this, PicsUri);
                 }
             }
         });
@@ -219,6 +234,120 @@ public class AdminEditProfActivity extends AppCompatActivity {
                 showDialog();
             }
         });
+
+        addImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosePictureFromGallery();
+            }
+        });
+    }
+
+    private void choosePictureFromGallery()
+    {
+        if (ActivityCompat.checkSelfPermission(AdminEditProfActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AdminEditProfActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+        }
+        else {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    {
+        switch (requestCode) {
+            case PICK_FROM_GALLERY:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+                } else {
+                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_FROM_GALLERY) {
+            if(resultCode == Activity.RESULT_OK) {
+                if(data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
+                    for(int i = 0; i < count; i++) {
+                        Uri imageUri = data.getClipData().getItemAt(i).getUri();
+                        PicsUri.add(imageUri);
+                        try {
+                            Bitmap bitmap = MediaStore
+                                    .Images.Media.getBitmap(
+                                            getContentResolver(),
+                                            imageUri);
+                            File Image = File.createTempFile("Picture", ".jpg");
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                            byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                            FileOutputStream fos = new FileOutputStream(Image);
+                            fos.write(bitmapdata);
+                            fos.flush();
+                            fos.close();
+                            Picture p = new Picture(Image,imageUri.getLastPathSegment());
+                            localFile.add(p);
+                            vpa.notifyDataSetChanged();
+
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+//                        localFile.add()
+//                        File f = new File(imageUri.toString());
+//                        Picture p = new Picture(f,imageUri.getLastPathSegment());
+//                        localFile.add(p);
+//                        vpa.notifyDataSetChanged();
+                    }
+
+                    //do something with the image (save it to some directory or whatever you need to do with it here)
+                }
+            } else if(data!= null && data.getData() != null) {
+                PicsUri.add(data.getData());
+                try {
+                    Bitmap bitmap = MediaStore
+                            .Images.Media.getBitmap(
+                                    getContentResolver(),
+                                    data.getData());
+                    File Image = File.createTempFile("Picture", ".jpg");
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                    byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                    FileOutputStream fos = new FileOutputStream(Image);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                    Picture p = new Picture(Image,data.getData().getLastPathSegment());
+                    localFile.add(p);
+                    vpa.notifyDataSetChanged();
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+//                File f = new File(data.getData().toString());
+//                Picture p = new Picture(f,data.getData().getLastPathSegment());
+//                localFile.add(p);
+//                vpa.notifyDataSetChanged();
+                //do something with the image (save it to some directory or whatever you need to do with it here)
+            }
+        }
     }
 
     private void createDialog() {

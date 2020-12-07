@@ -46,15 +46,25 @@ public class FirebaseDBProfs {
         return FirebaseBaseModel.getRef().child("Profs");
 
     }
-    public static void EditProf(String prof_id, String user_id, String desc, List<String> cats, String loc, AdminEditProfActivity c)
+    public static void EditProf(String prof_id, String user_id, String desc, List<String> cats, String loc, AdminEditProfActivity c, ArrayList<Uri> PicsUri)
     {
         Prof p = new Prof(prof_id,user_id, desc, cats, loc);
         FirebaseBaseModel.getRef().child("Profs").child(prof_id).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+                for(Uri u : PicsUri)
+                {
+                    StorageReference storageReference = mStorageRef.child("ProfPictures/"+ p.getProf_ID() +"/"+u.getLastPathSegment());
+                    storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            System.out.println("GOOD !");
+                        }
+                    });
+                }
                 Toast.makeText(c, "עודכן בהצלחה", Toast.LENGTH_SHORT).show();
                 c.onBackPressed();
-
             }
         });
     }
