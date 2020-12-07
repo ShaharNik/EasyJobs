@@ -88,8 +88,8 @@
 
     <TextView
         android:id="@+id/phonePP"
-        android:layout_width="320dp"
-        android:layout_height="41dp"
+        android:layout_width="278dp"
+        android:layout_height="34dp"
         android:text=" "
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -148,5 +148,17 @@
         app:layout_constraintEnd_toStartOf="@+id/phonePP"
         app:layout_constraintTop_toBottomOf="@+id/back_prof_profile"
         app:layout_constraintVertical_bias="0.401" />
+
+    <ImageButton
+        android:id="@+id/watsappImageButton"
+        android:layout_width="41dp"
+        android:layout_height="31dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/phonePP"
+        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back_prof_profile"
+        app:layout_constraintVertical_bias="0.409"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import com.example.easyjobs.Objects.Picture;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.easyjobs.Objects.Job;
-import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.viewPageAdapter;
@@ -57,6 +58,7 @@ public class JobProfileActivity extends AppCompatActivity {
     private ArrayList<Picture> localFile;
     private Job job;
     private User user;
+    private ImageView whatsappButt;
     private Dialog d;
     private ViewPager vpPager;
     private  viewPageAdapter vpa;
@@ -142,6 +144,7 @@ public class JobProfileActivity extends AppCompatActivity {
         JobProfileFirstPicture = findViewById(R.id.JobProfileFirstPicture);
         adminEditJob = findViewById(R.id.admin_edit_job);
         JobProfileFirstPicture.setEnabled(false);
+        whatsappButt = findViewById(R.id.whatsappButtImageButt);
     }
 
     private void activateButtons(){
@@ -176,6 +179,16 @@ public class JobProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showDialog();
+            }
+        });
+
+        whatsappButt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
+                startActivity(intent);
             }
         });
     }
@@ -231,5 +244,6 @@ public class JobProfileActivity extends AppCompatActivity {
     private void showDialog()
     {
         d.show();
+
     }
 }

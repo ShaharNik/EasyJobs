@@ -7,19 +7,56 @@
     android:background="@drawable/gradient_bg"
     tools:context=".Activities.Jobs.JobProfileActivity">
 
+    <Button
+        android:id="@+id/admin_edit_job"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/admin_button_pretty"
+        android:text="ערוך מודעה"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneJP"
+        app:layout_constraintVertical_bias="0.85" />
+
+    <ImageButton
+        android:id="@+id/whatsappButtImageButt"
+        android:layout_width="46dp"
+        android:layout_height="42dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/phoneJP"
+        app:layout_constraintHorizontal_bias="0.843"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.575"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
     <ImageView
         android:id="@+id/back_job_profile"
         android:layout_width="48dp"
         android:layout_height="35dp"
         android:clickable="true"
+        android:contentDescription="back button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022"
-        app:srcCompat="@drawable/back_button"
-        android:contentDescription="back button" />
+        app:srcCompat="@drawable/back_button" />
+
+    <ImageView
+        android:id="@+id/JobProfileFirstPicture"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/admin_edit_job"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneJP"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/namesJP"
@@ -88,40 +125,14 @@
 
     <TextView
         android:id="@+id/phoneJP"
-        android:layout_width="320dp"
-        android:layout_height="41dp"
+        android:layout_width="264dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.903"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.570" />
-
-    <Button
-        android:id="@+id/admin_edit_job"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/admin_button_pretty"
-        android:text="ערוך מודעה"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneJP"
-        app:layout_constraintVertical_bias="0.85" />
-
-    <ImageView
-        android:id="@+id/JobProfileFirstPicture"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:layout_constraintBottom_toTopOf="@+id/admin_edit_job"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneJP"
-        android:clickable="true"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/dateJP"
+        app:layout_constraintVertical_bias="0.075" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

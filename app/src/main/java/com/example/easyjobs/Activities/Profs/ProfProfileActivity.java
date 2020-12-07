@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import com.example.easyjobs.Objects.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 
 import com.example.easyjobs.Activities.Jobs.JobProfileActivity;
 import com.example.easyjobs.Objects.Category;
-import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
@@ -64,6 +64,9 @@ public class ProfProfileActivity extends AppCompatActivity {
     private viewPageAdapter vpa;
     private Dialog d;
     private ViewPager vpPager;
+
+    private ImageView whatsappButt;
+
     private Prof profile;
     private User user;
 
@@ -100,6 +103,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         profProfileImage = findViewById(R.id.profProfileImage);
         adminEditProf = findViewById(R.id.admin_edit_prof);
         profProfileImage.setEnabled(false);
+        whatsappButt = findViewById(R.id.watsappImageButton);
     }
     private void cleanTexts()
     {
@@ -178,6 +182,15 @@ public class ProfProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showDialog();
+            }
+        });
+        whatsappButt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse("www.wa.me/972" + user.getPhoneNumber()));
+                startActivity(intent);
             }
         });
     }
@@ -299,5 +312,6 @@ public class ProfProfileActivity extends AppCompatActivity {
     private void showDialog()
     {
         d.show();
+
     }
 }
