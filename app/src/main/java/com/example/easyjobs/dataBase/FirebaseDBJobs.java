@@ -35,7 +35,6 @@ public class FirebaseDBJobs {
                 }
             });
         }
-
     }
 
     public static DatabaseReference getJobByID(String jobID){
@@ -45,17 +44,30 @@ public class FirebaseDBJobs {
     public static DatabaseReference getAllJobs(){
         return FirebaseBaseModel.getRef().child("Jobs");
     }
-    public static void editJob(String job_id, String user_id, String desc, int price, String loc, Date startDate, Date endDate, String CatID, AdminEditJobActivity c)
+
+    public static void editJob(String job_id, String user_id, String desc, int price, String loc, Date startDate, Date endDate, String CatID, AdminEditJobActivity c, ArrayList<Uri> picsUri)
     {
         Job j = new Job(job_id, user_id, desc, price, loc, startDate,endDate, CatID);
         FirebaseBaseModel.getRef().child("Jobs").child(job_id).setValue(j).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+                for(Uri u:picsUri)
+                {
+                    StorageReference storageReference = mStorageRef.child("JobPictures/"+ j.getJob_ID() +"/"+u.getLastPathSegment());
+                    storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            System.out.println("GOOD !");
+                        }
+                    });
+                }
                 Toast.makeText(c, "עודכן בהצלחה", Toast.LENGTH_SHORT).show();
                 c.onBackPressed();
             }
         });
     }
+
     public static void RemoveJob(String jobId,AdminEditJobActivity c)
     {
         FirebaseBaseModel.getRef().child("Jobs").child(jobId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {

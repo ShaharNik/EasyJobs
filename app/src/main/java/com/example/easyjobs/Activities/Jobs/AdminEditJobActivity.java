@@ -2,11 +2,16 @@ package com.example.easyjobs.Activities.Jobs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -43,6 +48,8 @@ import java.util.ArrayList;
 
 public class AdminEditJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private static final int PICK_FROM_GALLERY = 420;
+
     private ImageView backButton;
     private TextView namesText;
     private EditText descText;
@@ -52,8 +59,10 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
     private Spinner spinner;
     private Button approveChanges;
     private Button deletePost;
+    private Button addImages;
     private ImageView editJobImage;
     private ArrayList<Picture> localFile;
+    private ArrayList<Uri> PicsUri;
     private User user;
     private Job job;
     private Dialog d;
@@ -90,6 +99,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         deletePost = findViewById(R.id.deleteJobButton);
         builder = new AlertDialog.Builder(this);
         editJobImage = findViewById(R.id.editJobImage);
+        addImages = findViewById(R.id.addImagesJob);
     }
 
     private void inputTempData() {
@@ -158,6 +168,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         builder.setMessage("האם אתה בטוח?").setPositiveButton("כן", dialogClickListener)
                 .setNegativeButton("לא", dialogClickListener);
     }
+
     private void activateButtons() {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,7 +190,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                     locText.setError("מיקום לא טוב");
                 }
                 if (changedIt) {
-                    FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id, AdminEditJobActivity.this);
+                    FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id, AdminEditJobActivity.this, PicsUri);
                 }
             }
         });
@@ -197,6 +208,63 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                 showDialog();
             }
         });
+
+        addImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosePictureFromGallery();
+            }
+        });
+    }
+
+    private void choosePictureFromGallery()
+    {
+        if (ActivityCompat.checkSelfPermission(AdminEditJobActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AdminEditJobActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+        }
+        else {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    {
+        switch (requestCode) {
+            case PICK_FROM_GALLERY:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+                } else {
+                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_FROM_GALLERY) {
+            if(resultCode == Activity.RESULT_OK) {
+                if(data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
+                    for(int i = 0; i < count; i++) {
+                        Uri imageUri = data.getClipData().getItemAt(i).getUri();
+
+                        PicsUri.add(imageUri);
+                    }
+                    //do something with the image (save it to some directory or whatever you need to do with it here)
+                }
+            } else if(data!= null && data.getData() != null) {
+                PicsUri.add(data.getData());
+                //do something with the image (save it to some directory or whatever you need to do with it here)
+            }
+        }
     }
 
     @Override
@@ -220,6 +288,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         vpPager.setAdapter(vpa);
 
     }
+
     private void showDialog()
     {
         d.show();
