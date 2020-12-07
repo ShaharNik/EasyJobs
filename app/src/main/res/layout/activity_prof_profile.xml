@@ -88,16 +88,16 @@
 
     <TextView
         android:id="@+id/phonePP"
-        android:layout_width="278dp"
-        android:layout_height="34dp"
+        android:layout_width="176dp"
+        android:layout_height="36dp"
         android:text=" "
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.901"
+        app:layout_constraintHorizontal_bias="0.961"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.443" />
+        app:layout_constraintVertical_bias="0.446" />
 
     <RatingBar
         android:id="@+id/ratingBarProfProfile"
@@ -107,10 +107,10 @@
         android:stepSize="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.723"
+        app:layout_constraintHorizontal_bias="0.906"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.531" />
+        app:layout_constraintVertical_bias="0.547" />
 
     <Button
         android:id="@+id/admin_edit_prof"
@@ -139,26 +139,28 @@
 
     <ImageButton
         android:id="@+id/call_butt"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="20dp"
-        android:src="@drawable/call_icon"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="72dp"
         android:background="@drawable/call_bg"
+        android:src="@drawable/call_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/phonePP"
         app:layout_constraintTop_toBottomOf="@+id/back_prof_profile"
-        app:layout_constraintVertical_bias="0.401" />
+        app:layout_constraintVertical_bias="0.408" />
 
     <ImageButton
         android:id="@+id/watsappImageButton"
-        android:layout_width="41dp"
-        android:layout_height="31dp"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:background="@drawable/transparent"
+        android:src="@drawable/logo_whatsapp_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/phonePP"
-        app:layout_constraintHorizontal_bias="0.78"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back_prof_profile"
-        app:layout_constraintVertical_bias="0.409"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toEndOf="@+id/call_butt"
+        app:layout_constraintTop_toBottomOf="@+id/locationPP"
+        app:layout_constraintVertical_bias="0.05"></ImageButton>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

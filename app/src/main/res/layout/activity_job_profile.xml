@@ -23,15 +23,16 @@
 
     <ImageButton
         android:id="@+id/whatsappButtImageButt"
-        android:layout_width="46dp"
+        android:layout_width="45dp"
         android:layout_height="42dp"
+        android:background="@drawable/transparent"
+        android:src="@drawable/logo_whatsapp_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/phoneJP"
-        app:layout_constraintHorizontal_bias="0.843"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        app:layout_constraintVertical_bias="0.573"></ImageButton>
 
     <ImageView
         android:id="@+id/back_job_profile"

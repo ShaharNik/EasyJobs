@@ -191,7 +191,7 @@ public class ProfProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("www.wa.me/972" + user.getPhoneNumber()));
+                intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
                 startActivity(intent);
             }
         });
