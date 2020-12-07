@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.easyjobs.Objects.Job;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.viewPageAdapter;
@@ -53,9 +54,12 @@ public class JobProfileActivity extends AppCompatActivity {
     private ImageView JobProfileFirstPicture;
     private Button adminEditJob;
     private StorageReference mStorageRef;
-    private ArrayList<File> localFile;
+    private ArrayList<Picture> localFile;
     private Job job;
     private User user;
+    private Dialog d;
+    private ViewPager vpPager;
+    private  viewPageAdapter vpa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class JobProfileActivity extends AppCompatActivity {
         findViews();
 
         activateButtons();
+        createDialog();
     }
 
     @Override
@@ -74,6 +79,10 @@ public class JobProfileActivity extends AppCompatActivity {
     }
 
     private void setDataFromDB(){
+        if(vpa!=null) {
+            localFile.clear();
+            vpa.notifyDataSetChanged();
+        }
         String job_ID = getIntent().getStringExtra("job_id");
         DatabaseReference drJobs = FirebaseDBJobs.getJobByID(job_ID);
         drJobs.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -81,6 +90,8 @@ public class JobProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 job = snapshot.getValue(Job.class);
+                vpa = new viewPageAdapter(JobProfileActivity.this,localFile,job.getJob_ID(),true,false);
+                vpPager.setAdapter(vpa);
                 if(job == null)
                 {
                     JobProfileActivity.this.onBackPressed();
@@ -156,6 +167,7 @@ public class JobProfileActivity extends AppCompatActivity {
                 Intent i = new Intent(JobProfileActivity.this, AdminEditJobActivity.class);
                 i.putExtra("Job", job);
                 i.putExtra("User", user);
+                i.putExtra("File",localFile);
                 startActivity(i);
             }
         });
@@ -163,7 +175,7 @@ public class JobProfileActivity extends AppCompatActivity {
         JobProfileFirstPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createDialog();
+                showDialog();
             }
         });
     }
@@ -178,7 +190,11 @@ public class JobProfileActivity extends AppCompatActivity {
                 {
                     File Image=null;
                     try {
-                        Image = File.createTempFile(sr.getName(), "jpg");
+                       // System.out.println(sr.getName());
+                        //System.out.println(sr.getPath());
+                       // System.out.println(sr.);
+                        Image = File.createTempFile(sr.getName(), ".jpg");
+                       // Image.renameTo(sr.getName()+".jpg");
                         File finalImage = Image;
                         sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
@@ -186,7 +202,9 @@ public class JobProfileActivity extends AppCompatActivity {
                                 if(finalImage.exists()){
                                     Bitmap myBitmap = BitmapFactory.decodeFile(finalImage.getAbsolutePath());
                                     JobProfileFirstPicture.setImageBitmap(myBitmap);
-                                    localFile.add(finalImage);
+                                    Picture pic = new Picture(finalImage,sr.getName());
+                                    localFile.add(pic);
+                                    vpa.notifyDataSetChanged();
                                     JobProfileFirstPicture.setEnabled(true);
                                 }
 
@@ -204,15 +222,14 @@ public class JobProfileActivity extends AppCompatActivity {
     }
     private void createDialog()
     {
-
-        Dialog d= new Dialog(JobProfileActivity.this);
+        d= new Dialog(JobProfileActivity.this);
         d.setContentView(R.layout.view_pager_layout);
         d.setTitle("Pictures");
         d.setCancelable(true);
-        ViewPager vpPager = (ViewPager) d.findViewById(R.id.vpPager);
-        viewPageAdapter vpa = new viewPageAdapter(this,localFile);
-        vpPager.setAdapter(vpa);
+        vpPager = (ViewPager) d.findViewById(R.id.vpPager);
+    }
+    private void showDialog()
+    {
         d.show();
-
     }
 }

@@ -3,16 +3,23 @@ package com.example.easyjobs.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.R;
+import com.example.easyjobs.dataBase.FirebaseStorage;
 
 import java.io.File;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +27,19 @@ public class viewPageAdapter extends PagerAdapter {
 
     Context mContext;
     LayoutInflater mLayoutInflater;
-    List<File> pages = new ArrayList<>();
+    List<Picture> pages;
+    String adName;
+    boolean job;
+    boolean deletable;
 
-    public viewPageAdapter(Context context,ArrayList<File> pages) {
+
+    public viewPageAdapter(Context context,ArrayList<Picture> pages,String adName,boolean job,boolean deletable) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
         this.pages=pages;
+        this.adName = adName;
+        this.job = job;
+        this.deletable = deletable;
     }
 
     // Returns the number of pages to be displayed in the ViewPager.
@@ -47,9 +61,29 @@ public class viewPageAdapter extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.image_layout, container, false);
         // Find and populate data into the page (i.e set the image)
         ImageView imageView = (ImageView) itemView.findViewById(R.id.ImageLayout);
-        File f= pages.get(position);
+        File f= pages.get(position).getF();
+        if(deletable) {
+            Button b = itemView.findViewById(R.id.imageView_deleteButton);
+            b.setVisibility(View.VISIBLE);
+            b.setEnabled(true);
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println(pages.get(position).getName());
+
+                    if (job) {
+                        FirebaseStorage.deleteSpecificJobPicture(adName, pages.get(position).getName());
+                    } else {
+                        FirebaseStorage.deleteSpecificProfPicture(adName, pages.get(position).getName());
+                    }
+                    pages.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+        }
         Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
         imageView.setImageBitmap(myBitmap);
+
         // ...
         // Add the page to the container
         container.addView(itemView);
@@ -61,5 +95,10 @@ public class viewPageAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
+    }
+
+    @Override
+    public int getItemPosition(Object object){
+        return PagerAdapter.POSITION_NONE;
     }
 }

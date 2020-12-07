@@ -237,6 +237,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
             galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
         }
+
     }
 
 

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.easyjobs.Activities.Jobs.JobProfileActivity;
 import com.example.easyjobs.Objects.Category;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
@@ -58,9 +59,11 @@ public class ProfProfileActivity extends AppCompatActivity {
     private String ProfProfile_UserID;
     private ImageView profProfileImage;
     private StorageReference mStorageRef;
-    private ArrayList<File> localFile;
+    private ArrayList<Picture> localFile;
     private Button adminEditProf;
-
+    private viewPageAdapter vpa;
+    private Dialog d;
+    private ViewPager vpPager;
     private Prof profile;
     private User user;
 
@@ -72,6 +75,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         findViews();
         activateButtons();
         setRatingBarListener();
+        createDialog();
     }
 
     @Override
@@ -99,6 +103,10 @@ public class ProfProfileActivity extends AppCompatActivity {
     }
     private void cleanTexts()
     {
+        if(vpa!=null) {
+            localFile.clear();
+            vpa.notifyDataSetChanged();
+        }
         descPPTV.setText("");
         catPPTV.setText("");
         locationPPTV.setText("");
@@ -161,6 +169,7 @@ public class ProfProfileActivity extends AppCompatActivity {
                 Intent i = new Intent(ProfProfileActivity.this, AdminEditProfActivity.class);
                 i.putExtra("Prof", profile);
                 i.putExtra("User", user);
+                i.putExtra("File",localFile);
                 startActivity(i);
             }
         });
@@ -168,7 +177,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         profProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createDialog();
+                showDialog();
             }
         });
     }
@@ -181,6 +190,8 @@ public class ProfProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 profile = snapshot.getValue(Prof.class);
+                vpa = new viewPageAdapter(ProfProfileActivity.this,localFile,profile.getProf_ID(),false,false);
+                vpPager.setAdapter(vpa);
                 if(profile == null)
                 {
                     ProfProfileActivity.this.onBackPressed();
@@ -250,7 +261,7 @@ public class ProfProfileActivity extends AppCompatActivity {
                 {
                     File Image=null;
                     try {
-                        Image = File.createTempFile(sr.getName(), "jpg");
+                        Image = File.createTempFile(sr.getName(), ".jpg");
                         File finalImage = Image;
                         sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
@@ -259,7 +270,9 @@ public class ProfProfileActivity extends AppCompatActivity {
                                     Bitmap myBitmap = BitmapFactory.decodeFile(finalImage.getAbsolutePath());
                                     profProfileImage.setImageBitmap(myBitmap);
                                     profProfileImage.setEnabled(true);
-                                    localFile.add(finalImage);
+                                    Picture pic = new Picture(finalImage,sr.getName());
+                                    localFile.add(pic);
+                                    vpa.notifyDataSetChanged();
                                 }
 
                             }
@@ -277,14 +290,14 @@ public class ProfProfileActivity extends AppCompatActivity {
     private void createDialog()
     {
 
-        Dialog d= new Dialog(ProfProfileActivity.this);
+        d= new Dialog(ProfProfileActivity.this);
         d.setContentView(R.layout.view_pager_layout);
         d.setTitle("Pictures");
         d.setCancelable(true);
-        ViewPager vpPager = (ViewPager) d.findViewById(R.id.vpPager);
-        viewPageAdapter vpa = new viewPageAdapter(this,localFile);
-        vpPager.setAdapter(vpa);
+        vpPager = (ViewPager) d.findViewById(R.id.vpPager);
+    }
+    private void showDialog()
+    {
         d.show();
-
     }
 }

@@ -327,6 +327,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     public void moveToProfProfile(int id){
         Intent i = new Intent(ProfListActivity.this, ProfProfileActivity.class);
         i.putExtra("prof_id",ProfList.get(id).getProf_ID());
+
         startActivity(i);
     }
 

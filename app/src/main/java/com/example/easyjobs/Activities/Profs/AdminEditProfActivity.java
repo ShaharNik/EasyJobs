@@ -2,9 +2,13 @@ package com.example.easyjobs.Activities.Profs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,10 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.easyjobs.Activities.Jobs.AdminEditJobActivity;
 import com.example.easyjobs.Objects.Category;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
+import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseStorage;
@@ -44,7 +51,11 @@ public class AdminEditProfActivity extends AppCompatActivity {
     private Button deletePost;
     private MaterialDialog md;
     private AlertDialog.Builder builder;
-
+    private ImageView adminEditPostImage;
+    private ArrayList<Picture> localFile;
+    private Dialog d;
+    private ViewPager vpPager;
+    private viewPageAdapter vpa;
     private User user;
     private Prof prof;
     List<String> catList;
@@ -58,6 +69,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
 
         user = (User) getIntent().getSerializableExtra("User");
         prof = (Prof) getIntent().getSerializableExtra("Prof");
+        localFile = (ArrayList<Picture>) getIntent().getSerializableExtra("File");
         catList = new ArrayList<String>();
 
         findViews();
@@ -65,6 +77,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
         setUpSpinner();
         activateButtons();
         setupDialog();
+        createDialog();
     }
 
     private void findViews() {
@@ -78,6 +91,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
         phoneText = findViewById(R.id.phoneEP);
         approveChanges = findViewById(R.id.changeProfDetails);
         deletePost = findViewById(R.id.deleteProfButton);
+        adminEditPostImage = findViewById(R.id.adminEditPostImage);
         builder = new AlertDialog.Builder(this);
     }
 
@@ -87,6 +101,12 @@ public class AdminEditProfActivity extends AppCompatActivity {
         descText.setText(prof.getDesc());
         locText.setText(prof.getLocation());
         phoneText.setText(user.getPhoneNumber());
+        if(localFile.size()>=1)
+        {
+            Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
+            adminEditPostImage.setImageBitmap(myBitmap);
+            //editJobImage.setImageURI(localFile.get(0));
+        }
     }
 
     private void setUpSpinner(){
@@ -192,5 +212,28 @@ public class AdminEditProfActivity extends AppCompatActivity {
             }
 
         });
+
+        adminEditPostImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+    }
+
+    private void createDialog() {
+
+        d = new Dialog(AdminEditProfActivity.this);
+        d.setContentView(R.layout.view_pager_layout);
+        d.setTitle("Pictures");
+        d.setCancelable(true);
+        vpPager = (ViewPager) d.findViewById(R.id.vpPager);
+        vpa = new viewPageAdapter(this, localFile, prof.getProf_ID(), false, true);
+        vpPager.setAdapter(vpa);
+
+    }
+    private void showDialog()
+    {
+        d.show();
     }
 }

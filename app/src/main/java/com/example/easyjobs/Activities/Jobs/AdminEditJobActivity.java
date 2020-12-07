@@ -2,9 +2,14 @@ package com.example.easyjobs.Activities.Jobs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,8 +23,10 @@ import android.widget.Toast;
 
 import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Job;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
+import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseStorage;
@@ -29,6 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,9 +52,13 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
     private Spinner spinner;
     private Button approveChanges;
     private Button deletePost;
-
+    private ImageView editJobImage;
+    private ArrayList<Picture> localFile;
     private User user;
     private Job job;
+    private Dialog d;
+    private ViewPager vpPager;
+    private viewPageAdapter vpa;
     String cat_id;
 
     private AlertDialog.Builder builder;
@@ -57,12 +69,13 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
 
         user = (User) getIntent().getSerializableExtra("User");
         job = (Job) getIntent().getSerializableExtra("Job");
-
+        localFile = (ArrayList<Picture>) getIntent().getSerializableExtra("File");
         findViews();
         inputTempData();
         setUpSpinner();
         activateButtons();
         setupDialog();
+        createDialog();
     }
 
     private void findViews() {
@@ -76,6 +89,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         approveChanges = findViewById(R.id.changeJobDetails);
         deletePost = findViewById(R.id.deleteJobButton);
         builder = new AlertDialog.Builder(this);
+        editJobImage = findViewById(R.id.editJobImage);
     }
 
     private void inputTempData() {
@@ -86,6 +100,12 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
 
         DateFormat df = new SimpleDateFormat("dd/MM/yy");
         dateText.setText(df.format(job.getStartDate())+" - " + df.format(job.getEndDate()));
+        if(localFile.size()>=1)
+        {
+            Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
+            editJobImage.setImageBitmap(myBitmap);
+            //editJobImage.setImageURI(localFile.get(0));
+        }
     }
 
     private void setUpSpinner(){
@@ -170,6 +190,13 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                 builder.show();
             }
         });
+
+        editJobImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
     }
 
     @Override
@@ -180,5 +207,21 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         job.getCategory_ID();
+    }
+
+    private void createDialog() {
+
+        d = new Dialog(AdminEditJobActivity.this);
+        d.setContentView(R.layout.view_pager_layout);
+        d.setTitle("Pictures");
+        d.setCancelable(true);
+        vpPager = (ViewPager) d.findViewById(R.id.vpPager);
+        vpa = new viewPageAdapter(this, localFile, job.getJob_ID(), true, true);
+        vpPager.setAdapter(vpa);
+
+    }
+    private void showDialog()
+    {
+        d.show();
     }
 }
