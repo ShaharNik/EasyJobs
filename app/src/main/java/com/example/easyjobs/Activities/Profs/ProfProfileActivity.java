@@ -103,7 +103,7 @@ public class ProfProfileActivity extends AppCompatActivity {
         catPPTV = findViewById(R.id.catPP);
         locationPPTV = findViewById(R.id.locationPP);
         phonePPTV = findViewById(R.id.phonePP);
-        phoneCall = findViewById(R.id.call_butt);
+        phoneCall = findViewById(R.id.call_buttP);
         ratingBar = findViewById(R.id.ratingBarProfProfile);
         profProfileImage = findViewById(R.id.profProfileImage);
         adminEditProf = findViewById(R.id.admin_edit_prof);
@@ -326,6 +326,19 @@ public class ProfProfileActivity extends AppCompatActivity {
             Intent i = new Intent(Intent.ACTION_CALL);
             i.setData(Uri.parse(s));
             startActivity(i);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    {
+        switch (requestCode) {
+            case PHONE_CALL_APPROVE:
+                String s = "tel:" + phonePPTV.getText().toString();
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse(s));
+                startActivity(i);
+                break;
         }
     }
 }

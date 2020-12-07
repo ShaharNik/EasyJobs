@@ -2,17 +2,23 @@ package com.example.easyjobs.Activities.Jobs;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import com.example.easyjobs.Activities.Profs.ProfProfileActivity;
 import com.example.easyjobs.Objects.Picture;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,6 +51,8 @@ import java.util.List;
 
 public class JobProfileActivity extends AppCompatActivity {
 
+    private static final int PHONE_CALL_APPROVE = 420;
+
     private ImageView backBJP;
     private TextView namesJPTV;
     private TextView descJPTV;
@@ -52,6 +60,7 @@ public class JobProfileActivity extends AppCompatActivity {
     private TextView priceJPTV;
     private TextView datesJPTV;
     private TextView phoneJPTV;
+    private ImageButton phoneCall;
     private ImageView JobProfileFirstPicture;
     private Button adminEditJob;
     private StorageReference mStorageRef;
@@ -141,6 +150,7 @@ public class JobProfileActivity extends AppCompatActivity {
         priceJPTV = findViewById(R.id.priceJP);
         datesJPTV = findViewById(R.id.dateJP);
         phoneJPTV = findViewById(R.id.phoneJP);
+        phoneCall = findViewById(R.id.call_buttJ);
         JobProfileFirstPicture = findViewById(R.id.JobProfileFirstPicture);
         adminEditJob = findViewById(R.id.admin_edit_job);
         JobProfileFirstPicture.setEnabled(false);
@@ -163,6 +173,13 @@ public class JobProfileActivity extends AppCompatActivity {
             adminEditJob.setVisibility(View.GONE);
             adminEditJob.setEnabled(false);
         }
+
+        phoneCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phoneCallMaker();
+            }
+        });
 
         adminEditJob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,5 +262,30 @@ public class JobProfileActivity extends AppCompatActivity {
     {
         d.show();
 
+    }
+
+    private void phoneCallMaker() {
+        if (ActivityCompat.checkSelfPermission(JobProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(JobProfileActivity.this, new String[]{Manifest.permission.CALL_PHONE}, PHONE_CALL_APPROVE);
+        }
+        else{
+            String s = "tel:" + phoneJPTV.getText().toString();
+            Intent i = new Intent(Intent.ACTION_CALL);
+            i.setData(Uri.parse(s));
+            startActivity(i);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    {
+        switch (requestCode) {
+            case PHONE_CALL_APPROVE:
+                String s = "tel:" + phoneJPTV.getText().toString();
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse(s));
+                startActivity(i);
+                break;
+        }
     }
 }
