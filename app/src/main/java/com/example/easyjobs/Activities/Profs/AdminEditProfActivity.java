@@ -14,10 +14,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -65,6 +67,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
     private AlertDialog.Builder builder;
     private ImageView adminEditPostImage;
     private ArrayList<Picture> localFile;
+    private ArrayList<Picture> OriginalLocalFile;
     private Dialog d;
     private ViewPager vpPager;
     private viewPageAdapter vpa;
@@ -84,7 +87,11 @@ public class AdminEditProfActivity extends AppCompatActivity {
         prof = (Prof) getIntent().getSerializableExtra("Prof");
         localFile = (ArrayList<Picture>) getIntent().getSerializableExtra("File");
         catList = new ArrayList<String>();
-
+        OriginalLocalFile = new ArrayList<>();
+        for (Picture p :
+                localFile) {
+            OriginalLocalFile.add(p);
+        }
         findViews();
         inputTempData();
         setUpSpinner();
@@ -214,6 +221,33 @@ public class AdminEditProfActivity extends AppCompatActivity {
                     locText.setError("מיקום לא טוב");
                 }
                 if(changedIt){
+                    for(Picture p : OriginalLocalFile)
+                    {
+                        if(!localFile.contains(p))
+                        {
+                            FirebaseStorage.deleteSpecificProfPicture(prof.getProf_ID(), p.getName());
+                        }
+                    }
+                    ArrayList<Uri> toDelete = new ArrayList<>();
+                    for(Uri u : PicsUri)
+                    {
+                        boolean exists=false;
+                        for(Picture p : localFile)
+                        {
+                            if(p.getName().compareTo(u.getLastPathSegment())==0)
+                            {
+                                exists=true;
+                            }
+                        }
+                        if(!exists)
+                        {
+                            toDelete.add(u);
+                        }
+                    }
+                    for(Uri u : toDelete)
+                    {
+                        PicsUri.remove(u);
+                    }
                     FirebaseDBProfs.EditProf(prof.getProf_ID(), user.getUser_ID(), descText.getText().toString(), catList, locText.getText().toString(), AdminEditProfActivity.this, PicsUri);
                 }
             }
@@ -299,6 +333,7 @@ public class AdminEditProfActivity extends AppCompatActivity {
                             fos.close();
                             Picture p = new Picture(Image,imageUri.getLastPathSegment());
                             localFile.add(p);
+
                             vpa.notifyDataSetChanged();
 
                         }
@@ -312,7 +347,11 @@ public class AdminEditProfActivity extends AppCompatActivity {
 //                        localFile.add(p);
 //                        vpa.notifyDataSetChanged();
                     }
-
+                    if(localFile.size()>0)
+                    {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
+                        adminEditPostImage.setImageBitmap(myBitmap);
+                    }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
                 }
             } else if(data!= null && data.getData() != null) {
@@ -353,7 +392,9 @@ public class AdminEditProfActivity extends AppCompatActivity {
     private void createDialog() {
 
         d = new Dialog(AdminEditProfActivity.this);
+
         d.setContentView(R.layout.view_pager_layout);
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);

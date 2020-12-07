@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -65,6 +66,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
     private Button addImages;
     private ImageView editJobImage;
     private ArrayList<Picture> localFile;
+    private ArrayList<Picture> OriginalLocalFile;
     private ArrayList<Uri> PicsUri;
     private User user;
     private Job job;
@@ -82,6 +84,11 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         user = (User) getIntent().getSerializableExtra("User");
         job = (Job) getIntent().getSerializableExtra("Job");
         localFile = (ArrayList<Picture>) getIntent().getSerializableExtra("File");
+        OriginalLocalFile = new ArrayList<>();
+        for (Picture p :
+                localFile) {
+            OriginalLocalFile.add(p);
+        }
         findViews();
         inputTempData();
         setUpSpinner();
@@ -194,8 +201,34 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                     locText.setError("מיקום לא טוב");
                 }
                 if (changedIt) {
+                    for(Picture p : OriginalLocalFile)
+                    {
+                        if(!localFile.contains(p))
+                        {
+                            FirebaseStorage.deleteSpecificJobPicture(job.getJob_ID(), p.getName());
+                        }
+                    }
+                    ArrayList<Uri> toDelete = new ArrayList<>();
+                    for(Uri u : PicsUri)
+                    {
+                        boolean exists=false;
+                        for(Picture p : localFile)
+                        {
+                                if(p.getName().compareTo(u.getLastPathSegment())==0)
+                                {
+                                    exists=true;
+                                }
+                        }
+                        if(!exists)
+                        {
+                            toDelete.add(u);
+                        }
+                    }
+                    for(Uri u : toDelete)
+                    {
+                        PicsUri.remove(u);
+                    }
                     FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id, AdminEditJobActivity.this, PicsUri);
-                    //TODO Try to figure out how know what shit to delete and what shit to keep
                 }
             }
         });
@@ -278,6 +311,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                             fos.close();
                             Picture p = new Picture(Image,imageUri.getLastPathSegment());
                             localFile.add(p);
+
                             vpa.notifyDataSetChanged();
 
                         }
@@ -290,8 +324,14 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
 //                        Picture p = new Picture(f,imageUri.getLastPathSegment());
 //                        localFile.add(p);
 //                        vpa.notifyDataSetChanged();
-                    }
 
+                    }
+                    if(localFile.size()>0)
+                    {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
+                        editJobImage.setImageBitmap(myBitmap);
+                        //editJobImage.setImageURI(localFile.get(0));
+                    }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
                 }
             } else if(data!= null && data.getData() != null) {
@@ -343,6 +383,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
 
         d = new Dialog(AdminEditJobActivity.this);
         d.setContentView(R.layout.view_pager_layout);
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);

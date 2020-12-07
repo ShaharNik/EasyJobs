@@ -14,6 +14,8 @@ import android.graphics.BitmapFactory;
 
 import com.example.easyjobs.Activities.Profs.ProfProfileActivity;
 import com.example.easyjobs.Objects.Picture;
+
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -255,6 +257,7 @@ public class JobProfileActivity extends AppCompatActivity {
     {
         d= new Dialog(JobProfileActivity.this);
         d.setContentView(R.layout.view_pager_layout);
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
