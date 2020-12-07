@@ -36,16 +36,18 @@
 
     <TextView
         android:id="@+id/ratingPP"
-        android:layout_width="320dp"
+        android:layout_width="120dp"
         android:layout_height="41dp"
         android:text=" "
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.901"
+        app:layout_constraintHorizontal_bias="0.969"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.134" />
+
+
 
     <TextView
         android:id="@+id/descriptionPP"
@@ -161,6 +163,18 @@
         app:layout_constraintStart_toEndOf="@+id/call_buttP"
         app:layout_constraintTop_toBottomOf="@+id/locationPP"
         app:layout_constraintVertical_bias="0.05"></ImageButton>
+
+    <ImageView
+        android:id="@+id/starPP"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionPP"
+        app:layout_constraintEnd_toStartOf="@+id/ratingPP"
+        app:layout_constraintHorizontal_bias="0.995"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/namesPP"
+        app:layout_constraintVertical_bias="0.47"
+        app:srcCompat="@drawable/star" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
