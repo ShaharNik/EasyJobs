@@ -12,9 +12,46 @@ The apllications allows user to offer help and ask for it.. add more..
 <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/whatsappCircle.png" width="50" height="50">Automatically open chat on whatsapp with the client.<br />
 <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/call-icon.png" width="50" height="50">Automatically call the client. <br />
 ## Diagrams
-adding phothos here of diagrams and uml...
-## Technology:
-<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/technologies/agile.png" width="250"> <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/technologies/java.png" width="100">
+<table cellspacing="10">
+<tbody>
+<tr>
+<td style="text-align: center;">
+<p style="text-align: center;"><strong>ERD Diagram</strong></p>
+<p><img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/Diagrams/ErdDiagram.png" width="200px" height="170px" /></p>
+</td>
+<td style="text-align: center;">
+<p style="text-align: center;"><strong>Use Case Diagram</strong></p>
+<p><img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/Diagrams/UseCaseDiagram.png" width="170px" height="170px" /></p>
+</td>
+<td style="text-align: center;">
+<p style="text-align: center;"><strong>Object Diagram</strong></p>
+<p><img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/Diagrams/ObjectDiagram.png" width="210px" height="170px" /></p>
+</td>
+<td style="text-align: center;">
+<p style="text-align: center;"><strong>Activity Diagram</strong></p>
+<p><img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/Diagrams/ActivityDiagram.png" width="170px" height="170px" /></p>
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+<p style="text-align: center;"><strong>Class Diagram</strong></p>
+<p><a href="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/Diagrams/ClassDiagram.png"><img src="./images/RentMeClassDiagram.jpeg" width="170px" height="170px" /></a></p>
+</td>
+<td style="text-align: center;">
+<p style="text-align: center;"><strong>Sequence Diagram</strong></p>
+<p><img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/Diagrams/SequenceDiagram.png" width="200px" height="170px" /></p>
+</td>
+<td style="text-align: center;">
+<p style="text-align: center;"><strong>State Machine Diagram</strong></p>
+<p><img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/Gallery/Diagrams/StateMachineDiagram.png" width="200px" height="170px" /></p>
+</td>
+</tr>
+</tbody>
+</table>
+## Technology
+<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/technologies/agile.png" width="250"> 
+<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/technologies/java.png" width="100">
 <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/technologies/android.png" width="250">
 <img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/technologies/git.png" width="250">
+<img src="https://github.com/YosefTwito/EasyJobs/blob/master/app/src/main/technologies/firebase.png" width="250">
 
