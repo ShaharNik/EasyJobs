@@ -19,10 +19,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.851" />
+        app:layout_constraintVertical_bias="0.96" />
 
     <Button
         android:id="@+id/chooseDate_postJobButton"
@@ -66,16 +66,16 @@
 
     <EditText
         android:id="@+id/editPricePJ"
-        android:layout_width="210dp"
-        android:layout_height="45dp"
+        android:layout_width="186dp"
+        android:layout_height="44dp"
         android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="תן הצעת מחיר ראשונית..."
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintEnd_toStartOf="@+id/pricePJ"
+        app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pricePJ" />
+        app:layout_constraintTop_toBottomOf="@+id/chooseDate_postJobButton" />
 
     <EditText
         android:id="@+id/dateEditTextPostJob"
@@ -85,10 +85,10 @@
         android:inputType="date"
         app:layout_constraintBottom_toTopOf="@+id/pricePJ"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/chooseDate_postJobButton"
         app:layout_constraintTop_toBottomOf="@+id/datePJ"
-        app:layout_constraintVertical_bias="0.343" />
+        app:layout_constraintVertical_bias="0.333" />
 
     <ImageView
         android:id="@+id/back_post_job"
@@ -112,10 +112,10 @@
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.969"
+        app:layout_constraintHorizontal_bias="0.961"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.139" />
+        app:layout_constraintTop_toBottomOf="@+id/PostJobDummy"
+        app:layout_constraintVertical_bias="0.019" />
 
     <TextView
         android:id="@+id/PostJobDummy"
@@ -144,8 +144,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.951"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.229" />
+        app:layout_constraintTop_toBottomOf="@+id/pickCategoryPostJob"
+        app:layout_constraintVertical_bias="0.016" />
 
     <TextView
         android:id="@+id/locPJ"
@@ -156,10 +156,10 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editDescPJ"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.032" />
 
     <TextView
         android:id="@+id/datePJ"
@@ -170,10 +170,10 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editLocPJ"
-        app:layout_constraintVertical_bias="0.046" />
+        app:layout_constraintVertical_bias="0.032" />
 
     <TextView
         android:id="@+id/pricePJ"
@@ -187,22 +187,35 @@
         app:layout_constraintHorizontal_bias="0.936"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/datePJ"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.197" />
 
     <Button
         android:id="@+id/postJobUploadButton"
-        android:background="@drawable/button_pretty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_pretty"
+        android:text="העלה תמונות"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:text="העלה תמונות"
         app:layout_constraintBottom_toTopOf="@+id/postJobBtn"
-        app:layout_constraintEnd_toStartOf="@+id/editPricePJ"
-        app:layout_constraintHorizontal_bias="0.567"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pricePJ"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintTop_toBottomOf="@+id/imagePostJob"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@+id/imagePostJob"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/postJobBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPricePJ"
+        app:layout_constraintVertical_bias="0.041"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

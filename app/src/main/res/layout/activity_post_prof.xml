@@ -41,17 +41,17 @@
         android:id="@+id/pickCategoryPostProf"
         android:layout_width="180dp"
         android:layout_height="50dp"
-        android:text="בחר קטגריות"
         android:background="@drawable/button_pretty"
-        android:textStyle="bold"
+        android:text="בחר קטגריות"
         android:textColor="@color/white"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintHorizontal_bias="0.969"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.099" />
 
     <TextView
         android:id="@+id/descPP"
@@ -62,10 +62,10 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.963"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.229" />
+        app:layout_constraintTop_toBottomOf="@+id/pickCategoryPostProf"
+        app:layout_constraintVertical_bias="0.02" />
 
     <EditText
         android:id="@+id/editDescPP"
@@ -91,7 +91,7 @@
         app:layout_constraintHorizontal_bias="0.935"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editDescPP"
-        app:layout_constraintVertical_bias="0.093" />
+        app:layout_constraintVertical_bias="0.023" />
 
     <EditText
         android:id="@+id/editLocPP"
@@ -115,10 +115,10 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.911"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editLocPP"
-        app:layout_constraintVertical_bias="0.136" />
+        app:layout_constraintVertical_bias="0.043" />
 
     <EditText
         android:id="@+id/editIdPP"
@@ -143,24 +143,37 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.851" />
+        app:layout_constraintVertical_bias="0.96" />
 
     <Button
         android:id="@+id/postProfUploadButton"
-        android:background="@drawable/button_pretty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_pretty"
+        android:text="העלה תמונות"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:text="העלה תמונות"
         app:layout_constraintBottom_toTopOf="@+id/postProfBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.941"
+        app:layout_constraintHorizontal_bias="0.885"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagePostProf"
+        app:layout_constraintVertical_bias="0.23" />
+
+    <ImageView
+        android:id="@+id/imagePostProf"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/postProfBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.973"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editIdPP"
-        app:layout_constraintVertical_bias="0.33" />
+        app:layout_constraintVertical_bias="0.244"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

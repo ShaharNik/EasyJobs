@@ -3,11 +3,14 @@ package com.example.easyjobs.Activities.Profs;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +22,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.easyjobs.Activities.Jobs.PostJobActivity;
 import com.example.easyjobs.Objects.Category;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.R;
+import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.utils.Validator;
@@ -49,7 +54,12 @@ public class PostProfActivity extends AppCompatActivity {
     private MaterialDialog md;
     private ArrayList<String> CatChosen;
     private Button postProfUploadButton;
-    ArrayList<Uri> PicsUri;
+    private ImageView images;
+    private Dialog d;
+    private ViewPager vpPager;
+    private viewPageAdapter vpa;
+    private ArrayList<Uri> PicsUri;
+    private ArrayList<Picture> localFile;
     private StorageReference mStorageRef;
 
     @Override
@@ -79,6 +89,8 @@ public class PostProfActivity extends AppCompatActivity {
         spinnerPP = findViewById(R.id.pickCategoryPostProf);
         postProfUploadButton = findViewById(R.id.postProfUploadButton);
         PicsUri = new ArrayList<>();
+        localFile = new ArrayList<>();
+        images = findViewById(R.id.imagePostProf);
     }
 
     private void activateButtons(){
@@ -223,4 +235,21 @@ public class PostProfActivity extends AppCompatActivity {
         }
     }
 
+    private void createDialog() {
+
+        d = new Dialog(PostProfActivity.this);
+        d.setContentView(R.layout.view_pager_layout);
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        d.setTitle("Pictures");
+        d.setCancelable(true);
+        vpPager = (ViewPager) d.findViewById(R.id.vpPager);
+        vpa = new viewPageAdapter(this, localFile, "", false, true);
+        vpPager.setAdapter(vpa);
+
+    }
+
+    private void showDialog()
+    {
+        d.show();
+    }
 }

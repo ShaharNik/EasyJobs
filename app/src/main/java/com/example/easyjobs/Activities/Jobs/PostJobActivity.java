@@ -4,14 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,7 +28,9 @@ import android.widget.Toast;
 
 import com.example.easyjobs.Activities.EditProfileActivity;
 import com.example.easyjobs.Objects.Category;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.R;
+import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.utils.Validator;
@@ -42,7 +49,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Console;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,7 +74,12 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     private Date endD;
     private String catNum = "0";
     private Button postJobUploadButton;
-    ArrayList<Uri> PicsUri;
+    private ImageView images;
+    private Dialog d;
+    private ViewPager vpPager;
+    private viewPageAdapter vpa;
+    private ArrayList<Uri> PicsUri;
+    private ArrayList<Picture> localFile;
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
 
@@ -90,7 +105,9 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         chooseDate_postJobButton =  findViewById(R.id.chooseDate_postJobButton);
         dateEditTextPostJob = findViewById(R.id.dateEditTextPostJob);
         postJobUploadButton = findViewById(R.id.postJobUploadButton);
+        images = findViewById(R.id.imagePostJob);
         PicsUri = new ArrayList<>();
+        localFile = new ArrayList<>();
     }
 
     private void activateButtons(){
@@ -117,6 +134,13 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View v) {
                 choosePictureFromGallery();
+            }
+        });
+
+        images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
             }
         });
     }
@@ -269,14 +293,95 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
                     for(int i = 0; i < count; i++) {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
                         PicsUri.add(imageUri);
+                        try {
+                            Bitmap bitmap = MediaStore
+                                    .Images.Media.getBitmap(
+                                            getContentResolver(),
+                                            imageUri);
+                            File Image = File.createTempFile("Picture", ".jpg");
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                            byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                            FileOutputStream fos = new FileOutputStream(Image);
+                            fos.write(bitmapdata);
+                            fos.flush();
+                            fos.close();
+                            Picture p = new Picture(Image,imageUri.getLastPathSegment());
+                            localFile.add(p);
+
+                            vpa.notifyDataSetChanged();
+
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+//                        localFile.add()
+//                        File f = new File(imageUri.toString());
+//                        Picture p = new Picture(f,imageUri.getLastPathSegment());
+//                        localFile.add(p);
+//                        vpa.notifyDataSetChanged();
+
                     }
+                    if(localFile.size()>0)
+                    {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
+                        images.setImageBitmap(myBitmap);
+                        //editJobImage.setImageURI(localFile.get(0));
+                    }
+
+                }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
                 }
             } else if(data!= null && data.getData() != null) {
                 PicsUri.add(data.getData());
+            try {
+                Bitmap bitmap = MediaStore
+                        .Images.Media.getBitmap(
+                                getContentResolver(),
+                                data.getData());
+                File Image = File.createTempFile("Picture", ".jpg");
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                FileOutputStream fos = new FileOutputStream(Image);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+                Picture p = new Picture(Image,data.getData().getLastPathSegment());
+                localFile.add(p);
+                vpa.notifyDataSetChanged();
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
                 //do something with the image (save it to some directory or whatever you need to do with it here)
             }
-        }
+    }
+
+    private void createDialog() {
+
+        d = new Dialog(PostJobActivity.this);
+        d.setContentView(R.layout.view_pager_layout);
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        d.setTitle("Pictures");
+        d.setCancelable(true);
+        vpPager = (ViewPager) d.findViewById(R.id.vpPager);
+        vpa = new viewPageAdapter(this, localFile, "", true, true);
+        vpPager.setAdapter(vpa);
+
+    }
+
+    private void showDialog()
+    {
+        d.show();
     }
 }
 
