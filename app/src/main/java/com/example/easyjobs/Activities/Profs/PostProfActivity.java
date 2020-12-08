@@ -274,6 +274,8 @@ public class PostProfActivity extends AppCompatActivity {
                     {
                         Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
                         images.setImageBitmap(myBitmap);
+                        images.setVisibility(View.VISIBLE);
+                        images.setEnabled(true);
                         //editJobImage.setImageURI(localFile.get(0));
                     }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
@@ -315,6 +317,14 @@ public class PostProfActivity extends AppCompatActivity {
         d.setContentView(R.layout.view_pager_layout);
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
+        d.setOnDismissListener(dialog -> {
+            System.out.println("DISMISS");
+            if(localFile.isEmpty())
+            {
+                images.setVisibility(View.INVISIBLE);
+                images.setEnabled(false);
+            }
+        });
         d.setCancelable(true);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, "", false, true);

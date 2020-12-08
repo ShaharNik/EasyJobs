@@ -351,6 +351,8 @@ public class AdminEditProfActivity extends AppCompatActivity {
                     {
                         Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
                         adminEditPostImage.setImageBitmap(myBitmap);
+                        adminEditPostImage.setVisibility(View.VISIBLE);
+                        adminEditPostImage.setEnabled(true);
                     }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
                 }
@@ -397,6 +399,14 @@ public class AdminEditProfActivity extends AppCompatActivity {
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
+        d.setOnDismissListener(dialog -> {
+            System.out.println("DISMISS");
+            if(localFile.isEmpty())
+            {
+                adminEditPostImage.setVisibility(View.INVISIBLE);
+                adminEditPostImage.setEnabled(false);
+            }
+        });
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, prof.getProf_ID(), false, true);
         vpPager.setAdapter(vpa);

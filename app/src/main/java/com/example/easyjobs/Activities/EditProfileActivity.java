@@ -295,10 +295,11 @@ public class EditProfileActivity extends AppCompatActivity {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
                         cameraPermission();
+                        break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
                         //No button clicked
-                        uploadExistingPicture();
+                        galleryPermission();
                         break;
                 }
             }
@@ -314,7 +315,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void uploadExistingPicture() {
         galleryPermission();
-        SelectImage();
+        //SelectImage();
         //uploadImage();
     }
     private void galleryPermission() {
@@ -323,7 +324,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
             } else {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+                startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
             }
     }
     private void cameraPermission() {
@@ -335,7 +336,6 @@ public class EditProfileActivity extends AppCompatActivity {
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
         } else
         {
-
             ActivityCompat.requestPermissions(EditProfileActivity.this,new String[]{
                     Manifest.permission.CAMERA}, RequestPermissionCode);
         }
@@ -398,8 +398,7 @@ public class EditProfileActivity extends AppCompatActivity {
             case PICK_FROM_GALLERY:
                 // If request is cancelled, the result arrays are empty.
                 if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+                    SelectImage();
                 } else {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
                     Toast.makeText(EditProfileActivity.this, "עליך לאשר שימוש בגלריה..", Toast.LENGTH_LONG).show();

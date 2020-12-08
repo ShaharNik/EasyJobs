@@ -330,6 +330,8 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
                     {
                         Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
                         editJobImage.setImageBitmap(myBitmap);
+                        editJobImage.setVisibility(View.VISIBLE);
+                        editJobImage.setEnabled(true);
                         //editJobImage.setImageURI(localFile.get(0));
                     }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
@@ -386,6 +388,14 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
+        d.setOnDismissListener(dialog -> {
+            System.out.println("DISMISS");
+            if(localFile.isEmpty())
+            {
+                editJobImage.setVisibility(View.INVISIBLE);
+                editJobImage.setEnabled(false);
+            }
+        });
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, job.getJob_ID(), true, true);
         vpPager.setAdapter(vpa);

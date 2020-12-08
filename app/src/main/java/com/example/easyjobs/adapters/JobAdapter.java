@@ -49,18 +49,16 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        int layout = R.layout.jobs_feed_layout;
-//        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
-//        return new ViewHolder(v);
+
         View view;
         if (viewType == Regular) { // for call layout
             view = LayoutInflater.from(context).inflate(R.layout.jobs_feed_layout, parent, false);
         } else { // for email layout
             view = LayoutInflater.from(context).inflate(R.layout.jobs_feed_layout, parent, false);
-            //view.setBackgroundColor(Color.YELLOW);
+
             LinearLayout LL = view.findViewById(R.id.JobLayout);
             LL.setBackgroundColor(Color.rgb(233,237,180));
-           // view.get
+
 
         }
         return new ViewHolder(view);

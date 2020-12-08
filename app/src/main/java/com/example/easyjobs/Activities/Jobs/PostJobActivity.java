@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.utils.Validator;
+import com.google.android.material.behavior.SwipeDismissBehavior;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.CompositeDateValidator;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -330,6 +333,8 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
                     {
                         Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
                         images.setImageBitmap(myBitmap);
+                        images.setVisibility(View.VISIBLE);
+                        images.setEnabled(true);
                         //editJobImage.setImageURI(localFile.get(0));
                     }
 
@@ -374,6 +379,14 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
+        d.setOnDismissListener(dialog -> {
+            System.out.println("DISMISS");
+            if(localFile.isEmpty())
+            {
+                images.setVisibility(View.INVISIBLE);
+                images.setEnabled(false);
+            }
+        });
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, "", true, true);
         vpPager.setAdapter(vpa);
