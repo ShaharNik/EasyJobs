@@ -10,9 +10,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +40,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 
@@ -68,6 +74,7 @@ public class PostProfActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_prof);
 
         findViews();
+        createDialog();
         activateButtons();
         setUpSpinner();
         CatChosen=new ArrayList<>();
@@ -112,6 +119,12 @@ public class PostProfActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 choosePictureFromGallery();
+            }
+        });
+        images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog();
             }
         });
     }
@@ -225,12 +238,73 @@ public class PostProfActivity extends AppCompatActivity {
                     for(int i = 0; i < count; i++) {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
                         PicsUri.add(imageUri);
+                        try {
+                            Bitmap bitmap = MediaStore
+                                    .Images.Media.getBitmap(
+                                            getContentResolver(),
+                                            imageUri);
+                            File Image = File.createTempFile("Picture", ".jpg");
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                            byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                            FileOutputStream fos = new FileOutputStream(Image);
+                            fos.write(bitmapdata);
+                            fos.flush();
+                            fos.close();
+                            Picture p = new Picture(Image,imageUri.getLastPathSegment());
+                            localFile.add(p);
+
+                            vpa.notifyDataSetChanged();
+
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+//                        localFile.add()
+//                        File f = new File(imageUri.toString());
+//                        Picture p = new Picture(f,imageUri.getLastPathSegment());
+//                        localFile.add(p);
+//                        vpa.notifyDataSetChanged();
+
+                    }
+                    if(localFile.size()>0)
+                    {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
+                        images.setImageBitmap(myBitmap);
+                        //editJobImage.setImageURI(localFile.get(0));
                     }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
                 }
             } else if(data!= null && data.getData() != null) {
                 PicsUri.add(data.getData());
                 //do something with the image (save it to some directory or whatever you need to do with it here)
+                try {
+                    Bitmap bitmap = MediaStore
+                            .Images.Media.getBitmap(
+                                    getContentResolver(),
+                                    data.getData());
+                    File Image = File.createTempFile("Picture", ".jpg");
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                    byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+                    FileOutputStream fos = new FileOutputStream(Image);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                    Picture p = new Picture(Image,data.getData().getLastPathSegment());
+                    localFile.add(p);
+                    vpa.notifyDataSetChanged();
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
     }

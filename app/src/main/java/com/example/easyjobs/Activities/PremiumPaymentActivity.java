@@ -117,6 +117,7 @@ public class PremiumPaymentActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, yearsValues);
         adp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearsSpinner.setAdapter(adp1);
+
     }
     private boolean validateFields()
     {

@@ -90,6 +90,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_job);
         findViews();
+        createDialog();
         activateButtons();
         setUpSpinner();
     }
