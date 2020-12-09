@@ -23,10 +23,10 @@ import java.util.List;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder>
 {
-    private List<PremiumJob> JobsFeed = new ArrayList();
-    private final Context context;
     private static final int Regular = 1;
     private static final int Premium = 2;
+    private final Context context;
+    private List<PremiumJob> JobsFeed = new ArrayList();
 
     public JobAdapter(Context context)
     {
@@ -69,6 +69,19 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder>
         return JobsFeed.size();
     }
 
+    @Override
+    public int getItemViewType(int position)
+    {
+        if (JobsFeed.get(position).isPremium())
+        {
+            return Premium;
+        }
+        else
+        {
+            return Regular;
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         private final TextView descTextView;
@@ -95,19 +108,6 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewHolder>
             locTextView.setText(loc);
             DateFormat df = new SimpleDateFormat("dd/MM/yy");
             dateTextView.setText(df.format(startDate.getTime()) + " - " + df.format(endDate.getTime()));
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position)
-    {
-        if (JobsFeed.get(position).isPremium())
-        {
-            return Premium;
-        }
-        else
-        {
-            return Regular;
         }
     }
 }

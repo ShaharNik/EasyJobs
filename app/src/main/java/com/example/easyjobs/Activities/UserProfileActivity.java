@@ -33,7 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 
-public class UserProfileActivity extends AppCompatActivity
+public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener
 {
     private FirebaseAuth mAuth;
 
@@ -48,7 +48,6 @@ public class UserProfileActivity extends AppCompatActivity
 
     private Button LogoutButt;
     private Button UpgradeToPremium;
-    private Button EditProfile;
     private Button profileEditButt;
     private Button AdminsButt;
     private File localFile;
@@ -63,15 +62,26 @@ public class UserProfileActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         findViews();
-
-        if (FirebaseDBUsers.isAdmin == false)
-        {
-            AdminsButt.setVisibility(View.GONE);
-        }
-        activateButtonsAndViews();
+        inits();
+        activateButtons();
         setProfilePicture();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null)
+        {
+            UserProfileActivity.super.onBackPressed();
+        }
+        else
+        {
+            activateButtons();
+        }
     }
 
     private void findViews()
@@ -86,65 +96,24 @@ public class UserProfileActivity extends AppCompatActivity
         isPremium = findViewById(R.id.isPremiumPtextView);
         LogoutButt = findViewById(R.id.logoutButt);
         UpgradeToPremium = findViewById(R.id.premiumButt);
-        EditProfile = findViewById(R.id.profileEditButt);
         profileEditButt = findViewById(R.id.profileEditButt);
         AdminsButt = findViewById(R.id.MoveToAdminButt);
-        myImage = (ImageView) findViewById(R.id.ProfilePic);
+        myImage = findViewById(R.id.ProfilePic);
         profileShowJobs = findViewById(R.id.profileShowJobs);
         profileShowProfs = findViewById(R.id.profileShowProfs);
     }
 
-    private void activateButtonsAndViews()
+    private void inits()
     {
-        profileShowJobs.setOnClickListener(new View.OnClickListener()
+        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+        if (FirebaseDBUsers.isAdmin == false)
         {
-            @Override
-            public void onClick(View v)
-            {
-                moveToJobList();
-            }
-        });
-
-        profileShowProfs.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                moveToProfList();
-            }
-        });
-
-        backButt.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                UserProfileActivity.super.onBackPressed();
-            }
-        });
-
-        LogoutButt.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                FirebaseAuth.getInstance().signOut();
-                UserProfileActivity.super.onBackPressed();
-            }
-        });
-        profileEditButt.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                moveToEditProfile_activity();
-            }
-        });
+            AdminsButt.setVisibility(View.GONE);
+        }
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         String user_email = user.getEmail();
-
         DatabaseReference DR = FirebaseDBUsers.getUserByID(getIntent().getStringExtra("user_id"));
         DR.addListenerForSingleValueEvent(new ValueEventListener()
         {
@@ -167,7 +136,6 @@ public class UserProfileActivity extends AppCompatActivity
                     UpgradeToPremium.setEnabled(false);
                     UpgradeToPremium.setBackgroundColor(Color.GRAY);
                 }
-
                 email.setText("אימייל: " + user_email);
                 phone.setText("מספר טלפון: " + u.getPhoneNumber());
             }
@@ -175,60 +143,61 @@ public class UserProfileActivity extends AppCompatActivity
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
+    }
 
-        UpgradeToPremium.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                moveToPremiumPaymentActivity();
-            }
-        });
-        AdminsButt.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                moveToAdminActivity();
-            }
-        });
+    private void activateButtons()
+    {
+        backButt.setOnClickListener(this);
+        profileShowJobs.setOnClickListener(this);
+        profileShowProfs.setOnClickListener(this);
+        LogoutButt.setOnClickListener(this);
+        profileEditButt.setOnClickListener(this);
+        UpgradeToPremium.setOnClickListener(this);
+        AdminsButt.setOnClickListener(this);
     }
 
     @Override
-    protected void onResume()
+    public void onClick(View ClickedButton)
     {
-        super.onResume();
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null)
+        if (backButt.equals(ClickedButton))
         {
             UserProfileActivity.super.onBackPressed();
         }
-        else
+        else if (profileShowJobs.equals(ClickedButton))
         {
-            activateButtonsAndViews();
+            Intent i = new Intent(UserProfileActivity.this, JobsListActivity.class);
+            i.putExtra("personal", true);
+            startActivity(i);
         }
-    }
-
-    private void moveToPremiumPaymentActivity()
-    {
-        Intent i = new Intent(UserProfileActivity.this, PremiumPaymentActivity.class);
-        startActivity(i);
-    }
-
-    private void moveToEditProfile_activity()
-    {
-        Intent i = new Intent(UserProfileActivity.this, EditProfileActivity.class);
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        i.putExtra("user_id", user.getUid());
-        startActivity(i);
-    }
-
-    private void moveToAdminActivity()
-    {
-        Intent i = new Intent(UserProfileActivity.this, AdminActivity.class);
-        startActivity(i);
+        else if (profileShowProfs.equals(ClickedButton))
+        {
+            Intent i = new Intent(UserProfileActivity.this, ProfListActivity.class);
+            i.putExtra("personal", true);
+            startActivity(i);
+        }
+        else if (LogoutButt.equals(ClickedButton))
+        {
+            FirebaseAuth.getInstance().signOut();
+            UserProfileActivity.super.onBackPressed();
+        }
+        else if (profileEditButt.equals(ClickedButton))
+        {
+            Intent i = new Intent(UserProfileActivity.this, EditProfileActivity.class);
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mAuth.getCurrentUser();
+            i.putExtra("user_id", user.getUid());
+            startActivity(i);
+        }
+        else if (UpgradeToPremium.equals(ClickedButton))
+        {
+            Intent i = new Intent(UserProfileActivity.this, PremiumPaymentActivity.class);
+            startActivity(i);
+        }
+        else if (AdminsButt.equals(ClickedButton))
+        {
+            Intent i = new Intent(UserProfileActivity.this, AdminActivity.class);
+            startActivity(i);
+        }
     }
 
     private void setProfilePicture()
@@ -267,20 +236,6 @@ public class UserProfileActivity extends AppCompatActivity
             myImage.setMaxWidth(5);
             myImage.setImageBitmap(myBitmap);
         }
-    }
-
-    private void moveToJobList()
-    {
-        Intent i = new Intent(UserProfileActivity.this, JobsListActivity.class);
-        i.putExtra("personal", true);
-        startActivity(i);
-    }
-
-    private void moveToProfList()
-    {
-        Intent i = new Intent(UserProfileActivity.this, ProfListActivity.class);
-        i.putExtra("personal", true);
-        startActivity(i);
     }
 }
 

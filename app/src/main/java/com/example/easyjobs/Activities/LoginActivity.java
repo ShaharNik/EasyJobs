@@ -21,14 +21,14 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {
-
     private Button LoginB;
     private EditText emailED;
     private EditText pass;
     private Button registerB;
     private Button resetButton;
     private ImageView backBL;
-    private FirebaseAuth mAuth; // For User Email & Password authentication
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,17 +49,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         backBL = findViewById(R.id.back_login);
         resetButton = findViewById(R.id.resetButton);
     }
+
+    private void activateButtonsAndViews()
+    {
+        backBL.setOnClickListener(this);
+        registerB.setOnClickListener(this);
+        resetButton.setOnClickListener(this);
+        mAuth = FirebaseAuth.getInstance();
+
+        isLogedInModifier();
+        LoginB.setOnClickListener(this);
+    }
+
     @Override
-    public void onClick(View ClickedButton) {
+    public void onClick(View ClickedButton)
+    {
         if (backBL.equals(ClickedButton))
         {
             LoginActivity.super.onBackPressed();
         }
-        if (registerB.equals(ClickedButton))
+        else if (registerB.equals(ClickedButton))
         {
-            moveToRegister();
+            Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(i);
         }
-        if (resetButton.equals(ClickedButton))
+        else if (resetButton.equals(ClickedButton))
         {
             if (Validator.ValidateUserEmail(emailED.getText().toString()) && !emailED.getText().toString().isEmpty())
             {
@@ -70,12 +84,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 emailED.setError("המייל שהזנת אינו תקין");
             }
         }
-        if (LoginB.equals(ClickedButton))
+        else if (LoginB.equals(ClickedButton))
         {
             String email = emailED.getText().toString();
             String password = pass.getText().toString();
-            if (!validation(email,password))
-            { return; }
+            if (!validation(email, password))
+            {
+                return;
+            }
             if (mAuth.getCurrentUser() == null)
             {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
@@ -112,13 +128,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void activateButtonsAndViews()
+    private void isLogedInModifier()
     {
-        backBL.setOnClickListener(this);
-        registerB.setOnClickListener(this);
-        resetButton.setOnClickListener(this);
-        mAuth = FirebaseAuth.getInstance();
-
         if (mAuth.getCurrentUser() != null)
         {
             // logged in
@@ -130,12 +141,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             resetButton.setVisibility(View.GONE);
             resetButton.setEnabled(false);
         }
-
-        LoginB.setOnClickListener(this);
     }
 
-    private boolean validation(String email, String password) {
-        if (email.isEmpty()) {
+    private boolean validation(String email, String password)
+    {
+        if (email.isEmpty())
+        {
             emailED.setError("עליך להזין אימייל");
             return false;
         }
@@ -156,11 +167,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         return true;
     }
+
     private void updateUI(FirebaseUser user)
     {
         if (user != null)
         {
-
             registerB.setEnabled(false);
             registerB.setVisibility(View.GONE);
             emailED.setEnabled(false);
@@ -177,11 +188,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             pass.setText("");
             emailED.setText("");
         }
-    }
-
-    private void moveToRegister()
-    {
-        Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(i);
     }
 }

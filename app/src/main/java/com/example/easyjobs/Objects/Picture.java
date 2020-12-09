@@ -5,10 +5,10 @@ import java.io.Serializable;
 
 public class Picture implements Serializable
 {
-    File f;
-    String name;
+    private File f;
+    private String name;
 
-    public Picture(){}
+    public Picture() {}
 
     public Picture(File f, String name)
     {

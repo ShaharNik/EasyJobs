@@ -5,11 +5,11 @@ import java.util.List;
 
 public class Prof implements Serializable
 {
-    String prof_ID;
-    String User_ID;
-    String desc;
-    List<String> category;
-    String location;
+    private String prof_ID;
+    private String User_ID;
+    private String desc;
+    private List<String> category;
+    private String location;
 
     public Prof() {}
 

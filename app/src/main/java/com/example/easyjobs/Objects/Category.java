@@ -2,8 +2,8 @@ package com.example.easyjobs.Objects;
 
 public class Category implements Comparable
 {
-    String category_id;
-    String cat_name;
+    private String category_id;
+    private String cat_name;
 
     public Category() {}
 

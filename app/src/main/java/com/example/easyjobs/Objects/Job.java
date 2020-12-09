@@ -5,14 +5,14 @@ import java.util.Date;
 
 public class Job implements Serializable
 {
-    String job_ID;
-    String User_ID;
-    String desc;
-    int price;
-    String location;
-    Date startDate;
-    Date endDate;
-    String category_ID;
+    private String job_ID;
+    private String User_ID;
+    private String desc;
+    private int price;
+    private String location;
+    private Date startDate;
+    private Date endDate;
+    private String category_ID;
 
     public Job() {}
 

@@ -43,14 +43,12 @@ public class FirebaseStorage
     public static void deleteSpecificProfPicture(String profUID, String pictureName)
     {
         StorageReference SR = mStorageRef.child("ProfPictures/").child(profUID).child(pictureName);
-        // Delete the file
         SR.delete();
     }
 
     public static void deleteSpecificJobPicture(String jobUID, String pictureName)
     {
         StorageReference SR = mStorageRef.child("JobPictures/").child(jobUID).child(pictureName);
-        // Delete the file
         SR.delete();
     }
 }

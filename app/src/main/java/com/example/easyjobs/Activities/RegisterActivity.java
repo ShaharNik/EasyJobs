@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class RegisterActivity extends AppCompatActivity
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener
 {
     private ImageView backBR;
     private Button RegBut;
@@ -41,8 +41,14 @@ public class RegisterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        inits();
         findViews();
         activateButtonsAndViews();
+    }
+
+    private void inits()
+    {
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void findViews()
@@ -58,33 +64,70 @@ public class RegisterActivity extends AppCompatActivity
 
     private void activateButtonsAndViews()
     {
-        mAuth = FirebaseAuth.getInstance();
+        backBR.setOnClickListener(this);
+        RegBut.setOnClickListener(this);
+    }
 
-        backBR.setOnClickListener(new View.OnClickListener()
+    @Override
+    public void onClick(View ClickedButton)
+    {
+        if (backBR.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
+            RegisterActivity.super.onBackPressed();
+        }
+        else if (RegBut.equals(ClickedButton))
+        {
+            String user_email = user_emailEditText.getText().toString();
+            String user_password = editTextPassword.getText().toString();
+            String phoneNumber = user_phoneNumber.getText().toString();
+            String fname = user_firstName.getText().toString();
+            String lname = user_lastName.getText().toString();
+            if (ValidateUserInformation(user_email, user_password, phoneNumber, fname, lname))
             {
-                RegisterActivity.super.onBackPressed();
+                createAccount(user_email, user_password, phoneNumber, fname, lname);
             }
-        });
+        }
+    }
 
-        RegBut.setOnClickListener(new View.OnClickListener()
+    boolean ValidateUserInformation(String email, String password, String phone, String fname, String lname)
+    {
+        // if there is an empty field
+        if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || fname.isEmpty() || lname.isEmpty())
         {
-            @Override
-            public void onClick(View view)
-            {
-                String user_email = user_emailEditText.getText().toString();
-                String user_password = editTextPassword.getText().toString();
-                String phoneNumber = user_phoneNumber.getText().toString();
-                String fname = user_firstName.getText().toString();
-                String lname = user_lastName.getText().toString();
-                if (ValidateUserInformation(user_email, user_password, phoneNumber, fname, lname))
-                {
-                    createAccount(user_email, user_password, phoneNumber, fname, lname);
-                }
-            }
-        });
+            Toast.makeText(RegisterActivity.this, "מלא את כל השדות בבקשה", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        // email validation
+        if (!Validator.ValidateUserEmail(email))
+        {
+            user_emailEditText.setError("אימייל אינו חוקי");
+            return false;
+        }
+        // check if password is at least 6
+        if (!Validator.ValidateUserPassword(password))
+        {
+            editTextPassword.setError("סיסמא אינה חוקית, צריכה להיות באורך 6 לפחות");
+            return false;
+        }
+        // check if first name contains only letters
+        if (!Validator.ValidateUserFName(fname))
+        {
+            user_firstName.setError("שם פרטי אינו חוקי, צריך להכיל אותיות בלבד");
+            return false;
+        }
+        // check if last name contains only letters
+        if (!Validator.ValidateUserLName(lname))
+        {
+            user_lastName.setError("שם משפחה אינו חוקי, צריך להכיל אותיות בלבד");
+            return false;
+        }
+        // check if phone number contains only numbers
+        if (!Validator.ValidateUserPhone(phone))
+        {
+            user_phoneNumber.setError("מספר פלאפון תקין מכיל מספרים בלבד ובאורך 10");
+            return false;
+        }
+        return true;
     }
 
     void createAccount(String email, String password, String phoneNumber, String fname, String lname)
@@ -109,52 +152,6 @@ public class RegisterActivity extends AppCompatActivity
                 }
             }
         });
-    }
-
-    boolean ValidateUserInformation(String email, String password, String phone, String fname, String lname)
-    {
-        // if there is an empty field
-        if (email.isEmpty() || password.isEmpty() || phone.isEmpty() || fname.isEmpty() || lname.isEmpty())
-        {
-            Toast.makeText(RegisterActivity.this, "מלא את כל השדות בבקשה", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        // email validation
-        if (!Validator.ValidateUserEmail(email))
-        {
-            user_emailEditText.setError("אימייל אינו חוקי");
-            return false;
-        }
-
-        // check if password is at least 6
-        if (!Validator.ValidateUserPassword(password))
-        {
-            editTextPassword.setError("סיסמא אינה חוקית, צריכה להיות באורך 6 לפחות");
-            return false;
-        }
-
-        // check if first name contains only letters
-        if (!Validator.ValidateUserFName(fname))
-        {
-            user_firstName.setError("שם פרטי אינו חוקי, צריך להכיל אותיות בלבד");
-            return false;
-        }
-
-        // check if last name contains only letters
-        if (!Validator.ValidateUserLName(lname))
-        {
-            user_lastName.setError("שם משפחה אינו חוקי, צריך להכיל אותיות בלבד");
-            return false;
-        }
-
-        // check if phone number contains only numbers
-        if (!Validator.ValidateUserPhone(phone))
-        {
-            user_phoneNumber.setError("מספר פלאפון תקין מכיל מספרים בלבד ובאורך 10");
-            return false;
-        }
-        return true;
     }
 
     void updateUI(FirebaseUser user, String phoneNumber, String fname, String lname)

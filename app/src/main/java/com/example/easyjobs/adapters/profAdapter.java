@@ -20,10 +20,10 @@ import java.util.List;
 
 public class profAdapter extends RecyclerView.Adapter<profAdapter.ViewHolder>
 {
-    private List<PremiumProf> ProfsFeed = new ArrayList();
-    private final Context context;
     private static final int Regular = 1;
     private static final int Premium = 2;
+    private final Context context;
+    private List<PremiumProf> ProfsFeed = new ArrayList();
 
     public profAdapter(Context context)
     {
@@ -66,6 +66,19 @@ public class profAdapter extends RecyclerView.Adapter<profAdapter.ViewHolder>
         return ProfsFeed.size();
     }
 
+    @Override
+    public int getItemViewType(int position)
+    {
+        if (ProfsFeed.get(position).isPremium())
+        {
+            return Premium;
+        }
+        else
+        {
+            return Regular;
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         private final TextView descTextView;
@@ -86,19 +99,6 @@ public class profAdapter extends RecyclerView.Adapter<profAdapter.ViewHolder>
             String loc = Prof.getLocation();
             descTextView.setText(desc);
             locTextView.setText(loc);
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position)
-    {
-        if (ProfsFeed.get(position).isPremium())
-        {
-            return Premium;
-        }
-        else
-        {
-            return Regular;
         }
     }
 }

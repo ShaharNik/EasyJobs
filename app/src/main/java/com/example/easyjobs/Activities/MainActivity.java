@@ -23,15 +23,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
     private TextView welcomeText;
     private Button jobListB;
     private Button proListB;
     private Button loginT;
-    private FirebaseAuth mAuth; // For User Email & Password authentication
-
     private ImageView logo;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         findViews();
-        setLogoSize();
-        activateButtonsAndViews();
+        activateButtons();
         logedInModifier();
     }
 
@@ -61,6 +60,45 @@ public class MainActivity extends AppCompatActivity
         loginT = findViewById(R.id.button_mainto_login);
     }
 
+    private void activateButtons()
+    {
+        setLogoSize();
+        loginT.setOnClickListener(this);
+        jobListB.setOnClickListener(this);
+        proListB.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View ClickedButton)
+    {
+        if (loginT.equals(ClickedButton)){
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null)
+            {
+                // not logged in
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
+            }
+            else
+            {
+                Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
+                i.putExtra("user_id", user.getUid());
+                startActivity(i);
+            }
+        }
+        else if (jobListB.equals(ClickedButton)){
+            Intent i = new Intent(MainActivity.this, JobsListActivity.class);
+            i.putExtra("personal", false);
+            startActivity(i);
+        }
+        else if (proListB.equals(ClickedButton)){
+            Intent i = new Intent(MainActivity.this, ProfListActivity.class);
+            i.putExtra("personal", false);
+            startActivity(i);
+        }
+    }
+
     private void setLogoSize()
     {
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -74,46 +112,6 @@ public class MainActivity extends AppCompatActivity
 
         logo.getLayoutParams().height = imgHeight;
         logo.getLayoutParams().width = imgWidth;
-    }
-
-    private void activateButtonsAndViews()
-    {
-        loginT.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user == null)
-                {
-                    // logged in
-                    moveToLoginActivity();
-                }
-                else
-                {
-                    moveToProfileActivity();
-                }
-            }
-        });
-
-        jobListB.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                moveToJobList();
-            }
-        });
-
-        proListB.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                moveToProfList();
-            }
-        });
     }
 
     private void logedInModifier()
@@ -152,34 +150,5 @@ public class MainActivity extends AppCompatActivity
             welcomeText.setText("שלום, אורח :)");
             loginT.setText("התחבר/הירשם");
         }
-    }
-
-    private void moveToLoginActivity()
-    {
-        Intent i = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(i);
-    }
-
-    private void moveToJobList()
-    {
-        Intent i = new Intent(MainActivity.this, JobsListActivity.class);
-        i.putExtra("personal", false);
-        startActivity(i);
-    }
-
-    private void moveToProfList()
-    {
-        Intent i = new Intent(MainActivity.this, ProfListActivity.class);
-        i.putExtra("personal", false);
-        startActivity(i);
-    }
-
-    private void moveToProfileActivity()
-    {
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
-        i.putExtra("user_id", user.getUid());
-        startActivity(i);
     }
 }

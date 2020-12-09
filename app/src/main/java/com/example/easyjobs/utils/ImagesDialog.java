@@ -11,7 +11,8 @@ import com.example.easyjobs.R;
 
 import java.util.ArrayList;
 
-public class ImagesDialog {
+public class ImagesDialog
+{
     public static Dialog ImagesDialogBuilder(Context c, ImageView image, ArrayList<Picture> localFile)
     {
         Dialog d = new Dialog(c);
@@ -19,9 +20,10 @@ public class ImagesDialog {
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
-        d.setOnDismissListener(dialog -> {
+        d.setOnDismissListener(dialog->{
             System.out.println("DISMISS");
-            if (localFile.isEmpty()) {
+            if (localFile.isEmpty())
+            {
                 image.setVisibility(View.INVISIBLE);
                 image.setEnabled(false);
             }

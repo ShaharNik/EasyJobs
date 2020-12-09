@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 public class User implements Serializable
 {
-    String User_ID;
-    String firstName;
-    String lastName;
-    String phoneNumber;
-    boolean isPremium;
-    String email;
-    float rating;
-    int ratingsAmount;
+    private String User_ID;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+    private boolean isPremium;
+    private String email;
+    private float rating;
+    private int ratingsAmount;
 
     public User() {}
 
@@ -27,14 +27,14 @@ public class User implements Serializable
         this.email = email;
     }
 
-    public void setUser_ID(String user_ID)
-    {
-        User_ID = user_ID;
-    }
-
     public String getUser_ID()
     {
         return User_ID;
+    }
+
+    public void setUser_ID(String user_ID)
+    {
+        User_ID = user_ID;
     }
 
     public String getFirstName()
@@ -42,29 +42,14 @@ public class User implements Serializable
         return firstName;
     }
 
-    public String getLastName()
-    {
-        return lastName;
-    }
-
-    public String getPhoneNumber()
-    {
-        return phoneNumber;
-    }
-
-    public boolean isPremium()
-    {
-        return isPremium;
-    }
-
-    public float getRating()
-    {
-        return rating;
-    }
-
     public void setFirstName(String firstName)
     {
         this.firstName = firstName;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
     }
 
     public void setLastName(String lastName)
@@ -72,14 +57,29 @@ public class User implements Serializable
         this.lastName = lastName;
     }
 
+    public String getPhoneNumber()
+    {
+        return phoneNumber;
+    }
+
     public void setPhoneNumber(String phoneNumber)
     {
         this.phoneNumber = phoneNumber;
     }
 
+    public boolean isPremium()
+    {
+        return isPremium;
+    }
+
     public void setPremium(boolean premium)
     {
         isPremium = premium;
+    }
+
+    public float getRating()
+    {
+        return rating;
     }
 
     public void setRating(float rating)

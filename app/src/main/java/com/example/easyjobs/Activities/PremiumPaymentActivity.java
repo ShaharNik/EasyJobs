@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class PremiumPaymentActivity extends AppCompatActivity
+public class PremiumPaymentActivity extends AppCompatActivity implements View.OnClickListener
 {
     private EditText cardNumberTextView;
     private EditText cardNumberCVC;
@@ -39,9 +39,7 @@ public class PremiumPaymentActivity extends AppCompatActivity
         setContentView(R.layout.activity_premium_payment_activity);
 
         findViews();
-        setUpMonthsSpinner();
-        setUpYearsSpinner();
-        activateButtonsAndViews();
+        activateButtons();
     }
 
     private void findViews()
@@ -52,6 +50,37 @@ public class PremiumPaymentActivity extends AppCompatActivity
         acceptButton = findViewById(R.id.activity_premium_payment_acceptButton);
         monthsSpinner = findViewById(R.id.monthSpinner);
         yearsSpinner = findViewById(R.id.yearSpinner);
+    }
+
+    private void activateButtons()
+    {
+        setUpMonthsSpinner();
+        setUpYearsSpinner();
+        backBLA.setOnClickListener(this);
+        acceptButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View ClickedButton)
+    {
+        if (backBLA.equals(ClickedButton))
+        {
+            PremiumPaymentActivity.super.onBackPressed();
+        }
+        else if (acceptButton.equals(ClickedButton))
+        {
+            if (validateFields())
+            {
+                fa = FirebaseAuth.getInstance();
+                FirebaseUser user = fa.getCurrentUser();
+                FirebaseDBUsers.setPremiumToAUser(user.getUid(), PremiumPaymentActivity.this);
+                PremiumPaymentActivity.super.onBackPressed(); // move him back
+            }
+            else
+            {
+                Toast.makeText(PremiumPaymentActivity.this, "השדרוג נכשל.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void setUpMonthsSpinner()
@@ -101,36 +130,5 @@ public class PremiumPaymentActivity extends AppCompatActivity
             return false;
         }
         return true;
-    }
-
-    private void activateButtonsAndViews()
-    {
-        backBLA.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                PremiumPaymentActivity.super.onBackPressed();
-            }
-        });
-
-        acceptButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (validateFields())
-                {
-                    fa = FirebaseAuth.getInstance();
-                    FirebaseUser user = fa.getCurrentUser();
-                    FirebaseDBUsers.setPremiumToAUser(user.getUid(), PremiumPaymentActivity.this);
-                    PremiumPaymentActivity.super.onBackPressed(); // move him back
-                }
-                else
-                {
-                    Toast.makeText(PremiumPaymentActivity.this, "השדרוג נכשל.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 }

@@ -20,11 +20,11 @@ import java.util.List;
 
 public class viewPageAdapter extends PagerAdapter
 {
-    Context mContext;
-    LayoutInflater mLayoutInflater;
-    List<Picture> pages;
-    boolean job;
-    boolean deletable;
+    private Context mContext;
+    private LayoutInflater mLayoutInflater;
+    private List<Picture> pages;
+    private boolean job;
+    private boolean deletable;
 
     public viewPageAdapter(Context context, ArrayList<Picture> pages, boolean job, boolean deletable)
     {

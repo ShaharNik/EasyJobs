@@ -36,10 +36,10 @@ public class Validator
         return last_name.matches("[a-zA-Z]+");
     }
 
-    public static boolean ValidateUserPhone(String phonenum)
+    public static boolean ValidateUserPhone(String phone)
     {
         // check if phone number contains only numbers
-        return phonenum.matches("[0-9]+") && phonenum.length() == 10;
+        return phone.matches("[0-9]+") && phone.length() == 10;
     }
 
     public static boolean ValidateIsraeliId(String id)

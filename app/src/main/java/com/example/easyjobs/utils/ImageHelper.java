@@ -24,10 +24,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-public class ImageHelper {
+public class ImageHelper
+{
     public static void setMultipleImagesInImageView(Uri imageUri, ArrayList<Picture> localFile, viewPageAdapter vpa, Context c)
     {
-        try {
+        try
+        {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), imageUri);
             File Image = File.createTempFile("Picture", ".jpg");
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -43,14 +45,17 @@ public class ImageHelper {
             localFile.add(p);
             vpa.notifyDataSetChanged();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
-    public static void setImagePreviewIfExists(ImageView image,ArrayList<Picture> localFile)
+    public static void setImagePreviewIfExists(ImageView image, ArrayList<Picture> localFile)
     {
-        if (localFile.size() > 0) {
+        if (localFile.size() > 0)
+        {
             Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
             image.setImageBitmap(myBitmap);
             image.setVisibility(View.VISIBLE);
@@ -58,24 +63,30 @@ public class ImageHelper {
         }
     }
 
-    public static void setImagesFromGallery(int resultCode, Intent data,ArrayList<Uri> PicsUri,ImageView image,ArrayList<Picture> localFile,viewPageAdapter vpa, Context c)
+    public static void setImagesFromGallery(int resultCode, Intent data, ArrayList<Uri> PicsUri, ImageView image, ArrayList<Picture> localFile, viewPageAdapter vpa, Context c)
     {
-        if (resultCode == Activity.RESULT_OK) {
-            if (data.getClipData() != null) {
+        if (resultCode == Activity.RESULT_OK)
+        {
+            if (data.getClipData() != null)
+            {
                 int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < count; i++)
+                {
                     Uri imageUri = data.getClipData().getItemAt(i).getUri();
                     PicsUri.add(imageUri);
-                    setMultipleImagesInImageView(imageUri, localFile,vpa,c);
+                    setMultipleImagesInImageView(imageUri, localFile, vpa, c);
                 }
-                setImagePreviewIfExists(image,localFile);
+                setImagePreviewIfExists(image, localFile);
             }
-        } else if (data != null && data.getData() != null) {
+        }
+        else if (data != null && data.getData() != null)
+        {
             PicsUri.add(data.getData());
-            ImageHelper.setMultipleImagesInImageView(data.getData(), localFile,vpa,c);
+            ImageHelper.setMultipleImagesInImageView(data.getData(), localFile, vpa, c);
         }
     }
-    public static void pullImagesFromDBandInsertToArray(StorageReference sr,ImageView image,ArrayList<Picture> localFile,viewPageAdapter vpa)
+
+    public static void pullImagesFromDBandInsertToArray(StorageReference sr, ImageView image, ArrayList<Picture> localFile, viewPageAdapter vpa)
     {
         File Image = null;
         try
