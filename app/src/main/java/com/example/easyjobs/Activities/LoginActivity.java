@@ -19,7 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener
 {
 
     private Button LoginB;
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity
         setContentView(R.layout.activity_login);
 
         findViews();
-        acvtivateButtonsAndViews();
+        activateButtonsAndViews();
     }
 
     private void findViews()
@@ -49,43 +49,74 @@ public class LoginActivity extends AppCompatActivity
         backBL = findViewById(R.id.back_login);
         resetButton = findViewById(R.id.resetButton);
     }
+    @Override
+    public void onClick(View ClickedButton) {
+        if (backBL.equals(ClickedButton))
+        {
+            LoginActivity.super.onBackPressed();
+        }
+        if (registerB.equals(ClickedButton))
+        {
+            moveToRegister();
+        }
+        if (resetButton.equals(ClickedButton))
+        {
+            if (Validator.ValidateUserEmail(emailED.getText().toString()) && !emailED.getText().toString().isEmpty())
+            {
+                mAuth.sendPasswordResetEmail(emailED.getText().toString());
+            }
+            else
+            {
+                emailED.setError("המייל שהזנת אינו תקין");
+            }
+        }
+        if (LoginB.equals(ClickedButton))
+        {
+            String email = emailED.getText().toString();
+            String password = pass.getText().toString();
+            if (!validation(email,password))
+            { return; }
+            if (mAuth.getCurrentUser() == null)
+            {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        }
+                        else
+                        {
+                            Toast.makeText(LoginActivity.this, "האימות נכשל.", Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                // User is Logged In
+                FirebaseAuth.getInstance().signOut();
+                registerB.setEnabled(true);
+                registerB.setVisibility(View.VISIBLE);
+                emailED.setEnabled(true);
+                pass.setEnabled(true);
+                LoginB.setText("התחבר");
+                resetButton.setVisibility(View.VISIBLE);
+                resetButton.setEnabled(true);
+            }
+        }
+    }
 
-    private void acvtivateButtonsAndViews()
+    private void activateButtonsAndViews()
     {
-        backBL.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                LoginActivity.super.onBackPressed();
-            }
-        });
-
-        registerB.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                moveToRegister();
-            }
-        });
-
-        resetButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (Validator.ValidateUserEmail(emailED.getText().toString()))
-                {
-                    mAuth.sendPasswordResetEmail(emailED.getText().toString());
-                }
-                else
-                {
-                    emailED.setError("המייל שהזנת אינו תקין");
-                }
-            }
-        });
-
+        backBL.setOnClickListener(this);
+        registerB.setOnClickListener(this);
+        resetButton.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() != null)
@@ -100,54 +131,36 @@ public class LoginActivity extends AppCompatActivity
             resetButton.setEnabled(false);
         }
 
-        LoginB.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                String email = emailED.getText().toString();
-                String password = pass.getText().toString();
-                if (mAuth.getCurrentUser() == null)
-                {
-                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task)
-                        {
-                            if (task.isSuccessful())
-                            {
-                                // Sign in success, update UI with the signed-in user's information
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
-                            }
-                            else
-                            {
-                                Toast.makeText(LoginActivity.this, "האימות נכשל.", Toast.LENGTH_SHORT).show();
-                                updateUI(null);
-                            }
-                        }
-                    });
-                }
-                else
-                {
-                    // User is Logged In
-                    FirebaseAuth.getInstance().signOut();
-                    registerB.setEnabled(true);
-                    registerB.setVisibility(View.VISIBLE);
-                    emailED.setEnabled(true);
-                    pass.setEnabled(true);
-                    LoginB.setText("התחבר");
-                    resetButton.setVisibility(View.VISIBLE);
-                    resetButton.setEnabled(true);
-                }
-            }
-        });
+        LoginB.setOnClickListener(this);
     }
 
-    public void updateUI(FirebaseUser user)
+    private boolean validation(String email, String password) {
+        if (email.isEmpty()) {
+            emailED.setError("עליך להזין אימייל");
+            return false;
+        }
+        if (password.isEmpty())
+        {
+            pass.setError("עליך להזין סיסמא");
+            return false;
+        }
+        if (!Validator.ValidateUserEmail(email))
+        {
+            emailED.setError("אימייל אינו תקין");
+            return false;
+        }
+        if (!Validator.ValidateUserPassword(password))
+        {
+            pass.setError("סיסמא אינה תקינה");
+            return false;
+        }
+        return true;
+    }
+    private void updateUI(FirebaseUser user)
     {
         if (user != null)
         {
+
             registerB.setEnabled(false);
             registerB.setVisibility(View.GONE);
             emailED.setEnabled(false);
@@ -166,7 +179,7 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
-    public void moveToRegister()
+    private void moveToRegister()
     {
         Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(i);
