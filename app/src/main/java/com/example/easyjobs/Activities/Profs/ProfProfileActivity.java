@@ -31,6 +31,7 @@ import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.example.easyjobs.utils.ImageHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -304,32 +305,7 @@ public class ProfProfileActivity extends AppCompatActivity
             {
                 for (StorageReference sr : listResult.getItems())
                 {
-                    File Image = null;
-                    try
-                    {
-                        Image = File.createTempFile(sr.getName(), ".jpg");
-                        File finalImage = Image;
-                        sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>()
-                        {
-                            @Override
-                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task)
-                            {
-                                if (finalImage.exists())
-                                {
-                                    Bitmap myBitmap = BitmapFactory.decodeFile(finalImage.getAbsolutePath());
-                                    profProfileImage.setImageBitmap(myBitmap);
-                                    profProfileImage.setEnabled(true);
-                                    Picture pic = new Picture(finalImage, sr.getName());
-                                    localFile.add(pic);
-                                    vpa.notifyDataSetChanged();
-                                }
-                            }
-                        });
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    ImageHelper.pullImagesFromDBandInsertToArray(sr,profProfileImage,localFile,vpa);
                 }
             }
         });

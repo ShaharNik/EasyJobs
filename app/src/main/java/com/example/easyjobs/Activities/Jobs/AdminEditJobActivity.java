@@ -37,6 +37,8 @@ import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseStorage;
+import com.example.easyjobs.utils.ImageHelper;
+import com.example.easyjobs.utils.ImagesDialog;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,12 +50,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class AdminEditJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
-{
+public class AdminEditJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     private static final int PICK_FROM_GALLERY = 420;
-
+    String cat_id;
     private ImageView backButton;
     private TextView namesText;
     private EditText descText;
@@ -73,34 +75,27 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
     private Dialog d;
     private ViewPager vpPager;
     private viewPageAdapter vpa;
-    String cat_id;
-
     private AlertDialog.Builder builder;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_job);
 
+        getExtra();
+        findViews();
+        inits();
+        setUserCurrentData();
+        activateButtons();
+    }
+
+    private void getExtra() {
         user = (User) getIntent().getSerializableExtra("User");
         job = (Job) getIntent().getSerializableExtra("Job");
         localFile = (ArrayList<Picture>) getIntent().getSerializableExtra("File");
-        OriginalLocalFile = new ArrayList<>();
-        for (Picture p : localFile)
-        {
-            OriginalLocalFile.add(p);
-        }
-        findViews();
-        inputTempData();
-        setUpSpinner();
-        activateButtons();
-        setupDialog();
-        createDialog();
     }
 
-    private void findViews()
-    {
+    private void findViews() {
         backButton = findViewById(R.id.back_admin_editPost);
         namesText = findViewById(R.id.namesEJ);
         descText = findViewById(R.id.descriptionEJ);
@@ -110,46 +105,106 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         spinner = findViewById(R.id.AdminPickCatEditJob);
         approveChanges = findViewById(R.id.changeJobDetails);
         deletePost = findViewById(R.id.deleteJobButton);
-        builder = new AlertDialog.Builder(this);
         editJobImage = findViewById(R.id.editJobImage);
         addImages = findViewById(R.id.addImagesJob);
-        PicsUri = new ArrayList<>();
     }
 
-    private void inputTempData()
-    {
+    private void inits() {
+        builder = new AlertDialog.Builder(this);
+        PicsUri = new ArrayList<>();
+        OriginalLocalFile = new ArrayList<>();
+        for (Picture p : localFile) {
+            OriginalLocalFile.add(p);
+        }
+    }
+
+    private void setUserCurrentData() {
         namesText.setText(user.getFirstName() + " " + user.getLastName());
         descText.setText(job.getDesc());
         locText.setText(job.getLocation());
         priceText.setText(job.getPrice() + "");
-
         DateFormat df = new SimpleDateFormat("dd/MM/yy");
         dateText.setText(df.format(job.getStartDate()) + " - " + df.format(job.getEndDate()));
-        if (localFile.size() >= 1)
-        {
+        if (localFile.size() >= 1) {
             Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
             editJobImage.setImageBitmap(myBitmap);
         }
     }
 
-    private void setUpSpinner()
-    {
+    private void activateButtons() {
+        backButton.setOnClickListener(this);
+        approveChanges.setOnClickListener(this);
+        deletePost.setOnClickListener(this);
+        editJobImage.setOnClickListener(this);
+        addImages.setOnClickListener(this);
+        setUpSpinner();
+        setupDialog();
+        createDialog();
+    }
+
+    @Override
+    public void onClick(View ClickedButton) {
+        if (backButton.equals(ClickedButton)) {
+            AdminEditJobActivity.super.onBackPressed();
+        }
+        if (approveChanges.equals(ClickedButton)) {
+            boolean changedIt = true;
+            if (!Validator.ValidateDescription(descText.getText().toString())) {
+                changedIt = false;
+                descText.setError("תיאור לא טוב");
+            }
+            if (!Validator.ValidateLocation(locText.getText().toString())) {
+                changedIt = false;
+                locText.setError("מיקום לא טוב");
+            }
+            if (changedIt) {
+                for (Picture p : OriginalLocalFile) {
+                    if (!localFile.contains(p)) {
+                        FirebaseStorage.deleteSpecificJobPicture(job.getJob_ID(), p.getName());
+                    }
+                }
+                ArrayList<Uri> toDelete = new ArrayList<>();
+                for (Uri u : PicsUri) {
+                    boolean exists = false;
+                    for (Picture p : localFile) {
+                        if (p.getName().compareTo(u.getLastPathSegment()) == 0) {
+                            exists = true;
+                        }
+                    }
+                    if (!exists) {
+                        toDelete.add(u);
+                    }
+                }
+                for (Uri u : toDelete) {
+                    PicsUri.remove(u);
+                }
+                FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id, AdminEditJobActivity.this, PicsUri);
+            }
+        }
+        if (deletePost.equals(ClickedButton)) {
+            builder.show();
+        }
+        if (editJobImage.equals(ClickedButton)) {
+            showDialog();
+        }
+        if (addImages.equals(ClickedButton)) {
+            choosePictureFromGallery();
+        }
+    }
+
+    private void setUpSpinner() {
         DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener()
-        {
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Category> items = new ArrayList<>();
                 int index = -1;
                 int rightIndex = 0;
-                for (DataSnapshot category : snapshot.getChildren())
-                {
+                for (DataSnapshot category : snapshot.getChildren()) {
                     Category c = category.getValue(Category.class);
                     items.add(c);
                     index++;
-                    if (c.getCategory_id().compareTo(job.getCategory_ID()) == 0)
-                    {
+                    if (c.getCategory_id().compareTo(job.getCategory_ID()) == 0) {
                         rightIndex = index;
                     }
                 }
@@ -159,20 +214,17 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error){}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
         spinner.setOnItemSelectedListener(this);
     }
 
-    private void setupDialog()
-    {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-        {
+    private void setupDialog() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                switch (which)
-                {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         FirebaseDBJobs.RemoveJob(job.getJob_ID(), AdminEditJobActivity.this);
                         break;
@@ -186,103 +238,10 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
         builder.setMessage("האם אתה בטוח?").setPositiveButton("כן", dialogClickListener).setNegativeButton("לא", dialogClickListener);
     }
 
-    private void activateButtons()
-    {
-        backButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                AdminEditJobActivity.super.onBackPressed();
-            }
-        });
-
-        approveChanges.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                boolean changedIt = true;
-                if (!Validator.ValidateDescription(descText.getText().toString()))
-                {
-                    changedIt = false;
-                    descText.setError("תיאור לא טוב");
-                }
-                if (!Validator.ValidateLocation(locText.getText().toString()))
-                {
-                    changedIt = false;
-                    locText.setError("מיקום לא טוב");
-                }
-                if (changedIt)
-                {
-                    for (Picture p : OriginalLocalFile)
-                    {
-                        if (!localFile.contains(p))
-                        {
-                            FirebaseStorage.deleteSpecificJobPicture(job.getJob_ID(), p.getName());
-                        }
-                    }
-                    ArrayList<Uri> toDelete = new ArrayList<>();
-                    for (Uri u : PicsUri)
-                    {
-                        boolean exists = false;
-                        for (Picture p : localFile)
-                        {
-                            if (p.getName().compareTo(u.getLastPathSegment()) == 0)
-                            {
-                                exists = true;
-                            }
-                        }
-                        if (!exists)
-                        {
-                            toDelete.add(u);
-                        }
-                    }
-                    for (Uri u : toDelete)
-                    {
-                        PicsUri.remove(u);
-                    }
-                    FirebaseDBJobs.editJob(job.getJob_ID(), user.getUser_ID(), descText.getText().toString(), Integer.parseInt(priceText.getText().toString()), locText.getText().toString(), job.getStartDate(), job.getEndDate(), cat_id, AdminEditJobActivity.this, PicsUri);
-                }
-            }
-        });
-
-        deletePost.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                builder.show();
-            }
-        });
-
-        editJobImage.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                showDialog();
-            }
-        });
-
-        addImages.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                choosePictureFromGallery();
-            }
-        });
-    }
-
-    private void choosePictureFromGallery()
-    {
-        if (ActivityCompat.checkSelfPermission(AdminEditJobActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        {
+    private void choosePictureFromGallery() {
+        if (ActivityCompat.checkSelfPermission(AdminEditJobActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AdminEditJobActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
-        }
-        else
-        {
+        } else {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
@@ -290,138 +249,43 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        switch (requestCode)
-        {
-            case PICK_FROM_GALLERY:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
-                }
-                else
-                {
-                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
-                }
-                break;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PICK_FROM_GALLERY) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+            } else {
+                Toast.makeText(this, "לא סיפקת הרשאות מתאימות", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_FROM_GALLERY)
-        {
-            if (resultCode == Activity.RESULT_OK)
-            {
-                if (data.getClipData() != null)
-                {
-                    int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
-                    for (int i = 0; i < count; i++)
-                    {
-                        Uri imageUri = data.getClipData().getItemAt(i).getUri();
-                        PicsUri.add(imageUri);
-                        try
-                        {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                            File Image = File.createTempFile("Picture", ".jpg");
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos); // YOU can also save it in JPEG
-                            byte[] bitmapdata = bos.toByteArray();
-
-                            //write the bytes in file
-                            FileOutputStream fos = new FileOutputStream(Image);
-                            fos.write(bitmapdata);
-                            fos.flush();
-                            fos.close();
-                            Picture p = new Picture(Image, imageUri.getLastPathSegment());
-                            localFile.add(p);
-
-                            vpa.notifyDataSetChanged();
-
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (localFile.size() > 0)
-                    {
-                        Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
-                        editJobImage.setImageBitmap(myBitmap);
-                        editJobImage.setVisibility(View.VISIBLE);
-                        editJobImage.setEnabled(true);
-                    }
-                    //do something with the image (save it to some directory or whatever you need to do with it here)
-                }
-            }
-            else if (data != null && data.getData() != null)
-            {
-                PicsUri.add(data.getData());
-                try
-                {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    File Image = File.createTempFile("Picture", ".jpg");
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos); // YOU can also save it in JPEG
-                    byte[] bitmapdata = bos.toByteArray();
-
-                    //write the bytes in file
-                    FileOutputStream fos = new FileOutputStream(Image);
-                    fos.write(bitmapdata);
-                    fos.flush();
-                    fos.close();
-                    Picture p = new Picture(Image, data.getData().getLastPathSegment());
-                    localFile.add(p);
-                    vpa.notifyDataSetChanged();
-
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
+        if (requestCode == PICK_FROM_GALLERY) {
+                ImageHelper.setImagesFromGallery(resultCode,data,PicsUri,editJobImage,localFile,vpa,this);
         }
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-    {
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         cat_id = ((Category) spinner.getAdapter().getItem(position)).getCategory_id();
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
-        job.getCategory_ID();
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 
-    private void createDialog()
-    {
-        d = new Dialog(AdminEditJobActivity.this);
-        d.setContentView(R.layout.view_pager_layout);
-        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        d.setTitle("Pictures");
-        d.setCancelable(true);
-        d.setOnDismissListener(dialog->{
-            System.out.println("DISMISS");
-            if (localFile.isEmpty())
-            {
-                editJobImage.setVisibility(View.INVISIBLE);
-                editJobImage.setEnabled(false);
-            }
-        });
+    private void createDialog() {
+        d = ImagesDialog.ImagesDialogBuilder(this,editJobImage,localFile);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, true, true);
         vpPager.setAdapter(vpa);
     }
 
-    private void showDialog()
-    {
+    private void showDialog() {
         d.show();
     }
 }

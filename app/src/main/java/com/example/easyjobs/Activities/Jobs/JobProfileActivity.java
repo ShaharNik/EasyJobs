@@ -27,6 +27,7 @@ import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.example.easyjobs.utils.ImageHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -45,7 +46,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class JobProfileActivity extends AppCompatActivity
+public class JobProfileActivity extends AppCompatActivity implements View.OnClickListener
 {
     private static final int PHONE_CALL_APPROVE = 420;
 
@@ -75,6 +76,7 @@ public class JobProfileActivity extends AppCompatActivity
         setContentView(R.layout.activity_job_profile);
 
         findViews();
+        inits();
         activateButtons();
     }
 
@@ -84,6 +86,38 @@ public class JobProfileActivity extends AppCompatActivity
         super.onResume();
         createDialog();
         setDataFromDB();
+    }
+
+    private void findViews()
+    {
+        backBJP = findViewById(R.id.back_job_profile);
+        namesJPTV = findViewById(R.id.namesJP);
+        descJPTV = findViewById(R.id.descriptionJP);
+        locationJPTV = findViewById(R.id.locationJP);
+        priceJPTV = findViewById(R.id.priceJP);
+        datesJPTV = findViewById(R.id.dateJP);
+        phoneJPTV = findViewById(R.id.phoneJP);
+        phoneCall = findViewById(R.id.call_buttJ);
+        JobProfileFirstPicture = findViewById(R.id.JobProfileFirstPicture);
+        adminEditJob = findViewById(R.id.admin_edit_job);
+        whatsappButt = findViewById(R.id.whatsappButtImageButt);
+    }
+
+    private void inits()
+    {
+        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+        localFile = new ArrayList<>();
+        JobProfileFirstPicture.setEnabled(false);
+        if (FirebaseDBUsers.isAdmin)
+        {
+            adminEditJob.setVisibility(View.VISIBLE);
+            adminEditJob.setEnabled(true);
+        }
+        else
+        {
+            adminEditJob.setVisibility(View.GONE);
+            adminEditJob.setEnabled(false);
+        }
     }
 
     private void setDataFromDB()
@@ -142,88 +176,45 @@ public class JobProfileActivity extends AppCompatActivity
         setFirstPicture(job_ID);
     }
 
-    private void findViews()
-    {
-        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
-        localFile = new ArrayList<>();
-        backBJP = findViewById(R.id.back_job_profile);
-        namesJPTV = findViewById(R.id.namesJP);
-        descJPTV = findViewById(R.id.descriptionJP);
-        locationJPTV = findViewById(R.id.locationJP);
-        priceJPTV = findViewById(R.id.priceJP);
-        datesJPTV = findViewById(R.id.dateJP);
-        phoneJPTV = findViewById(R.id.phoneJP);
-        phoneCall = findViewById(R.id.call_buttJ);
-        JobProfileFirstPicture = findViewById(R.id.JobProfileFirstPicture);
-        adminEditJob = findViewById(R.id.admin_edit_job);
-        JobProfileFirstPicture.setEnabled(false);
-        whatsappButt = findViewById(R.id.whatsappButtImageButt);
-    }
-
     private void activateButtons()
     {
-        backBJP.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                JobProfileActivity.super.onBackPressed();
-            }
-        });
+        backBJP.setOnClickListener(this);
+        phoneCall.setOnClickListener(this);
+        adminEditJob.setOnClickListener(this);
+        JobProfileFirstPicture.setOnClickListener(this);
+        whatsappButt.setOnClickListener(this);
+    }
 
-        if (FirebaseDBUsers.isAdmin)
+    @Override
+    public void onClick(View ClickedButton) {
+        if(backBJP.equals(ClickedButton))
         {
-            adminEditJob.setVisibility(View.VISIBLE);
-            adminEditJob.setEnabled(true);
+            JobProfileActivity.super.onBackPressed();
         }
-        else
+        if(phoneCall.equals(ClickedButton))
         {
-            adminEditJob.setVisibility(View.GONE);
-            adminEditJob.setEnabled(false);
+            phoneCallMaker();
         }
-
-        phoneCall.setOnClickListener(new View.OnClickListener()
+        if(adminEditJob.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                phoneCallMaker();
-            }
-        });
-
-        adminEditJob.setOnClickListener(new View.OnClickListener()
+            Intent i = new Intent(JobProfileActivity.this, AdminEditJobActivity.class);
+            i.putExtra("Job", job);
+            i.putExtra("User", user);
+            i.putExtra("File", localFile);
+            startActivity(i);
+        }
+        if(JobProfileFirstPicture.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(JobProfileActivity.this, AdminEditJobActivity.class);
-                i.putExtra("Job", job);
-                i.putExtra("User", user);
-                i.putExtra("File", localFile);
-                startActivity(i);
-            }
-        });
-
-        JobProfileFirstPicture.setOnClickListener(new View.OnClickListener()
+            showDialog();
+        }
+        if(whatsappButt.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                showDialog();
-            }
-        });
-
-        whatsappButt.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
-                startActivity(intent);
-            }
-        });
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
+            startActivity(intent);
+        }
     }
 
     private void setFirstPicture(String job_id)
@@ -236,32 +227,7 @@ public class JobProfileActivity extends AppCompatActivity
             {
                 for (StorageReference sr : listResult.getItems())
                 {
-                    File Image = null;
-                    try
-                    {
-                        Image = File.createTempFile(sr.getName(), ".jpg");
-                        File finalImage = Image;
-                        sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>()
-                        {
-                            @Override
-                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task)
-                            {
-                                if (finalImage.exists())
-                                {
-                                    Bitmap myBitmap = BitmapFactory.decodeFile(finalImage.getAbsolutePath());
-                                    JobProfileFirstPicture.setImageBitmap(myBitmap);
-                                    Picture pic = new Picture(finalImage, sr.getName());
-                                    localFile.add(pic);
-                                    vpa.notifyDataSetChanged();
-                                    JobProfileFirstPicture.setEnabled(true);
-                                }
-                            }
-                        });
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    ImageHelper.pullImagesFromDBandInsertToArray(sr,JobProfileFirstPicture,localFile,vpa);
                 }
             }
         });
@@ -310,4 +276,6 @@ public class JobProfileActivity extends AppCompatActivity
                 break;
         }
     }
+
+
 }

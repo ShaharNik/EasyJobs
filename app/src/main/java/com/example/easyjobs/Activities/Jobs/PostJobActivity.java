@@ -32,6 +32,8 @@ import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
+import com.example.easyjobs.utils.ImageHelper;
+import com.example.easyjobs.utils.ImagesDialog;
 import com.example.easyjobs.utils.Validator;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.CompositeDateValidator;
@@ -304,101 +306,18 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_FROM_GALLERY)
-        {
-            if (resultCode == Activity.RESULT_OK)
-            {
-                if (data.getClipData() != null)
-                {
-                    int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
-                    for (int i = 0; i < count; i++)
-                    {
-                        Uri imageUri = data.getClipData().getItemAt(i).getUri();
-                        PicsUri.add(imageUri);
-                        try
-                        {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                            File Image = File.createTempFile("Picture", ".jpg");
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos); // YOU can also save it in JPEG
-                            byte[] bitmapdata = bos.toByteArray();
-
-                            //write the bytes in file
-                            FileOutputStream fos = new FileOutputStream(Image);
-                            fos.write(bitmapdata);
-                            fos.flush();
-                            fos.close();
-                            Picture p = new Picture(Image, imageUri.getLastPathSegment());
-                            localFile.add(p);
-
-                            vpa.notifyDataSetChanged();
-
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (localFile.size() > 0)
-                    {
-                        Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
-                        images.setImageBitmap(myBitmap);
-                        images.setVisibility(View.VISIBLE);
-                        images.setEnabled(true);
-                    }
-                }
-                //do something with the image (save it to some directory or whatever you need to do with it here)
-            }
-        }
-        else if (data != null && data.getData() != null)
-        {
-            PicsUri.add(data.getData());
-            try
-            {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                File Image = File.createTempFile("Picture", ".jpg");
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos); // YOU can also save it in JPEG
-                byte[] bitmapdata = bos.toByteArray();
-
-                //write the bytes in file
-                FileOutputStream fos = new FileOutputStream(Image);
-                fos.write(bitmapdata);
-                fos.flush();
-                fos.close();
-                Picture p = new Picture(Image, data.getData().getLastPathSegment());
-                localFile.add(p);
-                vpa.notifyDataSetChanged();
-
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            //do something with the image (save it to some directory or whatever you need to do with it here)
+        if (requestCode == PICK_FROM_GALLERY) {
+            ImageHelper.setImagesFromGallery(resultCode,data,PicsUri,images,localFile,vpa,this);
         }
     }
 
     private void createDialog()
     {
-        d = new Dialog(PostJobActivity.this);
-        d.setContentView(R.layout.view_pager_layout);
-        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        d.setTitle("Pictures");
-        d.setCancelable(true);
-        d.setOnDismissListener(dialog->{
-            System.out.println("DISMISS");
-            if (localFile.isEmpty())
-            {
-                images.setVisibility(View.INVISIBLE);
-                images.setEnabled(false);
-            }
-        });
+        d = ImagesDialog.ImagesDialogBuilder(this,images,localFile);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, true, true);
         vpPager.setAdapter(vpa);
