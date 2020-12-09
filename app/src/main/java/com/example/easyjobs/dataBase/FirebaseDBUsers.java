@@ -18,15 +18,18 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class FirebaseDBUsers {
-
+public class FirebaseDBUsers
+{
     public static boolean isAdmin;
-    public static void addUserToDB(String User_ID, String firstName,String lastName,String phoneNumber, boolean isPremium,String email) {
-        //String id = idGenerator.tokenGenerator();
-        User user = new User(User_ID, firstName,lastName,phoneNumber,isPremium,0, 0,email);
+
+    public static void addUserToDB(String User_ID, String firstName, String lastName, String phoneNumber, boolean isPremium, String email)
+    {
+        User user = new User(User_ID, firstName, lastName, phoneNumber, isPremium, 0, 0, email);
         FirebaseBaseModel.getRef().child("Users").child(User_ID).setValue(user);
     }
-    public static void changeUserByID(User user) {
+
+    public static void changeUserByID(User user)
+    {
         FirebaseBaseModel.getRef().child("Users").child(user.getUser_ID()).setValue(user);
     }
 
@@ -40,141 +43,138 @@ public class FirebaseDBUsers {
         return FirebaseBaseModel.getRef().child("Users").child(id);
     }
 
-    public static void setPremiumToAUser(String id, Context context) {
-        FirebaseBaseModel.getRef().child("Users").child(id).child("premium").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public static void setPremiumToAUser(String id, Context context)
+    {
+        FirebaseBaseModel.getRef().child("Users").child(id).child("premium").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>()
+        {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onComplete(@NonNull Task<Void> task)
+            {
                 Toast.makeText(context, "payment successful", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     public static void setRating(String from_ID, String profID, float value, Context c, RatingBar ratingBar)
     {
-        //if(ref.child("UserRatings").)
-       // boolean IsChanged=true;
         DatabaseReference dr = FirebaseBaseModel.getRef().child("UserRatings").child(from_ID);
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 Rating r = snapshot.getValue(Rating.class);
-                boolean isChanged=true;
-                if(r == null)
+                boolean isChanged = true;
+                if (r == null)
                 {
-                    isChanged=false;
+                    isChanged = false;
                     r = new Rating();
                     r.setUserId_from(from_ID);
                 }
-               if(r.getTo_ID()== null)
-               {
-                   isChanged=false;
-                   r.setTo_ID(new HashMap<>());
-
-               }
-               float oldRating=0f;
-               if(r.getTo_ID().get(profID) != null)
-               {
-                   isChanged=true;
-                   oldRating=r.getTo_ID().get(profID);
-               }
-               else
-               {
-                   isChanged=false;
-               }
-               r.getTo_ID().put(profID,value);
-               dr.setValue(r);
-               updateRatingForUser(profID,value,isChanged,oldRating,ratingBar);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private static void updateRatingForUser(String profID,float value,boolean isChanged,float oldRatingAmount,RatingBar ratingBar)
-    {
-        DatabaseReference dr = getUserByID(profID);
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User u = snapshot.getValue(User.class);
-                float oldRating = u.getRating()*u.getRatingsAmount();
-                if(!isChanged)
+                if (r.getTo_ID() == null)
                 {
-                    oldRating+=value;
-                    u.setRatingsAmount(u.getRatingsAmount()+1);
-                    u.setRating(oldRating/u.getRatingsAmount());
+                    isChanged = false;
+                    r.setTo_ID(new HashMap<>());
+
+                }
+                float oldRating = 0f;
+                if (r.getTo_ID().get(profID) != null)
+                {
+                    isChanged = true;
+                    oldRating = r.getTo_ID().get(profID);
                 }
                 else
                 {
-                    oldRating-=oldRatingAmount;
-                    oldRating+=value;
-                    u.setRating(oldRating/u.getRatingsAmount());
-//                    u.setRatingsAmount(u.getRatingsAmount() );
-//                    u.setRating(value/u.getRatingsAmount());
+                    isChanged = false;
                 }
-                dr.setValue(u).addOnCompleteListener(new OnCompleteListener<Void>() {
+                r.getTo_ID().put(profID, value);
+                dr.setValue(r);
+                updateRatingForUser(profID, value, isChanged, oldRating, ratingBar);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private static void updateRatingForUser(String profID, float value, boolean isChanged, float oldRatingAmount, RatingBar ratingBar)
+    {
+        DatabaseReference dr = getUserByID(profID);
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                User u = snapshot.getValue(User.class);
+                float oldRating = u.getRating() * u.getRatingsAmount();
+                if (!isChanged)
+                {
+                    oldRating += value;
+                    u.setRatingsAmount(u.getRatingsAmount() + 1);
+                    u.setRating(oldRating / u.getRatingsAmount());
+                }
+                else
+                {
+                    oldRating -= oldRatingAmount;
+                    oldRating += value;
+                    u.setRating(oldRating / u.getRatingsAmount());
+                }
+                dr.setValue(u).addOnCompleteListener(new OnCompleteListener<Void>()
+                {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
                         ratingBar.setEnabled(true);
                     }
                 });
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error){}
         });
     }
 
     public static void makeNewAdmin(String mail)
     {
         DatabaseReference dr = getAllusers();
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot s : snapshot.getChildren())
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot s : snapshot.getChildren())
                 {
-                        String Usermail = s.child("email").getValue(String.class);
-                        if(Usermail.compareTo(mail)==0)
-                        {
-                            FirebaseBaseModel.getRef().child("Admins").child(s.child("user_ID").getValue(String.class)).setValue(true);
-                            break;
-                        }
-
+                    String Usermail = s.child("email").getValue(String.class);
+                    if (Usermail.compareTo(mail) == 0)
+                    {
+                        FirebaseBaseModel.getRef().child("Admins").child(s.child("user_ID").getValue(String.class)).setValue(true);
+                        break;
+                    }
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error){}
         });
-
     }
+
     public static void removeAdmin(String mail)
     {
         DatabaseReference dr = getAllusers();
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot s : snapshot.getChildren())
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot s : snapshot.getChildren())
                 {
                     String Usermail = s.child("email").getValue(String.class);
-                    if(Usermail.compareTo(mail)==0)
+                    if (Usermail.compareTo(mail) == 0)
                     {
                         FirebaseBaseModel.getRef().child("Admins").child(s.child("user_ID").getValue(String.class)).removeValue();
                         break;
                     }
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error){}
         });
     }
 
@@ -183,10 +183,4 @@ public class FirebaseDBUsers {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         return FirebaseBaseModel.getRef().child("Admins").child(uid);
     }
-    public static void banUserName(String uid)
-    {
-        //TODO to think if possible it is not possible without admin sdk
-    }
-
-
 }

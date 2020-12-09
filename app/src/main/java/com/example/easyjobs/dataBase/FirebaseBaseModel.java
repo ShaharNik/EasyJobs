@@ -1,22 +1,20 @@
 package com.example.easyjobs.dataBase;
 
-import com.google.firebase.database.*;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class FirebaseBaseModel {
-
+public class FirebaseBaseModel
+{
     protected static DatabaseReference ref;
 
-    private FirebaseBaseModel(){
+    private FirebaseBaseModel(){}
 
-    }
     public static synchronized DatabaseReference getRef()
     {
-        if(ref == null)
+        if (ref == null)
         {
             ref = FirebaseDatabase.getInstance().getReference();
-
         }
         return ref;
     }
-
 }

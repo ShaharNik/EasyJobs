@@ -1,20 +1,11 @@
 package com.example.easyjobs.Activities.Jobs;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import com.example.easyjobs.Activities.Profs.ProfProfileActivity;
-import com.example.easyjobs.Objects.Picture;
-
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,14 +15,19 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.easyjobs.Objects.Job;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,14 +41,12 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
-public class JobProfileActivity extends AppCompatActivity {
-
+public class JobProfileActivity extends AppCompatActivity
+{
     private static final int PHONE_CALL_APPROVE = 420;
 
     private ImageView backBJP;
@@ -72,78 +66,84 @@ public class JobProfileActivity extends AppCompatActivity {
     private ImageView whatsappButt;
     private Dialog d;
     private ViewPager vpPager;
-    private  viewPageAdapter vpa;
+    private viewPageAdapter vpa;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_profile);
 
         findViews();
-
         activateButtons();
-
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         createDialog();
         setDataFromDB();
     }
 
-    private void setDataFromDB(){
-        if(vpa!=null) {
+    private void setDataFromDB()
+    {
+        if (vpa != null)
+        {
             localFile.clear();
             vpa.notifyDataSetChanged();
         }
         String job_ID = getIntent().getStringExtra("job_id");
         DatabaseReference drJobs = FirebaseDBJobs.getJobByID(job_ID);
-        drJobs.addListenerForSingleValueEvent(new ValueEventListener() {
+        drJobs.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 job = snapshot.getValue(Job.class);
-                vpa = new viewPageAdapter(JobProfileActivity.this,localFile,job.getJob_ID(),true,false);
+                vpa = new viewPageAdapter(JobProfileActivity.this, localFile, true, false);
                 vpPager.setAdapter(vpa);
-                if(job == null)
+                if (job == null)
                 {
                     JobProfileActivity.this.onBackPressed();
-
                 }
-                else {
+                else
+                {
                     descJPTV.setText("תיאור: " + job.getDesc());
                     locationJPTV.setText("מיקום עבודה: " + job.getLocation());
                     priceJPTV.setText("מחיר: " + job.getPrice() + " שח");
                     DateFormat df = new SimpleDateFormat("dd/MM/yy");
                     datesJPTV.setText("תאריך: " + df.format(job.getStartDate()) + " - " + df.format(job.getEndDate()));
                     DatabaseReference drUser = FirebaseDBUsers.getUserByID(job.getUser_ID());
-                    if(job.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) ==0)
+                    if (job.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0)
                     {
                         adminEditJob.setVisibility(View.VISIBLE);
                         adminEditJob.setEnabled(true);
                     }
-                    drUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    drUser.addListenerForSingleValueEvent(new ValueEventListener()
+                    {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
                             user = snapshot.getValue(User.class);
                             namesJPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
                             phoneJPTV.setText("טלפון: " + user.getPhoneNumber());
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
+                        public void onCancelled(@NonNull DatabaseError error) {}
                     });
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
         setFirstPicture(job_ID);
     }
 
-    private void findViews(){
+    private void findViews()
+    {
         mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         localFile = new ArrayList<>();
         backBJP = findViewById(R.id.back_job_profile);
@@ -160,50 +160,63 @@ public class JobProfileActivity extends AppCompatActivity {
         whatsappButt = findViewById(R.id.whatsappButtImageButt);
     }
 
-    private void activateButtons(){
-        backBJP.setOnClickListener(new View.OnClickListener() {
+    private void activateButtons()
+    {
+        backBJP.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 JobProfileActivity.super.onBackPressed();
             }
         });
 
-        if(FirebaseDBUsers.isAdmin){
+        if (FirebaseDBUsers.isAdmin)
+        {
             adminEditJob.setVisibility(View.VISIBLE);
             adminEditJob.setEnabled(true);
         }
-        else{
+        else
+        {
             adminEditJob.setVisibility(View.GONE);
             adminEditJob.setEnabled(false);
         }
 
-        phoneCall.setOnClickListener(new View.OnClickListener() {
+        phoneCall.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 phoneCallMaker();
             }
         });
 
-        adminEditJob.setOnClickListener(new View.OnClickListener() {
+        adminEditJob.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent i = new Intent(JobProfileActivity.this, AdminEditJobActivity.class);
                 i.putExtra("Job", job);
                 i.putExtra("User", user);
-                i.putExtra("File",localFile);
+                i.putExtra("File", localFile);
                 startActivity(i);
             }
         });
 
-        JobProfileFirstPicture.setOnClickListener(new View.OnClickListener() {
+        JobProfileFirstPicture.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 showDialog();
             }
         });
 
-        whatsappButt.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        whatsappButt.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
@@ -216,31 +229,32 @@ public class JobProfileActivity extends AppCompatActivity {
     private void setFirstPicture(String job_id)
     {
         StorageReference riversRef = mStorageRef.child("JobPictures/").child(job_id);
-        riversRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+        riversRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>()
+        {
             @Override
-            public void onSuccess(ListResult listResult) {
+            public void onSuccess(ListResult listResult)
+            {
                 for (StorageReference sr : listResult.getItems())
                 {
-                    File Image=null;
-                    try {
-                       // System.out.println(sr.getName());
-                        //System.out.println(sr.getPath());
-                       // System.out.println(sr.);
+                    File Image = null;
+                    try
+                    {
                         Image = File.createTempFile(sr.getName(), ".jpg");
-                       // Image.renameTo(sr.getName()+".jpg");
                         File finalImage = Image;
-                        sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                        sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>()
+                        {
                             @Override
-                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                                if(finalImage.exists()){
+                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task)
+                            {
+                                if (finalImage.exists())
+                                {
                                     Bitmap myBitmap = BitmapFactory.decodeFile(finalImage.getAbsolutePath());
                                     JobProfileFirstPicture.setImageBitmap(myBitmap);
-                                    Picture pic = new Picture(finalImage,sr.getName());
+                                    Picture pic = new Picture(finalImage, sr.getName());
                                     localFile.add(pic);
                                     vpa.notifyDataSetChanged();
                                     JobProfileFirstPicture.setEnabled(true);
                                 }
-
                             }
                         });
                     }
@@ -251,28 +265,31 @@ public class JobProfileActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+
     private void createDialog()
     {
-        d= new Dialog(JobProfileActivity.this);
+        d = new Dialog(JobProfileActivity.this);
         d.setContentView(R.layout.view_pager_layout);
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
     }
+
     private void showDialog()
     {
         d.show();
-
     }
 
-    private void phoneCallMaker() {
-        if (ActivityCompat.checkSelfPermission(JobProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+    private void phoneCallMaker()
+    {
+        if (ActivityCompat.checkSelfPermission(JobProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        {
             ActivityCompat.requestPermissions(JobProfileActivity.this, new String[]{Manifest.permission.CALL_PHONE}, PHONE_CALL_APPROVE);
         }
-        else{
+        else
+        {
             String s = "tel:" + phoneJPTV.getText().toString();
             Intent i = new Intent(Intent.ACTION_CALL);
             i.setData(Uri.parse(s));
@@ -281,9 +298,10 @@ public class JobProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        switch (requestCode) {
+        switch (requestCode)
+        {
             case PHONE_CALL_APPROVE:
                 String s = "tel:" + phoneJPTV.getText().toString();
                 Intent i = new Intent(Intent.ACTION_CALL);

@@ -1,9 +1,5 @@
 package com.example.easyjobs.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -11,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.easyjobs.Activities.Jobs.JobsListActivity;
 import com.example.easyjobs.Activities.Profs.ProfListActivity;
@@ -24,7 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private TextView welcomeText;
     private Button jobListB;
     private Button proListB;
@@ -34,25 +34,26 @@ public class MainActivity extends AppCompatActivity {
     private ImageView logo;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         findViews();
         setLogoSize();
         activateButtonsAndViews();
         logedInModifier();
-
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         logedInModifier();
     }
 
-    private void findViews(){
+    private void findViews()
+    {
         logo = findViewById(R.id.imageView);
         welcomeText = findViewById(R.id.WelcomeText);
         jobListB = findViewById(R.id.button_mainto_joblist);
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
         loginT = findViewById(R.id.button_mainto_login);
     }
 
-    private void setLogoSize(){
+    private void setLogoSize()
+    {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
@@ -74,92 +76,110 @@ public class MainActivity extends AppCompatActivity {
         logo.getLayoutParams().width = imgWidth;
     }
 
-    private void activateButtonsAndViews(){
-        loginT.setOnClickListener(new View.OnClickListener() {
+    private void activateButtonsAndViews()
+    {
+        loginT.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 mAuth = FirebaseAuth.getInstance();
                 FirebaseUser user = mAuth.getCurrentUser();
-                if (user == null) { // logged in
+                if (user == null)
+                {
+                    // logged in
                     moveToLoginActivity();
                 }
-                else {
+                else
+                {
                     moveToProfileActivity();
                 }
             }
         });
 
-        jobListB.setOnClickListener(new View.OnClickListener() {
+        jobListB.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 moveToJobList();
             }
         });
 
-        proListB.setOnClickListener(new View.OnClickListener() {
+        proListB.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 moveToProfList();
             }
         });
     }
 
-    private void logedInModifier(){
+    private void logedInModifier()
+    {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null){ // user is logged in
+        if (user != null)
+        {
+            // user is logged in
             String disp_name = user.getDisplayName();
             welcomeText.setText("שלום, " + disp_name + " :)");
             loginT.setText("פרופיל");
             DatabaseReference dr = FirebaseDBUsers.CheckAdmin();
-            dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            dr.addListenerForSingleValueEvent(new ValueEventListener()
+            {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists())
+                public void onDataChange(@NonNull DataSnapshot snapshot)
+                {
+                    if (snapshot.exists())
                     {
-                        FirebaseDBUsers.isAdmin=true;
+                        FirebaseDBUsers.isAdmin = true;
                         System.out.println("ADMIN OKAY");
                     }
                     else
                     {
-                        FirebaseDBUsers.isAdmin=false;
+                        FirebaseDBUsers.isAdmin = false;
                         System.out.println("NOT ADMIN OKAY");
                     }
                 }
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
+                public void onCancelled(@NonNull DatabaseError error) {}
             });
         }
-        else{
+        else
+        {
             welcomeText.setText("שלום, אורח :)");
             loginT.setText("התחבר/הירשם");
         }
     }
 
-    private void moveToLoginActivity(){
+    private void moveToLoginActivity()
+    {
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(i);
     }
 
-    private void moveToJobList(){
+    private void moveToJobList()
+    {
         Intent i = new Intent(MainActivity.this, JobsListActivity.class);
-        i.putExtra("personal",false);
+        i.putExtra("personal", false);
         startActivity(i);
     }
 
-    private void moveToProfList(){
+    private void moveToProfList()
+    {
         Intent i = new Intent(MainActivity.this, ProfListActivity.class);
-        i.putExtra("personal",false);
+        i.putExtra("personal", false);
         startActivity(i);
     }
 
-    private void moveToProfileActivity(){
+    private void moveToProfileActivity()
+    {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
-        i.putExtra("user_id",user.getUid());
+        i.putExtra("user_id", user.getUid());
         startActivity(i);
     }
 }

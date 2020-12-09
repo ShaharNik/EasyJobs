@@ -18,47 +18,55 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirebaseDBProfs {
-
-    public static void addNewProf(String user_id, String desc, List<String> cats, String loc, ArrayList<Uri> picsUri){
+public class FirebaseDBProfs
+{
+    public static void addNewProf(String user_id, String desc, List<String> cats, String loc, ArrayList<Uri> picsUri)
+    {
         String id = idGenerator.tokenGenerator();
-        Prof p = new Prof(id,user_id, desc, cats, loc);
+        Prof p = new Prof(id, user_id, desc, cats, loc);
         FirebaseBaseModel.getRef().child("Profs").child(id).setValue(p);
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
-        for(Uri u:picsUri)
+        for (Uri u : picsUri)
         {
-            StorageReference storageReference = mStorageRef.child("ProfPictures/"+id+"/"+u.getLastPathSegment());
-            storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            StorageReference storageReference = mStorageRef.child("ProfPictures/" + id + "/" + u.getLastPathSegment());
+            storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
+                {
                     System.out.println("GOOD !");
                 }
             });
         }
-
     }
 
-    public static DatabaseReference getProfByID(String ProfID){
+    public static DatabaseReference getProfByID(String ProfID)
+    {
         return FirebaseBaseModel.getRef().child("Profs").child(ProfID);
     }
 
-    public static  DatabaseReference getAllProfs(){
+    public static DatabaseReference getAllProfs()
+    {
         return FirebaseBaseModel.getRef().child("Profs");
-
     }
+
     public static void EditProf(String prof_id, String user_id, String desc, List<String> cats, String loc, AdminEditProfActivity c, ArrayList<Uri> PicsUri)
     {
-        Prof p = new Prof(prof_id,user_id, desc, cats, loc);
-        FirebaseBaseModel.getRef().child("Profs").child(prof_id).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Prof p = new Prof(prof_id, user_id, desc, cats, loc);
+        FirebaseBaseModel.getRef().child("Profs").child(prof_id).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>()
+        {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onComplete(@NonNull Task<Void> task)
+            {
                 StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
-                for(Uri u : PicsUri)
+                for (Uri u : PicsUri)
                 {
-                    StorageReference storageReference = mStorageRef.child("ProfPictures/"+ p.getProf_ID() +"/"+u.getLastPathSegment());
-                    storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    StorageReference storageReference = mStorageRef.child("ProfPictures/" + p.getProf_ID() + "/" + u.getLastPathSegment());
+                    storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
+                        {
                             System.out.println("GOOD !");
                         }
                     });
@@ -68,15 +76,16 @@ public class FirebaseDBProfs {
             }
         });
     }
+
     public static void removeProf(String profID, AdminEditProfActivity c)
     {
-        FirebaseBaseModel.getRef().child("Profs").child(profID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseBaseModel.getRef().child("Profs").child(profID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>()
+        {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onComplete(@NonNull Task<Void> task)
+            {
                 c.finish();
             }
         });
     }
-
-
 }

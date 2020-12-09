@@ -1,64 +1,47 @@
 package com.example.easyjobs.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.easyjobs.Activities.Jobs.PostJobActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
-import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.Validator;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.utilities.Validation;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity
+{
     public static final int RequestPermissionCode = 1;
     private static final int PICK_IMAGE_REQUEST = 2;
     private static final int PICK_FROM_GALLERY = 333;
@@ -83,7 +66,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private Uri filePath;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
@@ -91,7 +75,8 @@ public class EditProfileActivity extends AppCompatActivity {
         activateButtonsAndViews();
     }
 
-    private void findViews() {
+    private void findViews()
+    {
         email = findViewById(R.id.user_email);
         editTextOldPassword = findViewById((R.id.editTextOldPassword));
         phone = findViewById(R.id.editTextPhone);
@@ -105,17 +90,22 @@ public class EditProfileActivity extends AppCompatActivity {
         ChoosePictureButton = findViewById(R.id.ChoosePictureButton);
     }
 
-    private void activateButtonsAndViews() {
-        backButt.setOnClickListener(new View.OnClickListener() {
+    private void activateButtonsAndViews()
+    {
+        backButt.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 EditProfileActivity.super.onBackPressed();
             }
         });
 
-        ChoosePictureButton.setOnClickListener(new View.OnClickListener() {
+        ChoosePictureButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 uploadPicture();
             }
         });
@@ -125,9 +115,11 @@ public class EditProfileActivity extends AppCompatActivity {
         String user_email = user.getEmail();
 
         DatabaseReference DR = FirebaseDBUsers.getUserByID(getIntent().getStringExtra("user_id"));
-        DR.addListenerForSingleValueEvent(new ValueEventListener() {
+        DR.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 curUser = snapshot.getValue(User.class);
                 fname.setHint(fname.getText().toString() + " " + curUser.getFirstName());
                 lname.setHint(lname.getText().toString() + " " + curUser.getLastName());
@@ -135,29 +127,25 @@ public class EditProfileActivity extends AppCompatActivity {
                 email.setText(email.getText().toString() + " " + user_email);
                 email.setEnabled(false);
                 phone.setHint(phone.getText().toString() + " " + curUser.getPhoneNumber());
-                //System.err.println(user.getDisplayName() + " " + user.getEmail() + " " + user.getPhoneNumber());
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
+            public void onCancelled(@NonNull DatabaseError error){}
         });
 
         // Update Button Pressed !
-        UpdateButton.setOnClickListener(new View.OnClickListener() {
+        UpdateButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                // When clicking On UPDATE:
-                // 1) check user current password is correct.
-                // 2) check validation of changed fields.
-                // 3) update fire-base with the new inputs.
-                // 4) logout user and send him to main activity
+            public void onClick(View view)
+            {
                 FirebaseUser user = mAuth.getCurrentUser();
-
-
                 // password validation
-                if (!editTextOldPassword.getText().toString().isEmpty()) { // Required field
-                    if (Validator.ValidateUserPassword(editTextOldPassword.getText().toString())) {
+                if (!editTextOldPassword.getText().toString().isEmpty())
+                {
+                    // Required field
+                    if (Validator.ValidateUserPassword(editTextOldPassword.getText().toString()))
+                    {
                         // CHECK PASSWORD IS RIGHT
 
                         // Get auth credentials from the user for re-authentication. The example below shows
@@ -165,55 +153,76 @@ public class EditProfileActivity extends AppCompatActivity {
                         // such as GoogleAuthProvider or FacebookAuthProvider.
                         AuthCredential credential = EmailAuthProvider.getCredential(curUser.getUser_ID(), editTextOldPassword.getText().toString());
                         // Prompt the user to re-provide their sign-in credentials
-                        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>()
+                        {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
+                            public void onComplete(@NonNull Task<Void> task)
+                            {
                                 // --==OLD Password is OK ==--
-
                                 // NEW PASSWORD
                                 String newPassword = editTextNewPassword.getText().toString();
                                 String new_passAuth = editTextCheckNewPassword.getText().toString();
-                                if (!newPassword.isEmpty() && !new_passAuth.isEmpty()) {
-                                    if (Validator.ValidateUserPassword(newPassword) && Validator.ValidateUserPassword(new_passAuth)) {
-                                        if (newPassword.equals(new_passAuth)) {
+                                if (!newPassword.isEmpty() && !new_passAuth.isEmpty())
+                                {
+                                    if (Validator.ValidateUserPassword(newPassword) && Validator.ValidateUserPassword(new_passAuth))
+                                    {
+                                        if (newPassword.equals(new_passAuth))
+                                        {
                                             someFieldChanged = true;
                                             // Update user password
-                                            user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>()
+                                            {
                                                 @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
+                                                public void onComplete(@NonNull Task<Void> task)
+                                                {
+                                                    if (task.isSuccessful())
+                                                    {
                                                         System.out.println("successful" + newPassword);
                                                         Toast.makeText(EditProfileActivity.this, "הסיסמא שונתה בהצלחה", Toast.LENGTH_SHORT).show();
-                                                    } else {
+                                                    }
+                                                    else
+                                                    {
                                                         System.out.println("NOT Successful !!");
                                                         Toast.makeText(EditProfileActivity.this, "הסיסמא אינה השתנתה, נסה שנית", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             editTextNewPassword.setError("הסיסמאות אינן תואמות");
                                             editTextCheckNewPassword.setError("הסיסמאות אינן תואמות");
                                         }
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         editTextNewPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                                         editTextCheckNewPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                                     }
-                                } else {// new pass or new passAuth is empty
-                                    if (!newPassword.isEmpty() || !new_passAuth.isEmpty()) { // If one of them is not empty
-                                        if (newPassword.isEmpty()) {
+                                }
+                                else
+                                {
+                                    // new pass or new passAuth is empty
+                                    if (!newPassword.isEmpty() || !new_passAuth.isEmpty())
+                                    {
+                                        // If one of them is not empty
+                                        if (newPassword.isEmpty())
+                                        {
                                             editTextNewPassword.setError("חייב להקליד סיסמא חדשה פעמיים");
-                                        } else {
+                                        }
+                                        else
+                                        {
                                             editTextCheckNewPassword.setError("חייב להקליד סיסמא חדשה פעמיים");
                                         }
                                     }
                                 }
-                                //----------------------------------------------------------
                                 // If field has changed , validate update cueUser and set the bool variable to true.
                                 firstNameUpdate();
                                 lastNameUpdate();
                                 phoneUpdate();
 
-                                if (someFieldChanged) {
+                                if (someFieldChanged)
+                                {
                                     // Update User in DB
                                     FirebaseDBUsers.changeUserByID(curUser);
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(curUser.getFirstName() + " " + curUser.getLastName()).build();
@@ -226,72 +235,97 @@ public class EditProfileActivity extends AppCompatActivity {
                                     Toast.makeText(EditProfileActivity.this, "העדכון בוצע בהצלחה, התחבר מחדש", Toast.LENGTH_LONG).show();
                                     // Sign user out and move to main
                                     signOutAndMoveToMainActivity();
-                                } else {
+                                }
+                                else
+                                {
                                     Toast.makeText(EditProfileActivity.this, "לא ביצעת שינוי", Toast.LENGTH_SHORT).show();
                                 }
-                                //Log.d(TAG, "User re-authenticated.");
                             }
                         });
-                    } else {
+                    }
+                    else
+                    {
                         editTextOldPassword.setError("אורך הסיסמא צריך להיות לפחות 6");
                     }
-                } else { // current password empty
+                }
+                else
+                {
+                    // current password empty
                     editTextOldPassword.setError("הסיסמה הנוכחית שלך אינה תקינה!");
                 }
             }
         });
     }
 
-    private void firstNameUpdate() {
-        if (!fname.getText().toString().isEmpty()) {
-            if (Validator.ValidateUserFName(fname.getText().toString())) {
+    private void firstNameUpdate()
+    {
+        if (!fname.getText().toString().isEmpty())
+        {
+            if (Validator.ValidateUserFName(fname.getText().toString()))
+            {
                 curUser.setFirstName(fname.getText().toString());
                 someFieldChanged = true;
-            } else {
+            }
+            else
+            {
                 fname.setError("שם פרטי לא אמור להכיל מספרים");
             }
         }
     }
 
-    private void lastNameUpdate() {
-        if (!lname.getText().toString().isEmpty()) {
-            if (Validator.ValidateUserLName(lname.getText().toString())) {
+    private void lastNameUpdate()
+    {
+        if (!lname.getText().toString().isEmpty())
+        {
+            if (Validator.ValidateUserLName(lname.getText().toString()))
+            {
                 curUser.setLastName(lname.getText().toString());
                 someFieldChanged = true;
-            } else {
+            }
+            else
+            {
                 fname.setError("שם משפחה לא אמור להכיל מספרים");
             }
         }
     }
 
-    private void phoneUpdate() {
-        if (!phone.getText().toString().isEmpty()) {
-            if (Validator.ValidateUserPhone(phone.getText().toString())) {
+    private void phoneUpdate()
+    {
+        if (!phone.getText().toString().isEmpty())
+        {
+            if (Validator.ValidateUserPhone(phone.getText().toString()))
+            {
                 curUser.setPhoneNumber(phone.getText().toString());
                 someFieldChanged = true;
-            } else {
+            }
+            else
+            {
                 phone.setError("מספר פלאפון תקין מכיל מספרים בלבד ובאורך 10");
             }
         }
     }
 
-    private void signOutAndMoveToMainActivity() {
-        if (!editTextNewPassword.getText().toString().isEmpty()){
+    private void signOutAndMoveToMainActivity()
+    {
+        if (!editTextNewPassword.getText().toString().isEmpty())
+        {
             mAuth.signOut();
         }
         EditProfileActivity.super.onBackPressed();
     }
 
-
-    private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_REQUEST = 1888;
 
-    private void uploadPicture() {
+    private void uploadPicture()
+    {
         // Dialog Camera or Upload
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
+                switch (which)
+                {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
                         cameraPermission();
@@ -304,59 +338,55 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             }
         };
-
         AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
-        builder.setMessage("איך תרצה להעלות תמונה?").setPositiveButton("מצלמה", dialogClickListener)
-                .setNegativeButton("גלריה", dialogClickListener).show();
-
-
+        builder.setMessage("איך תרצה להעלות תמונה?").setPositiveButton("מצלמה", dialogClickListener).setNegativeButton("גלריה", dialogClickListener).show();
     }
 
-
-    private void uploadExistingPicture() {
-        galleryPermission();
-        //SelectImage();
-        //uploadImage();
+    private void galleryPermission()
+    {
+        if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+        }
+        else
+        {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+        }
     }
-    private void galleryPermission() {
 
-            if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
-            } else {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
-            }
-    }
-    private void cameraPermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(EditProfileActivity.this,
-                Manifest.permission.CAMERA) )
+    private void cameraPermission()
+    {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(EditProfileActivity.this, Manifest.permission.CAMERA))
         {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
-        } else
+        }
+        else
         {
-            ActivityCompat.requestPermissions(EditProfileActivity.this,new String[]{
-                    Manifest.permission.CAMERA}, RequestPermissionCode);
+            ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.CAMERA}, RequestPermissionCode);
         }
     }
+
     private void SelectImage()
     {
         // Defining Implicit Intent to mobile gallery
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(
-                Intent.createChooser(
-                        intent, "בחר תמונות..."), PICK_IMAGE_REQUEST); // 2
+        startActivityForResult(Intent.createChooser(intent, "בחר תמונות..."), PICK_IMAGE_REQUEST); // 2
     }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) { // CameraPermission and UserAprroval
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK)
+        {
+            // CameraPermission and UserAprroval
             bitmap = (Bitmap) data.getExtras().get("data");
             EditProfileImage.setImageBitmap(bitmap);
-            someFieldChanged=true;
+            someFieldChanged = true;
         }
 
         // checking request code and result code
@@ -368,44 +398,48 @@ public class EditProfileActivity extends AppCompatActivity {
             // Get the Uri of data
             filePath = data.getData();
             try
-            {// Setting image on image view using Bitmap
-                bitmap = MediaStore
-                        .Images.Media.getBitmap(
-                                getContentResolver(),
-                                filePath);
+            {
+                // Setting image on image view using Bitmap
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 EditProfileImage.setImageBitmap(bitmap);
                 someFieldChanged = true;
             }
-            catch (IOException e) {
-                // Log the exception
+            catch (IOException e)
+            {
                 e.printStackTrace();
-
             }
-
         }
     }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] result) {
-        switch (requestCode) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] result)
+    {
+        switch (requestCode)
+        {
             case RequestPermissionCode:
-                if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED) {
+                if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED)
+                {
                     Toast.makeText(EditProfileActivity.this, "האישור התקבל, ניתן להשתמש במצלמה", Toast.LENGTH_LONG).show();
-                      takePicture();
-                } else {
+                    takePicture();
+                }
+                else
+                {
                     Toast.makeText(EditProfileActivity.this, "עליך לאשר שימוש במצלמה..", Toast.LENGTH_LONG).show();
                 }
                 break;
+
             case PICK_FROM_GALLERY:
                 // If request is cancelled, the result arrays are empty.
-                if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED) {
+                if (result.length > 0 && result[0] == PackageManager.PERMISSION_GRANTED)
+                {
                     SelectImage();
-                } else {
+                }
+                else
+                {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
                     Toast.makeText(EditProfileActivity.this, "עליך לאשר שימוש בגלריה..", Toast.LENGTH_LONG).show();
                 }
                 break;
-
-
         }
     }
 
@@ -414,6 +448,4 @@ public class EditProfileActivity extends AppCompatActivity {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
-
-
 }

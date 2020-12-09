@@ -1,10 +1,5 @@
 package com.example.easyjobs.Activities.Profs;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -18,6 +13,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easyjobs.Activities.RegisterActivity;
 import com.example.easyjobs.Objects.Category;
@@ -43,8 +43,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
+public class ProfListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+{
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<PremiumProf> ProfList;
@@ -58,56 +58,66 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     private Spinner spinnerPL;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prof_list);
-        personal = getIntent().getBooleanExtra("personal",false);
+        personal = getIntent().getBooleanExtra("personal", false);
         findViews();
         setupRecyclerView();
-
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         activateButtonsAndViews(); // Important - setting up new jobs and fix flickering
-
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
         spinnerPL.setSelection(1); //  Important - setting up new jobs and fix flickering
         recyclerView.setAdapter(null);
     }
-    private void findViews(){
+
+    private void findViews()
+    {
         backBLA = findViewById(R.id.back_prof_list);
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView_prof_list);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView_prof_list);
         postProf = findViewById(R.id.profList_to_PostProf);
         spinnerPL = findViewById(R.id.pickCategoryProfList);
     }
+
     private void setupRecyclerView()
     {
-        backBLA.setOnClickListener(new View.OnClickListener() {
+        backBLA.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 ProfListActivity.super.onBackPressed();
             }
         });
-        linearLayoutManager=new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
 
-        postProf.setOnClickListener(new View.OnClickListener() {
+        postProf.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 fa = FirebaseAuth.getInstance();
                 FirebaseUser user = fa.getCurrentUser();
-                if(user!=null){
+                if (user != null)
+                {
                     moveToPostProf();
                 }
-                else{
+                else
+                {
                     openDialog();
                 }
             }
@@ -116,7 +126,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
 
     private void openDialog()
     {
-        Dialog d= new Dialog(ProfListActivity.this);
+        Dialog d = new Dialog(ProfListActivity.this);
         d.setContentView(R.layout.activity_login);
         d.setTitle("Login");
         d.setCancelable(true);
@@ -129,21 +139,28 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         EditText ed2 = d.findViewById(R.id.editTextPassword);
         Button log = d.findViewById(R.id.LoginButton);
         Button reg = d.findViewById(R.id.button_login_toregister);
-        log.setOnClickListener(new View.OnClickListener() {
+        log.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 String ed1s = ed1.getText().toString();
                 String ed2s = ed2.getText().toString();
-                if(!ed1s.isEmpty() && !ed2s.isEmpty()) {
-                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(ProfListActivity.this, new OnCompleteListener<AuthResult>() {
+                if (!ed1s.isEmpty() && !ed2s.isEmpty())
+                {
+                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(ProfListActivity.this, new OnCompleteListener<AuthResult>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            if (task.isSuccessful())
+                            {
                                 FirebaseUser user = fa.getCurrentUser();
                                 Toast.makeText(ProfListActivity.this, "Hello Cruel World", Toast.LENGTH_SHORT).show();
                                 d.dismiss();
                             }
-                            else {
+                            else
+                            {
                                 Toast.makeText(ProfListActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -151,9 +168,11 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
                 }
             }
         });
-        reg.setOnClickListener(new View.OnClickListener() {
+        reg.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 d.dismiss();
                 Intent i = new Intent(ProfListActivity.this, RegisterActivity.class);
                 startActivity(i);
@@ -161,33 +180,40 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         });
         d.show();
     }
-    private void activateButtonsAndViews(){
 
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override public void onItemClick(View view, int position) {
+    private void activateButtonsAndViews()
+    {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(View view, int position)
+            {
                 fa = FirebaseAuth.getInstance();
                 FirebaseUser user = fa.getCurrentUser();
-                if(user!=null){
+                if (user != null)
+                {
                     moveToProfProfile(position);
                 }
-                else{
+                else
+                {
                     openDialog();
                 }
-
             }
         }));
-        //initAll();
         setUpSpinner();
     }
 
-    private void setUpSpinner(){
-        //FirebaseDBCategories fb = new FirebaseDBCategories();
+    private void setUpSpinner()
+    {
         DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 ArrayList<Category> items = new ArrayList<>();
-                for(DataSnapshot category : snapshot.getChildren()){
+                for (DataSnapshot category : snapshot.getChildren())
+                {
                     Category c = category.getValue(Category.class);
                     items.add(c);
                 }
@@ -201,168 +227,192 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (i == 0){
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        if (i == 0)
+        {
             initAll();
         }
-        else{
+        else
+        {
             initByCat(i);
         }
     }
+
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {}
 
-    private void initAll() {
+    private void initAll()
+    {
         ProfList = new ArrayList<>();
 
-        ProfAdapter=new profAdapter(ProfListActivity.this);
+        ProfAdapter = new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
         DatabaseReference dr = FirebaseDBProfs.getAllProfs();
 
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot s : snapshot.getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot s : snapshot.getChildren())
+                {
                     PremiumProf pp = s.getValue(PremiumProf.class);
-                    if(!personal) {
-
+                    if (!personal)
+                    {
                         ProfList.add(pp);
                     }
                     else
                     {
-                        if(pp.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0)
+                        if (pp.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0)
                         {
                             ProfList.add(pp);
                         }
                     }
                 }
-                for (PremiumProf PP : ProfList) {
+                for (PremiumProf PP : ProfList)
+                {
                     DatabaseReference dr = FirebaseDBUsers.getUserByID(PP.getUser_ID());
                     dr = dr.child("premium");
-                    dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                    dr.addListenerForSingleValueEvent(new ValueEventListener()
+                    {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
                             PP.setPremium(snapshot.getValue(Boolean.class));
                             sortArray(ProfList);
-
                             ProfAdapter.notifyDataSetChanged();
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError error){}
                     });
                 }
                 ProfAdapter.setProfsFeed(ProfList);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
-    private void initByCat(int chosenCategory){
+    private void initByCat(int chosenCategory)
+    {
         ProfList = new ArrayList<>();
-        ProfAdapter=new profAdapter(ProfListActivity.this);
+        ProfAdapter = new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
-        Category x= (Category)spinnerPL.getAdapter().getItem(chosenCategory);
-      //  FirebaseDBProfs dbdbj = new FirebaseDBProfs();
+        Category x = (Category) spinnerPL.getAdapter().getItem(chosenCategory);
+
         DatabaseReference dr = FirebaseDBProfs.getAllProfs();
-
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot s : snapshot.getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot s : snapshot.getChildren())
+                {
                     DataSnapshot categories = s.child("category");
-
                     // Passing all the Categories as an ArrayList
-                    GenericTypeIndicator<ArrayList<String>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<String>>() {};
-                    ArrayList<String> categoriesList = categories.getValue(genericTypeIndicator );
-                    if(categoriesList.contains(x.getCategory_id() )){
+                    GenericTypeIndicator<ArrayList<String>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<String>>(){};
+                    ArrayList<String> categoriesList = categories.getValue(genericTypeIndicator);
+                    if (categoriesList.contains(x.getCategory_id()))
+                    {
                         PremiumProf pp = s.getValue(PremiumProf.class);
-                        if(!personal) {
-
+                        if (!personal)
+                        {
                             ProfList.add(pp);
                         }
                         else
                         {
-                            if(pp.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0)
+                            if (pp.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0)
                             {
                                 ProfList.add(pp);
                             }
                         }
                     }
-                    for (PremiumProf PP : ProfList) {
+                    for (PremiumProf PP : ProfList)
+                    {
                         DatabaseReference dr = FirebaseDBUsers.getUserByID(PP.getUser_ID());
                         dr = dr.child("premium");
-                        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                        dr.addListenerForSingleValueEvent(new ValueEventListener()
+                        {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            public void onDataChange(@NonNull DataSnapshot snapshot)
+                            {
                                 PP.setPremium(snapshot.getValue(Boolean.class));
                                 sortArray(ProfList);
                                 ProfAdapter.notifyDataSetChanged();
                             }
 
                             @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
+                            public void onCancelled(@NonNull DatabaseError error){}
                         });
                     }
                 }
                 ProfAdapter.setProfsFeed(ProfList);
                 ProfAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
     public void sortArray(List<PremiumProf> ProfList)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
             ProfList.sort(PremiumProf::compareTo);
             System.out.println(ProfList.toString());
         }
     }
-    public void moveToProfProfile(int id){
-        Intent i = new Intent(ProfListActivity.this, ProfProfileActivity.class);
-        i.putExtra("prof_id",ProfList.get(id).getProf_ID());
 
+    public void moveToProfProfile(int id)
+    {
+        Intent i = new Intent(ProfListActivity.this, ProfProfileActivity.class);
+        i.putExtra("prof_id", ProfList.get(id).getProf_ID());
         startActivity(i);
     }
 
-    public void moveToPostProf(){
+    public void moveToPostProf()
+    {
         Intent i = new Intent(ProfListActivity.this, PostProfActivity.class);
         startActivity(i);
     }
 
-    public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration {
-
+    public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration
+    {
         private int mSpace = 0;
         private boolean mVerticalOrientation = true;
 
-        public CommonItemSpaceDecoration(int space) {
+        public CommonItemSpaceDecoration(int space)
+        {
             this.mSpace = space;
-        }
-
-        public CommonItemSpaceDecoration(int space, boolean verticalOrientation) {
-            this.mSpace = space;
-            this.mVerticalOrientation = verticalOrientation;
         }
 
         @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
+        {
             outRect.top = SizeUtils.dp2px(view.getContext(), mSpace);
-            if (mVerticalOrientation) {
-                if (parent.getChildAdapterPosition(view) == 0) {
+            if (mVerticalOrientation)
+            {
+                if (parent.getChildAdapterPosition(view) == 0)
+                {
                     outRect.set(0, SizeUtils.dp2px(view.getContext(), mSpace), 0, SizeUtils.dp2px(view.getContext(), mSpace));
-                } else {
+                }
+                else
+                {
                     outRect.set(0, 0, 0, SizeUtils.dp2px(view.getContext(), mSpace));
                 }
-            } else {
-                if (parent.getChildAdapterPosition(view) == 0) {
+            }
+            else
+            {
+                if (parent.getChildAdapterPosition(view) == 0)
+                {
                     outRect.set(SizeUtils.dp2px(view.getContext(), mSpace), 0, 0, 0);
-                } else {
+                }
+                else
+                {
                     outRect.set(SizeUtils.dp2px(view.getContext(), mSpace), 0, SizeUtils.dp2px(view.getContext(), mSpace), 0);
                 }
             }

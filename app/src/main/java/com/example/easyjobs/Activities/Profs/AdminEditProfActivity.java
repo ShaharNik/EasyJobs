@@ -1,10 +1,5 @@
 package com.example.easyjobs.Activities.Profs;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,15 +14,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
+
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.easyjobs.Activities.Jobs.AdminEditJobActivity;
 import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.Prof;
@@ -49,8 +47,8 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminEditProfActivity extends AppCompatActivity {
-
+public class AdminEditProfActivity extends AppCompatActivity
+{
     private static final int PICK_FROM_GALLERY = 420;
     private ImageView backButton;
     private TextView namesText;
@@ -79,7 +77,8 @@ public class AdminEditProfActivity extends AppCompatActivity {
     private boolean changedIt;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_post);
 
@@ -88,8 +87,8 @@ public class AdminEditProfActivity extends AppCompatActivity {
         localFile = (ArrayList<Picture>) getIntent().getSerializableExtra("File");
         catList = new ArrayList<String>();
         OriginalLocalFile = new ArrayList<>();
-        for (Picture p :
-                localFile) {
+        for (Picture p : localFile)
+        {
             OriginalLocalFile.add(p);
         }
         findViews();
@@ -100,7 +99,8 @@ public class AdminEditProfActivity extends AppCompatActivity {
         createDialog();
     }
 
-    private void findViews() {
+    private void findViews()
+    {
         backButton = findViewById(R.id.back_admin_editPost);
         namesText = findViewById(R.id.namesEP);
         rateText = findViewById(R.id.ratingEP);
@@ -117,47 +117,55 @@ public class AdminEditProfActivity extends AppCompatActivity {
         PicsUri = new ArrayList<Uri>();
     }
 
-    private void inputTempData() {
+    private void inputTempData()
+    {
         namesText.setText(user.getFirstName() + " " + user.getLastName());
-        rateText.setText(user.getRating()+ " ("+ user.getRatingsAmount()+")");
+        rateText.setText(user.getRating() + " (" + user.getRatingsAmount() + ")");
         descText.setText(prof.getDesc());
         locText.setText(prof.getLocation());
         phoneText.setText(user.getPhoneNumber());
-        if(localFile.size()>=1)
+        if (localFile.size() >= 1)
         {
             Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
             adminEditPostImage.setImageBitmap(myBitmap);
-            //editJobImage.setImageURI(localFile.get(0));
         }
     }
 
-    private void setUpSpinner(){
+    private void setUpSpinner()
+    {
         DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 ArrayList<Category> items = new ArrayList<>();
                 ArrayList<Integer> itemIndexs = new ArrayList<Integer>();
 
-                int index=0;
-                for(DataSnapshot category : snapshot.getChildren()){
+                int index = 0;
+                for (DataSnapshot category : snapshot.getChildren())
+                {
                     Category c = category.getValue(Category.class);
-                    if(prof.getCategory().contains(c.getCategory_id())) {
+                    if (prof.getCategory().contains(c.getCategory_id()))
+                    {
                         catList.add(c.getCategory_id());
-                        catText.setText(catText.getText().toString() + c.getCat_name()+" ");
+                        catText.setText(catText.getText().toString() + c.getCat_name() + " ");
                         itemIndexs.add(index);
                     }
                     index++;
                     items.add(c);
                 }
-                md = new MaterialDialog.Builder(AdminEditProfActivity.this).title("בחר קטגוריות").items(items).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                md = new MaterialDialog.Builder(AdminEditProfActivity.this).title("בחר קטגוריות").items(items).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice()
+                {
                     @Override
-                    public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                    public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text)
+                    {
                         catList.clear();
                         catText.setText("");
-                        for (Integer i : which) {
+                        for (Integer i : which)
+                        {
                             catList.add(items.get(i).getCategory_id());
-                            catText.setText(catText.getText().toString() + items.get(i).getCat_name()+" ");
+                            catText.setText(catText.getText().toString() + items.get(i).getCat_name() + " ");
                         }
                         return true;
                     }
@@ -167,18 +175,21 @@ public class AdminEditProfActivity extends AppCompatActivity {
                 itemIndexs.toArray(ArrayIndexs);
                 md.setSelectedIndices(ArrayIndexs);
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
+            public void onCancelled(@NonNull DatabaseError error){}
         });
     }
 
     private void setupDialog()
     {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+            public void onClick(DialogInterface dialog, int which)
+            {
+                switch (which)
+                {
                     case DialogInterface.BUTTON_POSITIVE:
                         FirebaseDBProfs.removeProf(prof.getProf_ID(), AdminEditProfActivity.this);
                         break;
@@ -189,62 +200,71 @@ public class AdminEditProfActivity extends AppCompatActivity {
                 }
             }
         };
-        builder.setMessage("האם אתה בטוח?").setPositiveButton("כן", dialogClickListener)
-                .setNegativeButton("לא", dialogClickListener);
+        builder.setMessage("האם אתה בטוח?").setPositiveButton("כן", dialogClickListener).setNegativeButton("לא", dialogClickListener);
     }
 
-    private void activateButtons() {
-        backButton.setOnClickListener(new View.OnClickListener() {
+    private void activateButtons()
+    {
+        backButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 AdminEditProfActivity.super.onBackPressed();
             }
         });
 
-        spinner.setOnClickListener(new View.OnClickListener() {
+        spinner.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 md.show();
             }
         });
 
-        approveChanges.setOnClickListener(new View.OnClickListener() {
+        approveChanges.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 changedIt = true;
-                if(!Validator.ValidateDescription(descText.getText().toString())){
+                if (!Validator.ValidateDescription(descText.getText().toString()))
+                {
                     changedIt = false;
                     descText.setError("תיאור לא טוב");
                 }
-                if(!Validator.ValidateLocation(locText.getText().toString())){
+                if (!Validator.ValidateLocation(locText.getText().toString()))
+                {
                     changedIt = false;
                     locText.setError("מיקום לא טוב");
                 }
-                if(changedIt){
-                    for(Picture p : OriginalLocalFile)
+                if (changedIt)
+                {
+                    for (Picture p : OriginalLocalFile)
                     {
-                        if(!localFile.contains(p))
+                        if (!localFile.contains(p))
                         {
                             FirebaseStorage.deleteSpecificProfPicture(prof.getProf_ID(), p.getName());
                         }
                     }
                     ArrayList<Uri> toDelete = new ArrayList<>();
-                    for(Uri u : PicsUri)
+                    for (Uri u : PicsUri)
                     {
-                        boolean exists=false;
-                        for(Picture p : localFile)
+                        boolean exists = false;
+                        for (Picture p : localFile)
                         {
-                            if(p.getName().compareTo(u.getLastPathSegment())==0)
+                            if (p.getName().compareTo(u.getLastPathSegment()) == 0)
                             {
-                                exists=true;
+                                exists = true;
                             }
                         }
-                        if(!exists)
+                        if (!exists)
                         {
                             toDelete.add(u);
                         }
                     }
-                    for(Uri u : toDelete)
+                    for (Uri u : toDelete)
                     {
                         PicsUri.remove(u);
                     }
@@ -253,25 +273,31 @@ public class AdminEditProfActivity extends AppCompatActivity {
             }
         });
 
-        deletePost.setOnClickListener(new View.OnClickListener() {
+        deletePost.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 FirebaseStorage.deleteProfPictures(prof.getProf_ID());
                 builder.show();
             }
 
         });
 
-        adminEditPostImage.setOnClickListener(new View.OnClickListener() {
+        adminEditPostImage.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 showDialog();
             }
         });
 
-        addImages.setOnClickListener(new View.OnClickListener() {
+        addImages.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 choosePictureFromGallery();
             }
         });
@@ -279,10 +305,12 @@ public class AdminEditProfActivity extends AppCompatActivity {
 
     private void choosePictureFromGallery()
     {
-        if (ActivityCompat.checkSelfPermission(AdminEditProfActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(AdminEditProfActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
             ActivityCompat.requestPermissions(AdminEditProfActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
         }
-        else {
+        else
+        {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
@@ -290,16 +318,20 @@ public class AdminEditProfActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        switch (requestCode) {
+        switch (requestCode)
+        {
             case PICK_FROM_GALLERY:
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                     startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
-                } else {
+                }
+                else
+                {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
                 }
                 break;
@@ -307,47 +339,44 @@ public class AdminEditProfActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_FROM_GALLERY) {
-            if(resultCode == Activity.RESULT_OK) {
-                if(data.getClipData() != null) {
+        if (requestCode == PICK_FROM_GALLERY)
+        {
+            if (resultCode == Activity.RESULT_OK)
+            {
+                if (data.getClipData() != null)
+                {
                     int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
-                    for(int i = 0; i < count; i++) {
+                    for (int i = 0; i < count; i++)
+                    {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
                         PicsUri.add(imageUri);
-                        try {
-                            Bitmap bitmap = MediaStore
-                                    .Images.Media.getBitmap(
-                                            getContentResolver(),
-                                            imageUri);
+                        try
+                        {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                             File Image = File.createTempFile("Picture", ".jpg");
                             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos); // YOU can also save it in JPEG
                             byte[] bitmapdata = bos.toByteArray();
 
-//write the bytes in file
+                            //write the bytes in file
                             FileOutputStream fos = new FileOutputStream(Image);
                             fos.write(bitmapdata);
                             fos.flush();
                             fos.close();
-                            Picture p = new Picture(Image,imageUri.getLastPathSegment());
+                            Picture p = new Picture(Image, imageUri.getLastPathSegment());
                             localFile.add(p);
 
                             vpa.notifyDataSetChanged();
-
                         }
                         catch (Exception e)
                         {
                             e.printStackTrace();
                         }
-//                        localFile.add()
-//                        File f = new File(imageUri.toString());
-//                        Picture p = new Picture(f,imageUri.getLastPathSegment());
-//                        localFile.add(p);
-//                        vpa.notifyDataSetChanged();
                     }
-                    if(localFile.size()>0)
+                    if (localFile.size() > 0)
                     {
                         Bitmap myBitmap = BitmapFactory.decodeFile(localFile.get(0).getF().getAbsolutePath());
                         adminEditPostImage.setImageBitmap(myBitmap);
@@ -356,24 +385,24 @@ public class AdminEditProfActivity extends AppCompatActivity {
                     }
                     //do something with the image (save it to some directory or whatever you need to do with it here)
                 }
-            } else if(data!= null && data.getData() != null) {
+            }
+            else if (data != null && data.getData() != null)
+            {
                 PicsUri.add(data.getData());
-                try {
-                    Bitmap bitmap = MediaStore
-                            .Images.Media.getBitmap(
-                                    getContentResolver(),
-                                    data.getData());
+                try
+                {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     File Image = File.createTempFile("Picture", ".jpg");
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 , bos); // YOU can also save it in JPEG
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos); // YOU can also save it in JPEG
                     byte[] bitmapdata = bos.toByteArray();
 
-//write the bytes in file
+                    //write the bytes in file
                     FileOutputStream fos = new FileOutputStream(Image);
                     fos.write(bitmapdata);
                     fos.flush();
                     fos.close();
-                    Picture p = new Picture(Image,data.getData().getLastPathSegment());
+                    Picture p = new Picture(Image, data.getData().getLastPathSegment());
                     localFile.add(p);
                     vpa.notifyDataSetChanged();
 
@@ -382,36 +411,31 @@ public class AdminEditProfActivity extends AppCompatActivity {
                 {
                     e.printStackTrace();
                 }
-//                File f = new File(data.getData().toString());
-//                Picture p = new Picture(f,data.getData().getLastPathSegment());
-//                localFile.add(p);
-//                vpa.notifyDataSetChanged();
-                //do something with the image (save it to some directory or whatever you need to do with it here)
             }
         }
     }
 
-    private void createDialog() {
-
+    private void createDialog()
+    {
         d = new Dialog(AdminEditProfActivity.this);
 
         d.setContentView(R.layout.view_pager_layout);
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
-        d.setOnDismissListener(dialog -> {
+        d.setOnDismissListener(dialog->{
             System.out.println("DISMISS");
-            if(localFile.isEmpty())
+            if (localFile.isEmpty())
             {
                 adminEditPostImage.setVisibility(View.INVISIBLE);
                 adminEditPostImage.setEnabled(false);
             }
         });
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
-        vpa = new viewPageAdapter(this, localFile, prof.getProf_ID(), false, true);
+        vpa = new viewPageAdapter(this, localFile, false, true);
         vpPager.setAdapter(vpa);
-
     }
+
     private void showDialog()
     {
         d.show();

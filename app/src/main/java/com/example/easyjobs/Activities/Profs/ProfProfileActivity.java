@@ -1,18 +1,11 @@
 package com.example.easyjobs.Activities.Profs;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import com.example.easyjobs.Objects.Picture;
-
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,8 +17,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.easyjobs.Activities.Jobs.JobProfileActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.easyjobs.Objects.Category;
+import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
@@ -50,8 +48,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfProfileActivity extends AppCompatActivity {
-
+public class ProfProfileActivity extends AppCompatActivity
+{
     private static final int PHONE_CALL_APPROVE = 420;
 
     private ImageView backBPP;
@@ -78,7 +76,8 @@ public class ProfProfileActivity extends AppCompatActivity {
     private User user;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prof_profile);
 
@@ -89,13 +88,15 @@ public class ProfProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         cleanTexts();
         setDataFromDB();
     }
 
-    private void findViews(){
+    private void findViews()
+    {
         mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         localFile = new ArrayList<>();
         backBPP = findViewById(R.id.back_prof_profile);
@@ -112,9 +113,11 @@ public class ProfProfileActivity extends AppCompatActivity {
         profProfileImage.setEnabled(false);
         whatsappButt = findViewById(R.id.watsappImageButton);
     }
+
     private void cleanTexts()
     {
-        if(vpa!=null) {
+        if (vpa != null)
+        {
             localFile.clear();
             vpa.notifyDataSetChanged();
         }
@@ -124,15 +127,20 @@ public class ProfProfileActivity extends AppCompatActivity {
         namesPPTV.setText("");
         phonePPTV.setText("");
     }
+
     private void setRatingBarListener()
     {
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener()
+        {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                if(ProfProfile_UserID!=null) {
-                  if(FirebaseAuth.getInstance().getCurrentUser() != null)
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser)
+            {
+                if (ProfProfile_UserID != null)
+                {
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null)
                     {
-                        if(FirebaseAuth.getInstance().getCurrentUser().getUid().compareTo(ProfProfile_UserID) != 0) {
+                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().compareTo(ProfProfile_UserID) != 0)
+                        {
                             FirebaseDBUsers.setRating(FirebaseAuth.getInstance().getCurrentUser().getUid(), ProfProfile_UserID, rating, ProfProfileActivity.this, ratingBar);
                             ratingBar.setEnabled(false);
                         }
@@ -141,55 +149,67 @@ public class ProfProfileActivity extends AppCompatActivity {
                             Toast.makeText(ProfProfileActivity.this, "אי אפשר לדרג את עצמך... P:", Toast.LENGTH_SHORT).show();
                         }
                     }
-
                 }
             }
         });
     }
 
-    private void activateButtons() {
-        backBPP.setOnClickListener(new View.OnClickListener() {
+    private void activateButtons()
+    {
+        backBPP.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 ProfProfileActivity.super.onBackPressed();
             }
         });
 
-        if (FirebaseDBUsers.isAdmin) {
+        if (FirebaseDBUsers.isAdmin)
+        {
             adminEditProf.setVisibility(View.VISIBLE);
             adminEditProf.setEnabled(true);
         }
-        else {
+        else
+        {
             adminEditProf.setVisibility(View.GONE);
             adminEditProf.setEnabled(false);
         }
 
-        phoneCall.setOnClickListener(new View.OnClickListener() {
+        phoneCall.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 phoneCallMaker();
             }
         });
 
-        adminEditProf.setOnClickListener(new View.OnClickListener() {
+        adminEditProf.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent i = new Intent(ProfProfileActivity.this, AdminEditProfActivity.class);
                 i.putExtra("Prof", profile);
                 i.putExtra("User", user);
-                i.putExtra("File",localFile);
+                i.putExtra("File", localFile);
                 startActivity(i);
             }
         });
 
-        profProfileImage.setOnClickListener(new View.OnClickListener() {
+        profProfileImage.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 showDialog();
             }
         });
-        whatsappButt.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        whatsappButt.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
@@ -199,54 +219,62 @@ public class ProfProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void setDataFromDB(){// Gotta make the numbers of the categories to the name of them.
+    private void setDataFromDB()
+    {
+        // Gotta make the numbers of the categories to the name of them.
         String prof_id = getIntent().getStringExtra("prof_id");
         DatabaseReference drProf = FirebaseDBProfs.getProfByID(prof_id);
-        drProf.addListenerForSingleValueEvent(new ValueEventListener() {
+        drProf.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 profile = snapshot.getValue(Prof.class);
-                vpa = new viewPageAdapter(ProfProfileActivity.this,localFile,profile.getProf_ID(),false,false);
+                vpa = new viewPageAdapter(ProfProfileActivity.this, localFile, false, false);
                 vpPager.setAdapter(vpa);
-                if(profile == null)
+                if (profile == null)
                 {
                     ProfProfileActivity.this.onBackPressed();
                 }
-                else {
+                else
+                {
                     descPPTV.setText("תיאור: " + profile.getDesc());
                     //Add categories
                     List<String> cats = profile.getCategory();
                     DatabaseReference catDR;
-                    for (int i = 0; i < cats.size(); i++) {
+                    for (int i = 0; i < cats.size(); i++)
+                    {
                         final int x = i;
                         catDR = FirebaseDBCategories.getCatByID(cats.get(i));
-                        catDR.addListenerForSingleValueEvent(new ValueEventListener() {
+                        catDR.addListenerForSingleValueEvent(new ValueEventListener()
+                        {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            public void onDataChange(@NonNull DataSnapshot snapshot)
+                            {
                                 Category c = snapshot.getValue(Category.class);
                                 catPPTV.setText(catPPTV.getText().toString() + c.getCat_name());
-                                if (x < cats.size() - 1) {
+                                if (x < cats.size() - 1)
+                                {
                                     catPPTV.setText(catPPTV.getText().toString() + ", ");
                                 }
                             }
-
                             @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
+                            public void onCancelled(@NonNull DatabaseError error) {}
                         });
                     }
                     //End adding
                     locationPPTV.setText("איזור עבודה: " + profile.getLocation());
-                    if(profile.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0)
+                    if (profile.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0)
                     {
                         adminEditProf.setVisibility(View.VISIBLE);
                         adminEditProf.setEnabled(true);
                     }
                     DatabaseReference drUser = FirebaseDBUsers.getUserByID(profile.getUser_ID());
-                    drUser.addValueEventListener(new ValueEventListener() {
+                    drUser.addValueEventListener(new ValueEventListener()
+                    {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
                             user = snapshot.getValue(User.class);
                             ProfProfile_UserID = user.getUser_ID();
                             namesPPTV.setText("שם: " + user.getFirstName() + " " + user.getLastName());
@@ -255,43 +283,46 @@ public class ProfProfileActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
+                        public void onCancelled(@NonNull DatabaseError error) {}
                     });
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
         setFirstPicture(prof_id);
     }
 
-
-
     private void setFirstPicture(String prof_id)
     {
         StorageReference riversRef = mStorageRef.child("ProfPictures/").child(prof_id);
-        riversRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+        riversRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>()
+        {
             @Override
-            public void onSuccess(ListResult listResult) {
+            public void onSuccess(ListResult listResult)
+            {
                 for (StorageReference sr : listResult.getItems())
                 {
-                    File Image=null;
-                    try {
+                    File Image = null;
+                    try
+                    {
                         Image = File.createTempFile(sr.getName(), ".jpg");
                         File finalImage = Image;
-                        sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                        sr.getFile(finalImage).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>()
+                        {
                             @Override
-                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                                if(finalImage.exists()){
+                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task)
+                            {
+                                if (finalImage.exists())
+                                {
                                     Bitmap myBitmap = BitmapFactory.decodeFile(finalImage.getAbsolutePath());
                                     profProfileImage.setImageBitmap(myBitmap);
                                     profProfileImage.setEnabled(true);
-                                    Picture pic = new Picture(finalImage,sr.getName());
+                                    Picture pic = new Picture(finalImage, sr.getName());
                                     localFile.add(pic);
                                     vpa.notifyDataSetChanged();
                                 }
-
                             }
                         });
                     }
@@ -302,29 +333,31 @@ public class ProfProfileActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+
     private void createDialog()
     {
-
-        d= new Dialog(ProfProfileActivity.this);
+        d = new Dialog(ProfProfileActivity.this);
         d.setContentView(R.layout.view_pager_layout);
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setTitle("Pictures");
         d.setCancelable(true);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
     }
+
     private void showDialog()
     {
         d.show();
-
     }
 
-    private void phoneCallMaker() {
-        if (ActivityCompat.checkSelfPermission(ProfProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+    private void phoneCallMaker()
+    {
+        if (ActivityCompat.checkSelfPermission(ProfProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        {
             ActivityCompat.requestPermissions(ProfProfileActivity.this, new String[]{Manifest.permission.CALL_PHONE}, PHONE_CALL_APPROVE);
         }
-        else{
+        else
+        {
             String s = "tel:" + phonePPTV.getText().toString();
             Intent i = new Intent(Intent.ACTION_CALL);
             i.setData(Uri.parse(s));
@@ -333,9 +366,10 @@ public class ProfProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        switch (requestCode) {
+        switch (requestCode)
+        {
             case PHONE_CALL_APPROVE:
                 String s = "tel:" + phonePPTV.getText().toString();
                 Intent i = new Intent(Intent.ACTION_CALL);

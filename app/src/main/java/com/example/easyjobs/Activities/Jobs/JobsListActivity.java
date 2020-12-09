@@ -1,10 +1,5 @@
 package com.example.easyjobs.Activities.Jobs;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -18,6 +13,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easyjobs.Activities.RegisterActivity;
 import com.example.easyjobs.Objects.Category;
@@ -43,8 +43,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class JobsListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
+public class JobsListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+{
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<PremiumJob> JobList;
@@ -58,51 +58,57 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     private Spinner spinnerJL;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
-        personal = getIntent().getBooleanExtra("personal",false);
+        personal = getIntent().getBooleanExtra("personal", false);
         findViews();
         setupRecyclerView();
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         activateButtonsAndViews();
-         // Important - setting up new jobs and fix flickering
-
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
         spinnerJL.setSelection(1); //  Important - setting up new jobs and fix flickering
         recyclerView.setAdapter(null);
     }
 
-    private void findViews(){
+    private void findViews()
+    {
         backBJL = findViewById(R.id.back_jobs_list);
         postJob = findViewById(R.id.jobList_to_PostJob);
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         spinnerJL = findViewById(R.id.pickCategoryJobList);
     }
 
-
     private void setupRecyclerView()
     {
-        linearLayoutManager=new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
     }
-    private void activateButtonsAndViews(){
 
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override public void onItemClick(View view, int position) {
+    private void activateButtonsAndViews()
+    {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(View view, int position)
+            {
                 fa = FirebaseAuth.getInstance();
                 FirebaseUser user = fa.getCurrentUser();
-                if(user!=null) {
+                if (user != null)
+                {
                     moveToJobProfile(position);
                 }
                 else
@@ -113,32 +119,37 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         }));
 
 
-        backBJL.setOnClickListener(new View.OnClickListener() {
+        backBJL.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 JobsListActivity.super.onBackPressed();
             }
         });
-        postJob.setOnClickListener(new View.OnClickListener() {
+        postJob.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 fa = FirebaseAuth.getInstance();
                 user = fa.getCurrentUser();
-                if(user!=null){
+                if (user != null)
+                {
                     moveToPostJob();
                 }
-                else{
+                else
+                {
                     openDialog();
                 }
             }
         });
-
         setUpSpinner();
-
     }
+
     private void openDialog()
     {
-        Dialog d= new Dialog(JobsListActivity.this);
+        Dialog d = new Dialog(JobsListActivity.this);
         d.setContentView(R.layout.activity_login);
         d.setTitle("Login");
         d.setCancelable(true);
@@ -151,22 +162,28 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         EditText ed2 = d.findViewById(R.id.editTextPassword);
         Button log = d.findViewById(R.id.LoginButton);
         Button reg = d.findViewById(R.id.button_login_toregister);
-        log.setOnClickListener(new View.OnClickListener() {
+        log.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 String ed1s = ed1.getText().toString();
                 String ed2s = ed2.getText().toString();
-                if(!ed1s.isEmpty() && !ed2s.isEmpty()) {
-                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>() {
+                if (!ed1s.isEmpty() && !ed2s.isEmpty())
+                {
+                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            if (task.isSuccessful())
+                            {
                                 FirebaseUser user = fa.getCurrentUser();
                                 Toast.makeText(JobsListActivity.this, "Connected Successfully", Toast.LENGTH_SHORT).show();
                                 d.dismiss();
                             }
-                            else{
-                                //Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            else
+                            {
                                 Toast.makeText(JobsListActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -174,9 +191,11 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                 }
             }
         });
-        reg.setOnClickListener(new View.OnClickListener() {
+        reg.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 d.dismiss();
                 Intent i = new Intent(JobsListActivity.this, RegisterActivity.class);
                 startActivity(i);
@@ -184,26 +203,25 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         });
         d.show();
     }
-    private void setUpSpinner(){
+
+    private void setUpSpinner()
+    {
         DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
                 ArrayList<Category> items = new ArrayList<>();
-                for(DataSnapshot category : snapshot.getChildren()){
+                for (DataSnapshot category : snapshot.getChildren())
+                {
                     Category c = category.getValue(Category.class);
                     items.add(c);
                 }
-//                Category[] catArray = new Category[items.size()];
-//                items.toArray(catArray);
-//                Arrays.sort(catArray);
-//                ArrayList<Category> str = new ArrayList<>();
-//                for(int i=0;i<catArray.length;i++) {
-//                    str.add(catArray[i]);
-//                }
                 ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(JobsListActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
                 spinnerJL.setAdapter(adapter);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
@@ -211,168 +229,191 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (i == 0){
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        if (i == 0)
+        {
             initAll();
-
         }
-        else{
+        else
+        {
             initByCat(i);
         }
     }
+
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
+    public void onNothingSelected(AdapterView<?> adapterView){}
 
-    }
-
-    private void initAll(){
+    private void initAll()
+    {
         JobList = new ArrayList<>();
         JobAdapter = new JobAdapter(JobsListActivity.this);
         recyclerView.setAdapter(JobAdapter);
 
         DatabaseReference dr = FirebaseDBJobs.getAllJobs();
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot s : snapshot.getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot s : snapshot.getChildren())
+                {
                     PremiumJob pj = s.getValue(PremiumJob.class);
-                    if(pj.getEndDate().after(Calendar.getInstance().getTime())) {
-                        if(!personal) {
+                    if (pj.getEndDate().after(Calendar.getInstance().getTime()))
+                    {
+                        if (!personal)
+                        {
                             JobList.add(pj);
                         }
                         else
                         {
-                            if(pj.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0)
+                            if (pj.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0)
                             {
                                 JobList.add(pj);
                             }
                         }
                     }
                 }
-                for (PremiumJob pj : JobList) {
+                for (PremiumJob pj : JobList)
+                {
                     DatabaseReference dr = FirebaseDBUsers.getUserByID(pj.getUser_ID());
                     dr = dr.child("premium");
-                    dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                    dr.addListenerForSingleValueEvent(new ValueEventListener()
+                    {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
                             pj.setPremium(snapshot.getValue(Boolean.class));
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                            {
                                 JobList.sort(PremiumJob::compareTo);
                             }
-
                             JobAdapter.notifyDataSetChanged();
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError error){}
                     });
                 }
-                //JobList.sort(compareTo);
                 JobAdapter.setJobsFeed(JobList);
-
-
-
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
-
     }
 
-    private void initByCat(int chosenCategory){
+    private void initByCat(int chosenCategory)
+    {
         JobList = new ArrayList<>();
         JobAdapter = new JobAdapter(JobsListActivity.this);
         recyclerView.setAdapter(JobAdapter);
-        Category x = (Category)spinnerJL.getAdapter().getItem(chosenCategory);
+        Category x = (Category) spinnerJL.getAdapter().getItem(chosenCategory);
         DatabaseReference dr = FirebaseDBJobs.getAllJobs();
 
-        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+        dr.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot s : snapshot.getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot s : snapshot.getChildren())
+                {
                     s.child("category_ID").getValue();
-                    if(((String)s.child("category_ID").getValue()).compareTo(x.getCategory_id())==0 ){
+                    if (((String) s.child("category_ID").getValue()).compareTo(x.getCategory_id()) == 0)
+                    {
                         PremiumJob pj = s.getValue(PremiumJob.class);
-                        if(pj.getEndDate().after(Calendar.getInstance().getTime())) {
-                            if(!personal) {
+                        if (pj.getEndDate().after(Calendar.getInstance().getTime()))
+                        {
+                            if (!personal)
+                            {
                                 JobList.add(pj);
                             }
                             else
                             {
-                                if(pj.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0) {
+                                if (pj.getUser_ID().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0)
+                                {
                                     JobList.add(pj);
                                 }
                             }
                         }
                     }
                 }
-                for (PremiumJob pj : JobList) {
+                for (PremiumJob pj : JobList)
+                {
                     DatabaseReference dr = FirebaseDBUsers.getUserByID(pj.getUser_ID());
                     dr = dr.child("premium");
-                    dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                    dr.addListenerForSingleValueEvent(new ValueEventListener()
+                    {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
                             pj.setPremium(snapshot.getValue(Boolean.class));
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                            {
                                 JobList.sort(PremiumJob::compareTo);
                             }
                             JobAdapter.notifyDataSetChanged();
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError error){}
                     });
                 }
-
                 JobAdapter.setJobsFeed(JobList);
                 JobAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
-    public void moveToJobProfile(int Position){
+    public void moveToJobProfile(int Position)
+    {
         Intent i = new Intent(JobsListActivity.this, JobProfileActivity.class);
         i.putExtra("job_id", JobList.get(Position).getJob_ID());
         startActivity(i);
     }
 
-    public void moveToPostJob(){
+    public void moveToPostJob()
+    {
         Intent i = new Intent(JobsListActivity.this, PostJobActivity.class);
         startActivity(i);
     }
 
-    public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration {
-
+    public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration
+    {
         private int mSpace = 0;
         private boolean mVerticalOrientation = true;
-        public CommonItemSpaceDecoration(int space) {
-            this.mSpace = space;
-        }
 
-        public CommonItemSpaceDecoration(int space, boolean verticalOrientation) {
+        public CommonItemSpaceDecoration(int space)
+        {
             this.mSpace = space;
-            this.mVerticalOrientation = verticalOrientation;
         }
 
         @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
+        {
             outRect.top = SizeUtils.dp2px(view.getContext(), mSpace);
-            if (mVerticalOrientation) {
-                if (parent.getChildAdapterPosition(view) == 0) {
+            if (mVerticalOrientation)
+            {
+                if (parent.getChildAdapterPosition(view) == 0)
+                {
                     outRect.set(0, SizeUtils.dp2px(view.getContext(), mSpace), 0, SizeUtils.dp2px(view.getContext(), mSpace));
-                } else {
+                }
+                else
+                {
                     outRect.set(0, 0, 0, SizeUtils.dp2px(view.getContext(), mSpace));
                 }
-            } else {
-                if (parent.getChildAdapterPosition(view) == 0) {
+            }
+            else
+            {
+                if (parent.getChildAdapterPosition(view) == 0)
+                {
                     outRect.set(SizeUtils.dp2px(view.getContext(), mSpace), 0, 0, 0);
-                } else {
+                }
+                else
+                {
                     outRect.set(SizeUtils.dp2px(view.getContext(), mSpace), 0, SizeUtils.dp2px(view.getContext(), mSpace), 0);
                 }
             }

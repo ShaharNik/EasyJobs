@@ -18,46 +18,55 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class FirebaseDBJobs {
-
-    public static void addNewJob(String user_id, String desc, int price, String loc, Date startDate, Date endDate, String CatID, ArrayList<Uri> picsUri){
+public class FirebaseDBJobs
+{
+    public static void addNewJob(String user_id, String desc, int price, String loc, Date startDate, Date endDate, String CatID, ArrayList<Uri> picsUri)
+    {
         String id = idGenerator.tokenGenerator();
-        Job j = new Job(id, user_id, desc, price, loc, startDate,endDate, CatID);
+        Job j = new Job(id, user_id, desc, price, loc, startDate, endDate, CatID);
         FirebaseBaseModel.getRef().child("Jobs").child(id).setValue(j);
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
-        for(Uri u:picsUri)
+        for (Uri u : picsUri)
         {
-            StorageReference storageReference = mStorageRef.child("JobPictures/"+id+"/"+u.getLastPathSegment());
-            storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            StorageReference storageReference = mStorageRef.child("JobPictures/" + id + "/" + u.getLastPathSegment());
+            storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
+                {
                     System.out.println("GOOD !");
                 }
             });
         }
     }
 
-    public static DatabaseReference getJobByID(String jobID){
+    public static DatabaseReference getJobByID(String jobID)
+    {
         return FirebaseBaseModel.getRef().child("Jobs").child(jobID);
     }
 
-    public static DatabaseReference getAllJobs(){
+    public static DatabaseReference getAllJobs()
+    {
         return FirebaseBaseModel.getRef().child("Jobs");
     }
 
     public static void editJob(String job_id, String user_id, String desc, int price, String loc, Date startDate, Date endDate, String CatID, AdminEditJobActivity c, ArrayList<Uri> picsUri)
     {
-        Job j = new Job(job_id, user_id, desc, price, loc, startDate,endDate, CatID);
-        FirebaseBaseModel.getRef().child("Jobs").child(job_id).setValue(j).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Job j = new Job(job_id, user_id, desc, price, loc, startDate, endDate, CatID);
+        FirebaseBaseModel.getRef().child("Jobs").child(job_id).setValue(j).addOnCompleteListener(new OnCompleteListener<Void>()
+        {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onComplete(@NonNull Task<Void> task)
+            {
                 StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
-                for(Uri u:picsUri)
+                for (Uri u : picsUri)
                 {
-                    StorageReference storageReference = mStorageRef.child("JobPictures/"+ j.getJob_ID() +"/"+u.getLastPathSegment());
-                    storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    StorageReference storageReference = mStorageRef.child("JobPictures/" + j.getJob_ID() + "/" + u.getLastPathSegment());
+                    storageReference.putFile(u).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
+                        {
                             System.out.println("GOOD !");
                         }
                     });
@@ -68,16 +77,16 @@ public class FirebaseDBJobs {
         });
     }
 
-    public static void RemoveJob(String jobId,AdminEditJobActivity c)
+    public static void RemoveJob(String jobId, AdminEditJobActivity c)
     {
-        FirebaseBaseModel.getRef().child("Jobs").child(jobId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseBaseModel.getRef().child("Jobs").child(jobId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>()
+        {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onComplete(@NonNull Task<Void> task)
+            {
                 com.example.easyjobs.dataBase.FirebaseStorage.deleteJobPictures(jobId); //TODO Check!
                 c.finish();
-
             }
         });
-
     }
 }
