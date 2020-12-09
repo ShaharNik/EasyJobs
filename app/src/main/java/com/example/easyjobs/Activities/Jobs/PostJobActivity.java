@@ -1,13 +1,9 @@
 package com.example.easyjobs.Activities.Jobs;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,7 +29,8 @@ import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.utils.ImageHelper;
-import com.example.easyjobs.utils.ImagesDialog;
+import com.example.easyjobs.utils.SpinnerHelper;
+import com.example.easyjobs.utils.dialogHelper;
 import com.example.easyjobs.utils.Validator;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.CompositeDateValidator;
@@ -50,16 +47,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class PostJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class PostJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
     private static final int PICK_FROM_GALLERY = 222;
     private ImageView backBPJ;
@@ -88,7 +82,9 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_job);
+
         findViews();
+        inits();
         createDialog();
         activateButtons();
         setUpSpinner();
@@ -96,7 +92,6 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
     private void findViews()
     {
-        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         backBPJ = findViewById(R.id.back_post_job);
         descED = findViewById(R.id.editDescPJ);
         locED = findViewById(R.id.editLocPJ);
@@ -107,53 +102,44 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
         dateEditTextPostJob = findViewById(R.id.dateEditTextPostJob);
         postJobUploadButton = findViewById(R.id.postJobUploadButton);
         images = findViewById(R.id.imagePostJob);
+    }
+    private void inits()
+    {
         PicsUri = new ArrayList<>();
         localFile = new ArrayList<>();
     }
 
     private void activateButtons()
     {
-        backBPJ.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) { PostJobActivity.super.onBackPressed(); }
-        });
+        backBPJ.setOnClickListener(this);
+        postJobB.setOnClickListener(this);
+        chooseDate_postJobButton.setOnClickListener(this);
+        postJobUploadButton.setOnClickListener(this);
+        images.setOnClickListener(this);
+    }
 
-        postJobB.setOnClickListener(new View.OnClickListener()
+    @Override
+    public void onClick(View ClickedButton) {
+        if(backBPJ.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View view)
-            {
-                postJobToDB();
-            }
-        });
-
-        chooseDate_postJobButton.setOnClickListener(new View.OnClickListener()
+            PostJobActivity.super.onBackPressed();
+        }
+        else if(postJobB.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                pickDate();
-            }
-        });
-
-        postJobUploadButton.setOnClickListener(new View.OnClickListener()
+            postJobToDB();
+        }
+        else if(chooseDate_postJobButton.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                choosePictureFromGallery();
-            }
-        });
-
-        images.setOnClickListener(new View.OnClickListener()
+            pickDate();
+        }
+        else if(postJobUploadButton.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                showDialog();
-            }
-        });
+            choosePictureFromGallery();
+        }
+        else if(images.equals(ClickedButton))
+        {
+            showDialog();
+        }
     }
 
     private void pickDate()
@@ -193,31 +179,12 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
     private void setUpSpinner()
     {
-        DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                ArrayList<Category> items = new ArrayList<>();
-                for (DataSnapshot category : snapshot.getChildren())
-                {
-                    Category c = category.getValue(Category.class);
-                    items.add(c);
-                }
-                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(PostJobActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
-                spinnerPJ.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        SpinnerHelper.setUpSpinnerWithAllCategories(spinnerPJ,this);
         spinnerPJ.setOnItemSelectedListener(this);
     }
 
     private void postJobToDB()
     {
-        //need to configure Date !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         String desc = descED.getText().toString();
         String loc = locED.getText().toString();
         String price = priceED.getText().toString();
@@ -234,7 +201,6 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
                         mAuth = FirebaseAuth.getInstance();
                         FirebaseUser user = mAuth.getCurrentUser();
                         FirebaseDBJobs.addNewJob(user.getUid(), desc, Integer.parseInt(price), loc, startD, endD, catNum, PicsUri);
-
                         Toast.makeText(PostJobActivity.this, "העבודה פורסמה בהצלחה", Toast.LENGTH_SHORT).show();
                         PostJobActivity.super.onBackPressed();
                     }
@@ -288,21 +254,14 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        switch (requestCode)
-        {
-            case PICK_FROM_GALLERY:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                    startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
-                }
-                else
-                {
-                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
-                }
-                break;
+        if (requestCode == PICK_FROM_GALLERY) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+            } else {
+                Toast.makeText(this, "לא סיפקת הרשאות מתאימות", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -317,7 +276,7 @@ public class PostJobActivity extends AppCompatActivity implements AdapterView.On
 
     private void createDialog()
     {
-        d = ImagesDialog.ImagesDialogBuilder(this,images,localFile);
+        d = dialogHelper.ImagesDialogBuilder(this,images,localFile);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, true, true);
         vpPager.setAdapter(vpa);

@@ -4,14 +4,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,21 +17,14 @@ import com.example.easyjobs.Objects.Category;
 import com.example.easyjobs.R;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
+import com.example.easyjobs.utils.SpinnerHelper;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
-public class AdminActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class AdminActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,View.OnClickListener
 {
-
     private FirebaseAuth mAuth;
-
     private TextView emailToAdmin;
     private TextView categoryName;
     private Spinner spinnerCA;
@@ -41,9 +32,7 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
     private Button removeAdmin;
     private Button addToCategory;
     private Button removeFromCategory;
-
     private ImageView BackButt;
-
     private String catUID;
 
     @Override
@@ -52,128 +41,108 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
         findViews();
-        activateBackButt();
-        changeUserToAdmin();
-        removeAdmin();
+        activateButtons();
         setUpCategoriesSpinner();
-        addNewCategory();
-        editCategory();
     }
 
-    private void activateBackButt()
+    private void findViews()
     {
-        BackButt.setOnClickListener(new View.OnClickListener()
+        emailToAdmin = findViewById(R.id.emailForAdmin);
+        changeToAdmin = findViewById(R.id.changeToAdmin);
+        removeAdmin = findViewById(R.id.removeAdminButt);
+        spinnerCA = findViewById(R.id.spinnerCat);
+        addToCategory = findViewById(R.id.addToCatButt);
+        removeFromCategory = findViewById(R.id.editFromCatButt);
+        categoryName = findViewById(R.id.catEditText);
+        BackButt = findViewById(R.id.back_admin_activity);
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void activateButtons()
+    {
+        BackButt.setOnClickListener(this);
+        removeFromCategory.setOnClickListener(this);
+        addToCategory.setOnClickListener(this);
+        changeToAdmin.setOnClickListener(this);
+        removeAdmin.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View ClickedButton) {
+        if(BackButt.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View view)
+            AdminActivity.super.onBackPressed();
+        }
+        else if(removeFromCategory.equals(ClickedButton))
+        {
+            if (!Validator.ValidateCategoryName(categoryName.getText().toString()))
             {
-                AdminActivity.super.onBackPressed();
+                categoryName.setError("שם הקטגוריה שהכנסת אינה תקינה");
             }
-        });
-    }
-
-    private void editCategory()
-    {
-        removeFromCategory.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
+            else
             {
-                if (!Validator.ValidateCategoryName(categoryName.getText().toString()))
+                if (Validator.isStringExistsInAdapter(categoryName.getText().toString(), spinnerCA.getAdapter()))
                 {
-                    categoryName.setError("שם הקטגוריה שהכנסת אינה תקינה");
+                    categoryName.setError("שם הקטגוריה כבר קיים");
                 }
                 else
                 {
-                    if (Validator.isStringExistsInAdapter(categoryName.getText().toString(), spinnerCA.getAdapter()))
-                    {
-                        categoryName.setError("שם הקטגוריה כבר קיים");
-                    }
-                    else
-                    {
-                        areYouSureDialog("עריכת קטגוריה");
-                    }
+                    areYouSureDialog("עריכת קטגוריה");
                 }
             }
-        });
-    }
-
-    private void addNewCategory()
-    {
-        addToCategory.setOnClickListener(new View.OnClickListener()
+        }
+        else if(addToCategory.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View view)
+            if (!Validator.ValidateCategoryName(categoryName.getText().toString()))
             {
-                if (!Validator.ValidateCategoryName(categoryName.getText().toString()))
+                categoryName.setError("שם הקטגוריה שהכנסת אינה תקינה");
+            }
+            else
+            {
+                if (Validator.isStringExistsInAdapter(categoryName.getText().toString(), spinnerCA.getAdapter()))
                 {
-                    categoryName.setError("שם הקטגוריה שהכנסת אינה תקינה");
+                    categoryName.setError("שם הקטגוריה כבר קיים");
                 }
                 else
                 {
-                    if (Validator.isStringExistsInAdapter(categoryName.getText().toString(), spinnerCA.getAdapter()))
-                    {
-                        categoryName.setError("שם הקטגוריה כבר קיים");
-                    }
-                    else
-                    {
-                        areYouSureDialog("הוספת קטגוריה");
-                    }
+                    areYouSureDialog("הוספת קטגוריה");
                 }
             }
-        });
-    }
-
-    private void changeUserToAdmin()
-    {
-        changeToAdmin.setOnClickListener(new View.OnClickListener()
+        }
+        else if(changeToAdmin.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View view)
+            if (emailToAdmin.getText().toString().isEmpty())
             {
-                if (emailToAdmin.getText().toString().isEmpty())
+                emailToAdmin.setError("לא הזנת כתובת אימייל");
+            }
+            if (!Validator.ValidateUserEmail(emailToAdmin.getText().toString()))
+            {
+                emailToAdmin.setError("האימייל שהזנת אינו תקין!");
+            }
+            else
+            {
+                areYouSureDialog("הוספת אדמין חדש");
+            }
+        }
+        else if(removeAdmin.equals(ClickedButton))
+        {
+            if (!Validator.ValidateUserEmail(emailToAdmin.getText().toString()))
+            {
+                emailToAdmin.setError("האימייל שהזנת אינו תקין!");
+            }
+            else
+            {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user.getEmail().compareTo(emailToAdmin.getText().toString()) == 0)
                 {
-                    emailToAdmin.setError("לא הזנת כתובת אימייל");
-                }
-                if (!Validator.ValidateUserEmail(emailToAdmin.getText().toString()))
-                {
-                    emailToAdmin.setError("האימייל שהזנת אינו תקין!");
+                    Toast.makeText(AdminActivity.this, "למה שתמחוק לעצמך הרשאת מנהל?!", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    areYouSureDialog("הוספת אדמין חדש");
+                    areYouSureDialog("מחיקת אדמין");
                 }
             }
-        });
+        }
     }
-
-    private void removeAdmin()
-    {
-        removeAdmin.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if (!Validator.ValidateUserEmail(emailToAdmin.getText().toString()))
-                {
-                    emailToAdmin.setError("האימייל שהזנת אינו תקין!");
-                }
-                else
-                {
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    if (user.getEmail().compareTo(emailToAdmin.getText().toString()) == 0)
-                    {
-                        Toast.makeText(AdminActivity.this, "למה שתמחוק לעצמך הרשאת מנהל?!", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
-                        areYouSureDialog("מחיקת אדמין");
-                    }
-                }
-            }
-        });
-    }
-
     private void areYouSureDialog(String action)
     {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
@@ -216,45 +185,13 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
                 }
             }
         };
-
         AlertDialog.Builder builder = new AlertDialog.Builder(AdminActivity.this);
         builder.setMessage("האם אתה בטוח?").setPositiveButton("כן", dialogClickListener).setNegativeButton("לא", dialogClickListener).show();
     }
 
-    private void findViews()
-    {
-        emailToAdmin = findViewById(R.id.emailForAdmin);
-        changeToAdmin = findViewById(R.id.changeToAdmin);
-        removeAdmin = findViewById(R.id.removeAdminButt);
-        spinnerCA = findViewById(R.id.spinnerCat);
-        addToCategory = findViewById(R.id.addToCatButt);
-        removeFromCategory = findViewById(R.id.editFromCatButt);
-        categoryName = findViewById(R.id.catEditText);
-        BackButt = findViewById(R.id.back_admin_activity);
-        mAuth = FirebaseAuth.getInstance();
-    }
-
     private void setUpCategoriesSpinner()
     {
-        DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                ArrayList<Category> items = new ArrayList<>();
-                for (DataSnapshot category : snapshot.getChildren())
-                {
-                    Category c = category.getValue(Category.class);
-                    items.add(c);
-                }
-                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(AdminActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
-                spinnerCA.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        SpinnerHelper.setUpSpinnerWithAllCategories(spinnerCA,this);
         spinnerCA.setOnItemSelectedListener(this);
     }
 
@@ -262,7 +199,6 @@ public class AdminActivity extends AppCompatActivity implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id)
     {
         catUID = ((Category) spinnerCA.getAdapter().getItem(position)).getCategory_id();
-        // Setting the EditText text to the Category name
         categoryName.setText(((Category) spinnerCA.getAdapter().getItem(position)).getCat_name());
     }
 

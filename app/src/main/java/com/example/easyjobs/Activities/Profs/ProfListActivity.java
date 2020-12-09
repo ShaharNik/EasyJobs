@@ -29,6 +29,8 @@ import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.RecyclerItemClickListener;
 import com.example.easyjobs.utils.SizeUtils;
+import com.example.easyjobs.utils.SpinnerHelper;
+import com.example.easyjobs.utils.dialogHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -43,18 +45,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class ProfListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<PremiumProf> ProfList;
     private profAdapter ProfAdapter;
-
     private FirebaseAuth fa;
-
     private Button postProf;
     private ImageView backBLA;
     private boolean personal;
+    private Dialog loginDialog;
     private Spinner spinnerPL;
 
     @Override
@@ -62,9 +63,11 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prof_list);
-        personal = getIntent().getBooleanExtra("personal", false);
+
+        getExtra();
         findViews();
         setupRecyclerView();
+        buildLogInDialog();
     }
 
     @Override
@@ -82,6 +85,10 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
         recyclerView.setAdapter(null);
     }
 
+    private void getExtra()
+    {
+        personal = getIntent().getBooleanExtra("personal", false);
+    }
     private void findViews()
     {
         backBLA = findViewById(R.id.back_prof_list);
@@ -92,93 +99,21 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
 
     private void setupRecyclerView()
     {
-        backBLA.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                ProfListActivity.super.onBackPressed();
-            }
-        });
+        backBLA.setOnClickListener(this);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
-
-        postProf.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                fa = FirebaseAuth.getInstance();
-                FirebaseUser user = fa.getCurrentUser();
-                if (user != null)
-                {
-                    moveToPostProf();
-                }
-                else
-                {
-                    openDialog();
-                }
-            }
-        });
+        postProf.setOnClickListener(this);
     }
 
+    private void buildLogInDialog()
+    {
+        loginDialog = dialogHelper.loginDialogBuilder(this);
+    }
     private void openDialog()
     {
-        Dialog d = new Dialog(ProfListActivity.this);
-        d.setContentView(R.layout.activity_login);
-        d.setTitle("Login");
-        d.setCancelable(true);
-
-        ImageView iv = d.findViewById(R.id.back_login);
-        iv.setEnabled(false);
-        iv.setVisibility(View.GONE);
-
-        EditText ed1 = d.findViewById(R.id.emailEditText);
-        EditText ed2 = d.findViewById(R.id.editTextPassword);
-        Button log = d.findViewById(R.id.LoginButton);
-        Button reg = d.findViewById(R.id.button_login_toregister);
-        log.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                String ed1s = ed1.getText().toString();
-                String ed2s = ed2.getText().toString();
-                if (!ed1s.isEmpty() && !ed2s.isEmpty())
-                {
-                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(ProfListActivity.this, new OnCompleteListener<AuthResult>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task)
-                        {
-                            if (task.isSuccessful())
-                            {
-                                FirebaseUser user = fa.getCurrentUser();
-                                Toast.makeText(ProfListActivity.this, "Hello Cruel World", Toast.LENGTH_SHORT).show();
-                                d.dismiss();
-                            }
-                            else
-                            {
-                                Toast.makeText(ProfListActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-        reg.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                d.dismiss();
-                Intent i = new Intent(ProfListActivity.this, RegisterActivity.class);
-                startActivity(i);
-            }
-        });
-        d.show();
+        loginDialog.show();
     }
 
     private void activateButtonsAndViews()
@@ -205,24 +140,7 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
 
     private void setUpSpinner()
     {
-        DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                ArrayList<Category> items = new ArrayList<>();
-                for (DataSnapshot category : snapshot.getChildren())
-                {
-                    Category c = category.getValue(Category.class);
-                    items.add(c);
-                }
-                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(ProfListActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
-                spinnerPL.setAdapter(adapter);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        SpinnerHelper.setUpSpinnerWithAllCategories(spinnerPL,this);
         spinnerPL.setOnItemSelectedListener(this);
     }
 
@@ -245,7 +163,6 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     private void initAll()
     {
         ProfList = new ArrayList<>();
-
         ProfAdapter = new profAdapter(ProfListActivity.this);
         recyclerView.setAdapter(ProfAdapter);
         DatabaseReference dr = FirebaseDBProfs.getAllProfs();
@@ -378,6 +295,28 @@ public class ProfListActivity extends AppCompatActivity implements AdapterView.O
     {
         Intent i = new Intent(ProfListActivity.this, PostProfActivity.class);
         startActivity(i);
+    }
+
+    @Override
+    public void onClick(View ClickedButton) {
+        if(backBLA.equals(ClickedButton))
+        {
+            ProfListActivity.super.onBackPressed();
+        }
+        else if(postProf.equals(ClickedButton))
+        {
+            fa = FirebaseAuth.getInstance();
+            FirebaseUser user = fa.getCurrentUser();
+            if (user != null)
+            {
+                moveToPostProf();
+            }
+            else
+            {
+                openDialog();
+            }
+        }
+
     }
 
     public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration

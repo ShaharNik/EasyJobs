@@ -1,7 +1,6 @@
 package com.example.easyjobs.Activities.Jobs;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -38,19 +36,15 @@ import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseStorage;
 import com.example.easyjobs.utils.ImageHelper;
-import com.example.easyjobs.utils.ImagesDialog;
+import com.example.easyjobs.utils.dialogHelper;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class AdminEditJobActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -279,7 +273,7 @@ public class AdminEditJobActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void createDialog() {
-        d = ImagesDialog.ImagesDialogBuilder(this,editJobImage,localFile);
+        d = dialogHelper.ImagesDialogBuilder(this,editJobImage,localFile);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, true, true);
         vpPager.setAdapter(vpa);

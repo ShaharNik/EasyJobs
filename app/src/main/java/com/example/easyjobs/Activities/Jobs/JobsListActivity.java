@@ -29,6 +29,8 @@ import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.RecyclerItemClickListener;
 import com.example.easyjobs.utils.SizeUtils;
+import com.example.easyjobs.utils.SpinnerHelper;
+import com.example.easyjobs.utils.dialogHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -43,18 +45,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class JobsListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class JobsListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener
 {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<PremiumJob> JobList;
-    private com.example.easyjobs.adapters.JobAdapter JobAdapter;
-
+    private JobAdapter JobAdapter;
     private FirebaseAuth fa;
     private FirebaseUser user;
     private Button postJob;
     private ImageView backBJL;
     private boolean personal;
+    private Dialog loginDialog;
     private Spinner spinnerJL;
 
     @Override
@@ -62,9 +64,11 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs_list);
-        personal = getIntent().getBooleanExtra("personal", false);
+
+        getExtra();
         findViews();
         setupRecyclerView();
+        buildLogInDialog();
     }
 
     @Override
@@ -82,6 +86,10 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
         recyclerView.setAdapter(null);
     }
 
+    private void getExtra()
+    {
+        personal = getIntent().getBooleanExtra("personal", false);
+    }
     private void findViews()
     {
         backBJL = findViewById(R.id.back_jobs_list);
@@ -92,10 +100,12 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
 
     private void setupRecyclerView()
     {
+        backBJL.setOnClickListener(this);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new CommonItemSpaceDecoration(16));
+        postJob.setOnClickListener(this);
     }
 
     private void activateButtonsAndViews()
@@ -117,114 +127,21 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
                 }
             }
         }));
-
-
-        backBJL.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                JobsListActivity.super.onBackPressed();
-            }
-        });
-        postJob.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                fa = FirebaseAuth.getInstance();
-                user = fa.getCurrentUser();
-                if (user != null)
-                {
-                    moveToPostJob();
-                }
-                else
-                {
-                    openDialog();
-                }
-            }
-        });
         setUpSpinner();
     }
 
+    private void buildLogInDialog()
+    {
+        loginDialog = dialogHelper.loginDialogBuilder(this);
+    }
     private void openDialog()
     {
-        Dialog d = new Dialog(JobsListActivity.this);
-        d.setContentView(R.layout.activity_login);
-        d.setTitle("Login");
-        d.setCancelable(true);
-
-        ImageView iv = d.findViewById(R.id.back_login);
-        iv.setEnabled(false);
-        iv.setVisibility(View.GONE);
-
-        EditText ed1 = d.findViewById(R.id.emailEditText);
-        EditText ed2 = d.findViewById(R.id.editTextPassword);
-        Button log = d.findViewById(R.id.LoginButton);
-        Button reg = d.findViewById(R.id.button_login_toregister);
-        log.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                String ed1s = ed1.getText().toString();
-                String ed2s = ed2.getText().toString();
-                if (!ed1s.isEmpty() && !ed2s.isEmpty())
-                {
-                    fa.signInWithEmailAndPassword(ed1s, ed2s).addOnCompleteListener(JobsListActivity.this, new OnCompleteListener<AuthResult>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task)
-                        {
-                            if (task.isSuccessful())
-                            {
-                                FirebaseUser user = fa.getCurrentUser();
-                                Toast.makeText(JobsListActivity.this, "Connected Successfully", Toast.LENGTH_SHORT).show();
-                                d.dismiss();
-                            }
-                            else
-                            {
-                                Toast.makeText(JobsListActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-        reg.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                d.dismiss();
-                Intent i = new Intent(JobsListActivity.this, RegisterActivity.class);
-                startActivity(i);
-            }
-        });
-        d.show();
+        loginDialog.show();
     }
 
     private void setUpSpinner()
     {
-        DatabaseReference dr = FirebaseDBCategories.getAllCat();
-        dr.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                ArrayList<Category> items = new ArrayList<>();
-                for (DataSnapshot category : snapshot.getChildren())
-                {
-                    Category c = category.getValue(Category.class);
-                    items.add(c);
-                }
-                ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(JobsListActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
-                spinnerJL.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        SpinnerHelper.setUpSpinnerWithAllCategories(spinnerJL,this);
         spinnerJL.setOnItemSelectedListener(this);
     }
 
@@ -379,6 +296,27 @@ public class JobsListActivity extends AppCompatActivity implements AdapterView.O
     {
         Intent i = new Intent(JobsListActivity.this, PostJobActivity.class);
         startActivity(i);
+    }
+
+    @Override
+    public void onClick(View Clickable) {
+        if(backBJL.equals(Clickable))
+        {
+            JobsListActivity.super.onBackPressed();
+        }
+        if(postJob.equals(Clickable))
+        {
+            fa = FirebaseAuth.getInstance();
+            user = fa.getCurrentUser();
+            if (user != null)
+            {
+                moveToPostJob();
+            }
+            else
+            {
+                openDialog();
+            }
+        }
     }
 
     public class CommonItemSpaceDecoration extends RecyclerView.ItemDecoration

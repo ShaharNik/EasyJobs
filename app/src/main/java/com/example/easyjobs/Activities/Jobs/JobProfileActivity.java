@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -28,20 +25,17 @@ import com.example.easyjobs.adapters.viewPageAdapter;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.ImageHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.easyjobs.utils.dialogHelper;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,13 +72,13 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
         findViews();
         inits();
         activateButtons();
+        createDialog();
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        createDialog();
         setDataFromDB();
     }
 
@@ -129,14 +123,14 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
         }
         String job_ID = getIntent().getStringExtra("job_id");
         DatabaseReference drJobs = FirebaseDBJobs.getJobByID(job_ID);
+        vpa = new viewPageAdapter(JobProfileActivity.this, localFile, true, false);
+        vpPager.setAdapter(vpa);
         drJobs.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
                 job = snapshot.getValue(Job.class);
-                vpa = new viewPageAdapter(JobProfileActivity.this, localFile, true, false);
-                vpPager.setAdapter(vpa);
                 if (job == null)
                 {
                     JobProfileActivity.this.onBackPressed();
@@ -235,11 +229,7 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
 
     private void createDialog()
     {
-        d = new Dialog(JobProfileActivity.this);
-        d.setContentView(R.layout.view_pager_layout);
-        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        d.setTitle("Pictures");
-        d.setCancelable(true);
+        d = dialogHelper.ImagesDialogBuilder(this,JobProfileFirstPicture,localFile);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
     }
 
@@ -276,6 +266,4 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
     }
-
-
 }

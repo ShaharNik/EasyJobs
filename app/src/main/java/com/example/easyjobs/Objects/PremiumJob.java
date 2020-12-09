@@ -21,7 +21,7 @@ public class PremiumJob extends Job implements Comparable<PremiumJob>
     {
         if (o.isPremium == isPremium)
         {
-            return this.startDate.compareTo(o.startDate);
+            return getStartDate().compareTo(o.getStartDate());
         }
         return isPremium ? -1 : 1;
     }

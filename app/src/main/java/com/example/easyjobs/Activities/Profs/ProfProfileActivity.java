@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -32,24 +29,21 @@ import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.ImageHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.easyjobs.utils.dialogHelper;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfProfileActivity extends AppCompatActivity
+public class ProfProfileActivity extends AppCompatActivity implements View.OnClickListener
 {
     private static final int PHONE_CALL_APPROVE = 420;
 
@@ -70,9 +64,7 @@ public class ProfProfileActivity extends AppCompatActivity
     private viewPageAdapter vpa;
     private Dialog d;
     private ViewPager vpPager;
-
     private ImageView whatsappButt;
-
     private Prof profile;
     private User user;
 
@@ -83,6 +75,7 @@ public class ProfProfileActivity extends AppCompatActivity
         setContentView(R.layout.activity_prof_profile);
 
         findViews();
+        inits();
         activateButtons();
         setRatingBarListener();
         createDialog();
@@ -92,14 +85,11 @@ public class ProfProfileActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
-        cleanTexts();
         setDataFromDB();
     }
 
     private void findViews()
     {
-        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
-        localFile = new ArrayList<>();
         backBPP = findViewById(R.id.back_prof_profile);
         namesPPTV = findViewById(R.id.namesPP);
         ratingPPTV = findViewById(R.id.ratingPP);
@@ -111,22 +101,24 @@ public class ProfProfileActivity extends AppCompatActivity
         ratingBar = findViewById(R.id.ratingBarProfProfile);
         profProfileImage = findViewById(R.id.profProfileImage);
         adminEditProf = findViewById(R.id.admin_edit_prof);
-        profProfileImage.setEnabled(false);
         whatsappButt = findViewById(R.id.watsappImageButton);
     }
 
-    private void cleanTexts()
+    private void inits()
     {
-        if (vpa != null)
+        mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
+        localFile = new ArrayList<>();
+        profProfileImage.setEnabled(false);
+        if (FirebaseDBUsers.isAdmin)
         {
-            localFile.clear();
-            vpa.notifyDataSetChanged();
+            adminEditProf.setVisibility(View.VISIBLE);
+            adminEditProf.setEnabled(true);
         }
-        descPPTV.setText("");
-        catPPTV.setText("");
-        locationPPTV.setText("");
-        namesPPTV.setText("");
-        phonePPTV.setText("");
+        else
+        {
+            adminEditProf.setVisibility(View.GONE);
+            adminEditProf.setEnabled(false);
+        }
     }
 
     private void setRatingBarListener()
@@ -157,82 +149,64 @@ public class ProfProfileActivity extends AppCompatActivity
 
     private void activateButtons()
     {
-        backBPP.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                ProfProfileActivity.super.onBackPressed();
-            }
-        });
+        backBPP.setOnClickListener(this);
+        phoneCall.setOnClickListener(this);
+        adminEditProf.setOnClickListener(this);
+        profProfileImage.setOnClickListener(this);
+        whatsappButt.setOnClickListener(this);
+    }
 
-        if (FirebaseDBUsers.isAdmin)
+    @Override
+    public void onClick(View ClickedButton) {
+        if(backBPP.equals(ClickedButton))
         {
-            adminEditProf.setVisibility(View.VISIBLE);
-            adminEditProf.setEnabled(true);
+            ProfProfileActivity.super.onBackPressed();
         }
-        else
+        if(phoneCall.equals(ClickedButton))
         {
-            adminEditProf.setVisibility(View.GONE);
-            adminEditProf.setEnabled(false);
+            phoneCallMaker();
         }
-
-        phoneCall.setOnClickListener(new View.OnClickListener()
+        if(adminEditProf.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                phoneCallMaker();
-            }
-        });
-
-        adminEditProf.setOnClickListener(new View.OnClickListener()
+            Intent i = new Intent(ProfProfileActivity.this, AdminEditProfActivity.class);
+            i.putExtra("Prof", profile);
+            i.putExtra("User", user);
+            i.putExtra("File", localFile);
+            startActivity(i);
+        }
+        if(profProfileImage.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(ProfProfileActivity.this, AdminEditProfActivity.class);
-                i.putExtra("Prof", profile);
-                i.putExtra("User", user);
-                i.putExtra("File", localFile);
-                startActivity(i);
-            }
-        });
-
-        profProfileImage.setOnClickListener(new View.OnClickListener()
+            showDialog();
+        }
+        if(whatsappButt.equals(ClickedButton))
         {
-            @Override
-            public void onClick(View v)
-            {
-                showDialog();
-            }
-        });
-        whatsappButt.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
-                startActivity(intent);
-            }
-        });
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
+            startActivity(intent);
+        }
     }
 
     private void setDataFromDB()
     {
         // Gotta make the numbers of the categories to the name of them.
+        if (vpa != null)
+        {
+            localFile.clear();
+            vpa.notifyDataSetChanged();
+        }
         String prof_id = getIntent().getStringExtra("prof_id");
         DatabaseReference drProf = FirebaseDBProfs.getProfByID(prof_id);
+        vpa = new viewPageAdapter(ProfProfileActivity.this, localFile, false, false);
+        vpPager.setAdapter(vpa);
         drProf.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
                 profile = snapshot.getValue(Prof.class);
-                vpa = new viewPageAdapter(ProfProfileActivity.this, localFile, false, false);
-                vpPager.setAdapter(vpa);
+
                 if (profile == null)
                 {
                     ProfProfileActivity.this.onBackPressed();
@@ -243,10 +217,12 @@ public class ProfProfileActivity extends AppCompatActivity
                     //Add categories
                     List<String> cats = profile.getCategory();
                     DatabaseReference catDR;
+                    catPPTV.setText("");
                     for (int i = 0; i < cats.size(); i++)
                     {
                         final int x = i;
                         catDR = FirebaseDBCategories.getCatByID(cats.get(i));
+
                         catDR.addListenerForSingleValueEvent(new ValueEventListener()
                         {
                             @Override
@@ -313,11 +289,7 @@ public class ProfProfileActivity extends AppCompatActivity
 
     private void createDialog()
     {
-        d = new Dialog(ProfProfileActivity.this);
-        d.setContentView(R.layout.view_pager_layout);
-        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        d.setTitle("Pictures");
-        d.setCancelable(true);
+        d = dialogHelper.ImagesDialogBuilder(this,profProfileImage,localFile);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
     }
 

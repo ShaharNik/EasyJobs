@@ -34,7 +34,7 @@ import com.example.easyjobs.dataBase.FirebaseDBCategories;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseStorage;
 import com.example.easyjobs.utils.ImageHelper;
-import com.example.easyjobs.utils.ImagesDialog;
+import com.example.easyjobs.utils.dialogHelper;
 import com.example.easyjobs.utils.Validator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -331,7 +331,7 @@ public class AdminEditProfActivity extends AppCompatActivity implements View.OnC
 
     private void createDialog()
     {
-        d = ImagesDialog.ImagesDialogBuilder(this,adminEditPostImage,localFile);
+        d = dialogHelper.ImagesDialogBuilder(this,adminEditPostImage,localFile);
         vpPager = (ViewPager) d.findViewById(R.id.vpPager);
         vpa = new viewPageAdapter(this, localFile, false, true);
         vpPager.setAdapter(vpa);
