@@ -25,7 +25,9 @@ import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.viewPageAdapter;
+import com.example.easyjobs.dataBase.FirebaseBaseModel;
 import com.example.easyjobs.dataBase.FirebaseDBCategories;
+import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBProfs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.ImageHelper;
@@ -67,6 +69,7 @@ public class ProfProfileActivity extends AppCompatActivity implements View.OnCli
     private ImageView whatsappButt;
     private Prof profile;
     private User user;
+    private Button AgreeProf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -102,10 +105,12 @@ public class ProfProfileActivity extends AppCompatActivity implements View.OnCli
         profProfileImage = findViewById(R.id.profProfileImage);
         adminEditProf = findViewById(R.id.admin_edit_prof);
         whatsappButt = findViewById(R.id.watsappImageButton);
+        AgreeProf = findViewById(R.id.adminProfAgreeButt);
     }
 
     private void inits()
     {
+        // AgreeProf = findViewById(R.id.adminProfAgreeButt);
         mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         localFile = new ArrayList<>();
         profProfileImage.setEnabled(false);
@@ -113,6 +118,25 @@ public class ProfProfileActivity extends AppCompatActivity implements View.OnCli
         {
             adminEditProf.setVisibility(View.VISIBLE);
             adminEditProf.setEnabled(true);
+            // if its suspicious
+            String prof_ID = getIntent().getStringExtra("prof_id");
+            DatabaseReference DR = FirebaseBaseModel.getRef().child("suspiciousPosts").child(prof_ID);
+            DR.addListenerForSingleValueEvent(new ValueEventListener()
+            {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot)
+                {
+                    if (snapshot.exists())
+                    {
+                        AgreeProf.setVisibility(View.VISIBLE);
+                        AgreeProf.setEnabled(true);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
         else
         {
@@ -154,6 +178,7 @@ public class ProfProfileActivity extends AppCompatActivity implements View.OnCli
         adminEditProf.setOnClickListener(this);
         profProfileImage.setOnClickListener(this);
         whatsappButt.setOnClickListener(this);
+        AgreeProf.setOnClickListener(this);
     }
 
     @Override
@@ -185,6 +210,14 @@ public class ProfProfileActivity extends AppCompatActivity implements View.OnCli
             intent.addCategory(Intent.CATEGORY_BROWSABLE);
             intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
             startActivity(intent);
+        }
+        if (AgreeProf.equals(ClickedButton))
+        {
+            // remove the prof from suspicious
+            String prof_ID = getIntent().getStringExtra("prof_id");
+            FirebaseDBProfs.RemoveProfFromSuspicious(prof_ID);
+            AgreeProf.setVisibility(View.GONE);
+            AgreeProf.setEnabled(false);
         }
     }
 

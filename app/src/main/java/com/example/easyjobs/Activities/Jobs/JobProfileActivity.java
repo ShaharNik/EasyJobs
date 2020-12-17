@@ -22,6 +22,7 @@ import com.example.easyjobs.Objects.Picture;
 import com.example.easyjobs.Objects.User;
 import com.example.easyjobs.R;
 import com.example.easyjobs.adapters.viewPageAdapter;
+import com.example.easyjobs.dataBase.FirebaseBaseModel;
 import com.example.easyjobs.dataBase.FirebaseDBJobs;
 import com.example.easyjobs.dataBase.FirebaseDBUsers;
 import com.example.easyjobs.utils.ImageHelper;
@@ -62,6 +63,7 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
     private Dialog d;
     private ViewPager vpPager;
     private viewPageAdapter vpa;
+    private Button adminJobAgreeButt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -95,6 +97,7 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
         JobProfileFirstPicture = findViewById(R.id.JobProfileFirstPicture);
         adminEditJob = findViewById(R.id.admin_edit_job);
         whatsappButt = findViewById(R.id.whatsappButtImageButt);
+        adminJobAgreeButt = findViewById(R.id.adminJobAgreeButt);
     }
 
     private void inits()
@@ -106,6 +109,25 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
         {
             adminEditJob.setVisibility(View.VISIBLE);
             adminEditJob.setEnabled(true);
+            // if its suspicious job
+            String job_ID = getIntent().getStringExtra("job_id");
+            DatabaseReference DR = FirebaseBaseModel.getRef().child("suspiciousPosts").child(job_ID);
+            DR.addListenerForSingleValueEvent(new ValueEventListener()
+            {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot)
+                {
+                        if (snapshot.exists())
+                        {
+                            adminJobAgreeButt.setVisibility(View.VISIBLE);
+                            adminJobAgreeButt.setEnabled(true);
+                        }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
         else
         {
@@ -177,6 +199,7 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
         adminEditJob.setOnClickListener(this);
         JobProfileFirstPicture.setOnClickListener(this);
         whatsappButt.setOnClickListener(this);
+        adminJobAgreeButt.setOnClickListener(this);
     }
 
     @Override
@@ -208,6 +231,14 @@ public class JobProfileActivity extends AppCompatActivity implements View.OnClic
             intent.addCategory(Intent.CATEGORY_BROWSABLE);
             intent.setData(Uri.parse("https://wa.me/972" + user.getPhoneNumber()));
             startActivity(intent);
+        }
+        if (adminJobAgreeButt.equals(ClickedButton))
+        {
+            // remove job from suspicious
+            String job_ID = getIntent().getStringExtra("job_id");
+            FirebaseDBJobs.RemoveJobFromSuspicious(job_ID);
+            adminJobAgreeButt.setVisibility(View.GONE);
+            adminJobAgreeButt.setEnabled(false);
         }
     }
 

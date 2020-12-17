@@ -10,7 +10,10 @@ import com.example.easyjobs.Objects.Prof;
 import com.example.easyjobs.utils.idGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -23,8 +26,27 @@ public class FirebaseDBProfs
     public static void addNewProf(String user_id, String desc, List<String> cats, String loc, ArrayList<Uri> picsUri)
     {
         String id = idGenerator.tokenGenerator();
-        Prof p = new Prof(id, user_id, desc, cats, loc);
-        FirebaseBaseModel.getRef().child("Profs").child(id).setValue(p);
+        Prof profToAdd = new Prof(id, user_id, desc, cats, loc);
+        FirebaseBaseModel.getRef().child("Profs").child(id).setValue(profToAdd);
+        DatabaseReference DR = FirebaseBaseModel.getRef().child("badWords");
+        DR.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren())
+                {
+                    if (desc.contains(ds.getKey()))
+                    {
+                        //System.err.println(ds.getKey() + " 555");
+                        FirebaseBaseModel.getRef().child("suspiciousPosts").child(id).setValue(false); // false = prof, true = jobs
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().getRoot();
         for (Uri u : picsUri)
         {
@@ -71,6 +93,34 @@ public class FirebaseDBProfs
                         }
                     });
                 }
+                //check for Offensive words to know id to add to suspicious
+                DatabaseReference DR = FirebaseBaseModel.getRef().child("badWords");
+                DR.addListenerForSingleValueEvent(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot)
+                    {
+                        boolean changed = false;
+                        for (DataSnapshot ds : snapshot.getChildren())
+                        {
+                            if (desc.contains(ds.getKey()))
+                            {
+                                changed = true;
+                                FirebaseBaseModel.getRef().child("suspiciousPosts").child(prof_id).setValue(false); // false = prof, true = jobs
+                                System.out.println(" Added !");
+                            }
+                        }
+                        if (!changed)
+                        {
+                            RemoveProfFromSuspicious(prof_id);
+                            System.out.println("Removed !");
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 Toast.makeText(c, "עודכן בהצלחה", Toast.LENGTH_SHORT).show();
                 c.onBackPressed();
             }
@@ -87,5 +137,12 @@ public class FirebaseDBProfs
                 c.finish();
             }
         });
+        //TODO if he exist in suspicious remove him too
+        RemoveProfFromSuspicious(profID);
+
+    }
+    public static void RemoveProfFromSuspicious(String profID)
+    {
+        FirebaseBaseModel.getRef().child("suspiciousPosts").child(profID).removeValue();
     }
 }
